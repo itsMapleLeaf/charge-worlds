@@ -16,7 +16,7 @@
     "lint-fix": "pnpm lint --fix",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "tailwind": "tailwindcss -o app/generated/tailwind.css -c tailwind.config.cjs",
+    "tailwind": "tailwindcss -i app/ui/styles.css -o app/generated/styles.css -c tailwind.config.cjs",
     "routes": "routes-gen --driver @routes-gen/remix",
     "env-check": "tsx app/core/env.server.ts"
   },
@@ -33,6 +33,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-expanding-textarea": "^2.3.6",
+    "react-mosaic-component": "^5.3.0",
     "react-use-measure": "^2.1.1",
     "react-virtuoso": "^3.1.1",
     "routes-gen": "^0.5.2",

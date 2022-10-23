@@ -13,8 +13,9 @@ import {
 } from "@remix-run/react"
 import clsx from "clsx"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
+import reactMosaicCss from "react-mosaic-component/react-mosaic-component.css"
 import favicon from "./assets/favicon.svg"
-import tailwind from "./generated/tailwind.css"
+import styles from "./generated/styles.css"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { LoadingSpinner } from "./ui/loading"
 import { maxWidthContainerClass } from "./ui/styles"
@@ -47,7 +48,8 @@ export const meta = (): HtmlMetaDescriptor => {
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: "/rubik/variable.css" },
-  { rel: "stylesheet", href: tailwind },
+  { rel: "stylesheet", href: reactMosaicCss },
+  { rel: "stylesheet", href: styles },
   { rel: "icon", href: favicon },
 ]
 
@@ -101,7 +103,7 @@ function Document({ children }: { children: ReactNode }) {
     <html
       lang="en"
       className="font-body overflow-y-auto break-words bg-gray-800 text-gray-100"
-      style={{ wordBreak: "break-word", scrollbarGutter: "stable" }}
+      style={{ wordBreak: "break-word" }}
     >
       <head>
         <Meta />
