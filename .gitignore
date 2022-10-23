@@ -1,0 +1,19 @@
+node_modules
+
+/.cache
+/build
+/public/build
+/api
+.env
+.env.*
+build
+dist
+.cache
+.vscode
+/app/generated
+/app/routes.d.ts
+.vercel
+/data
+
+# Local Netlify folder
+.netlify
