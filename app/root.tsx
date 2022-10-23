@@ -4,20 +4,18 @@ import type {
   LinksFunction,
 } from "@remix-run/node"
 import {
-  Link,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
-  useCatch,
   useTransition,
 } from "@remix-run/react"
 import clsx from "clsx"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
-import { route } from "routes-gen"
 import favicon from "./assets/favicon.svg"
 import tailwind from "./generated/tailwind.css"
+import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { LoadingSpinner } from "./ui/loading"
 import { maxWidthContainerClass } from "./ui/styles"
 
@@ -66,7 +64,7 @@ export function CatchBoundary() {
     <Document>
       <div className={maxWidthContainerClass}>
         <div className="py-8">
-          <CatchBoundaryContent />
+          <CatchBoundaryMessage />
         </div>
       </div>
     </Document>
@@ -95,42 +93,6 @@ export function ErrorBoundary({
         </div>
       </div>
     </Document>
-  )
-}
-
-function CatchBoundaryContent() {
-  const response = useCatch()
-
-  if (response.status === 401) {
-    return (
-      <SystemMessage>
-        <p>
-          To see this, please{" "}
-          <a href={route("/auth/discord/login")} className="underline">
-            Login with Discord
-          </a>
-        </p>
-      </SystemMessage>
-    )
-  }
-
-  if (response.status === 403) {
-    return (
-      <SystemMessage>
-        <p>
-          {`Sorry, you're not allowed to see this. `}
-          <Link to={route("/auth/logout")} className="underline">
-            Log out
-          </Link>
-        </p>
-      </SystemMessage>
-    )
-  }
-
-  return (
-    <SystemMessage>
-      <p>Oops! Something went wrong.</p>
-    </SystemMessage>
   )
 }
 
@@ -167,14 +129,5 @@ function PendingIndicator() {
     >
       <LoadingSpinner />
     </div>
-  )
-}
-
-function SystemMessage({ children }: { children: ReactNode }) {
-  return (
-    <section className="grid gap-4">
-      {children}
-      <p className="opacity-75">{`(i'll make this less jank later)`}</p>
-    </section>
   )
 }
