@@ -25,5 +25,6 @@ module.exports = {
   },
   rules: {
     "tailwindcss/migration-from-tailwind-2": "off",
+    "unicorn/no-null": "off",
   },
 }
