@@ -30,7 +30,7 @@ export async function createSessionCookie(authCode: string) {
 
   const data = {
     name: discordUser.username,
-    avatar: discordUser.avatar
+    avatarUrl: discordUser.avatar
       ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`
       : undefined,
     sessionId,

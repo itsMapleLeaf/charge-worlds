@@ -1,7 +1,28 @@
-import { Select, SelectItem, SelectPopover, useSelectState } from "ariakit"
+import type { LoaderArgs } from "@remix-run/node"
+import { json } from "@remix-run/node"
+import { Link, useLoaderData } from "@remix-run/react"
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  Select,
+  SelectItem,
+  SelectPopover,
+  useMenuState,
+  useSelectState,
+} from "ariakit"
 import cuid from "cuid"
-import { Maximize2, PlusSquare, SeparatorVertical, X, Zap } from "lucide-react"
-import { useContext, useState } from "react"
+import {
+  LogIn,
+  LogOut,
+  Maximize2,
+  PlusSquare,
+  SeparatorVertical,
+  User,
+  X,
+  Zap,
+} from "lucide-react"
+import { useContext, useEffect, useState } from "react"
 import type { MosaicBranch, MosaicNode } from "react-mosaic-component"
 import {
   Mosaic,
@@ -9,10 +30,24 @@ import {
   MosaicWindow,
   MosaicWindowContext,
 } from "react-mosaic-component"
-import { clearButtonClass } from "../ui/styles"
+import { route } from "routes-gen"
+import { getSessionUser } from "../auth/session"
+import { clearButtonClass, menuItemClass, menuPanelClass } from "../ui/styles"
+
+export async function loader({ request }: LoaderArgs) {
+  const user = await getSessionUser(request)
+  return json({
+    user: user ? { name: user.name, avatarUrl: user.avatarUrl } : undefined,
+  })
+}
 
 export default function IndexPage() {
-  const [mosaic, setMosaic] = useState<MosaicNode<string> | null>(() => cuid())
+  const { user } = useLoaderData<typeof loader>()
+  const [mosaic, setMosaic] = useState<MosaicNode<string> | null>(null)
+
+  useEffect(() => {
+    setMosaic(cuid())
+  }, [])
 
   const addWindow = () => {
     setMosaic((prev) => {
@@ -33,10 +68,20 @@ export default function IndexPage() {
           <Zap />
           <h1 className="text-3xl font-light">Charge Worlds</h1>
         </div>
-        <nav className="flex items-center">
+        <nav className="flex items-center gap-4">
           <button className={clearButtonClass} onClick={addWindow}>
-            <PlusSquare className="h-6" /> New window
+            <PlusSquare /> New window
           </button>
+          {user ? (
+            <UserButton user={user} />
+          ) : (
+            <Link
+              to={route("/auth/discord/login")}
+              className={clearButtonClass}
+            >
+              <LogIn /> Discord sign in
+            </Link>
+          )}
         </nav>
       </header>
       <main className="bg-slate-900 relative">
@@ -61,6 +106,43 @@ export default function IndexPage() {
         />
       </main>
     </div>
+  )
+}
+
+function UserButton({
+  user,
+}: {
+  user: { name: string; avatarUrl: string | null }
+}) {
+  const menu = useMenuState({
+    gutter: 4,
+    placement: "bottom-end",
+    animated: true,
+  })
+  return (
+    <>
+      <MenuButton className={clearButtonClass} state={menu}>
+        {user.avatarUrl ? (
+          <img
+            src={user.avatarUrl}
+            alt=""
+            className="w-6 h-6 rounded-full object-cover"
+          />
+        ) : (
+          <User />
+        )}{" "}
+        {user.name}
+      </MenuButton>
+      <Menu state={menu} className={menuPanelClass} portal>
+        <MenuItem
+          as={Link}
+          to={route("/auth/logout")}
+          className={menuItemClass}
+        >
+          <LogOut /> Sign out
+        </MenuItem>
+      </Menu>
+    </>
   )
 }
 
@@ -105,16 +187,9 @@ function ModuleViewSelect() {
         state={select}
         className="flex items-center gap-1 flex-row-reverse text-lg font-medium hover:text-blue-300 p-2 -m-2 leading-none"
       />
-      <SelectPopover
-        state={select}
-        className="bg-slate-700 flex flex-col rounded-md shadow-md overflow-clip min-w-[10rem] transition origin-top-left data-[enter]:scale-100 data-[enter]:opacity-100 data-[leave]:opacity-0 data-[leave]:scale-95"
-      >
+      <SelectPopover state={select} className={menuPanelClass}>
         {options.map((option) => (
-          <SelectItem
-            key={option}
-            value={option}
-            className="leading-none p-3 data-[active-item]:bg-black/25 cursor-pointer"
-          >
+          <SelectItem key={option} value={option} className={menuItemClass}>
             {option}
           </SelectItem>
         ))}
