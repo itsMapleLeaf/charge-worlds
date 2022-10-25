@@ -19,7 +19,7 @@ export const counterModule = defineModule({
       <button className={clearButtonClass} onClick={() => send("decrement")}>
         -
       </button>
-      <p className="text-lg font-medium">{state}</p>
+      <p className="text-lg font-medium tabular-nums">{state}</p>
       <button className={clearButtonClass} onClick={() => send("increment")}>
         +
       </button>
