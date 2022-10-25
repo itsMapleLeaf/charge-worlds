@@ -26,7 +26,7 @@ export const menuPanelClass = clsx(
 )
 
 export const menuItemClass = clsx(
-  "leading-tight p-3 data-[active-item]:bg-black/25 cursor-pointer",
+  "block p-3 data-[active-item]:bg-black/25 cursor-pointer",
 )
 
 export const navLinkClass = ({ isActive = false } = {}) =>

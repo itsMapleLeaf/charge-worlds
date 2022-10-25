@@ -34,7 +34,9 @@ export function UserMenuButton({
           to={route("/auth/logout")}
           className={menuItemClass}
         >
-          <LogOut /> Sign out
+          <div className="flex gap-2 items-center leading-none">
+            <LogOut /> Sign out
+          </div>
         </MenuItem>
       </Menu>
     </>
