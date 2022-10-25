@@ -8,7 +8,7 @@ import {
   SeparatorVertical,
   X,
 } from "lucide-react"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext } from "react"
 import type { MosaicBranch, MosaicNode } from "react-mosaic-component"
 import {
   Mosaic,
@@ -16,6 +16,8 @@ import {
   MosaicWindow,
   MosaicWindowContext,
 } from "react-mosaic-component"
+import { z } from "zod"
+import { useLocalStorage } from "../helpers/local-storage"
 import {
   activePressClass,
   clearButtonClass,
@@ -25,31 +27,46 @@ import {
 import { dashboardModuleLibrary } from "./dashboard-module-library"
 import { DashboardModuleView } from "./dashboard-module-view"
 
+const mosaicNodeSchema: z.ZodType<MosaicNode<string>> = z.union([
+  z.string(),
+  z.object({
+    direction: z.enum(["row", "column"]),
+    first: z.lazy(() => mosaicNodeSchema),
+    second: z.lazy(() => mosaicNodeSchema),
+    splitPercentage: z.number().optional(),
+  }),
+])
+
 function useDashboardProvider() {
-  const [windowModules, setWindowModules] = useState<{
-    [windowId: string]: { moduleId: string }
-  }>({})
+  const [windowModules, setWindowModules] = useLocalStorage({
+    key: "dashboardWindowModules",
+    schema: z.record(z.object({ moduleId: z.string() })),
+    fallback: {},
+  })
 
-  const [mosaic, setMosaic] = useState<MosaicNode<string> | null>(null)
-
-  useEffect(() => {
-    setMosaic(cuid())
-  }, [])
+  const [mosaic, setMosaic] = useLocalStorage<z.infer<
+    typeof mosaicNodeSchema
+  > | null>({
+    key: "dashboardWindows",
+    schema: mosaicNodeSchema.nullable(),
+    fallback: null,
+  })
 
   const setWindowModule = (windowId: string, moduleId: string) => {
-    setWindowModules((prev) => ({ ...prev, [windowId]: { moduleId } }))
+    setWindowModules({ ...windowModules, [windowId]: { moduleId } })
   }
 
   const addWindow = () => {
-    setMosaic((prev) => {
-      if (!prev) return cuid()
-      return {
+    if (!mosaic) {
+      setMosaic(cuid())
+    } else {
+      setMosaic({
         direction: "row",
-        first: cuid(),
-        second: prev,
+        first: mosaic,
+        second: cuid(),
         splitPercentage: 50,
-      }
-    })
+      })
+    }
   }
 
   return {
