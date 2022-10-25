@@ -7,14 +7,14 @@ function tryReload() {
   let interval = setInterval(() => {
     controller?.abort()
     controller = new AbortController()
-    console.log("pinging localhost...")
-    fetch("/", { signal: controller.signal }).then((response) => {
-      console.log(response)
-      if (response.ok) {
-        clearInterval(interval)
-        window.location.reload()
-      }
-    })
+    fetch("/", { signal: controller.signal })
+      .then((response) => {
+        if (response.ok) {
+          clearInterval(interval)
+          window.location.reload()
+        }
+      })
+      .catch(() => {})
   }, 500)
 }
 
