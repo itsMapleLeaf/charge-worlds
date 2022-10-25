@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@fontsource/rubik": "^4.5.11",
+    "@nanostores/react": "^0.4.0",
     "@prisma/client": "^4.5.0",
     "@remix-run/express": "^1.7.3",
     "@remix-run/node": "^1.7.3",
@@ -35,6 +36,7 @@
     "immer": "^9.0.16",
     "lucide-react": "^0.92.0",
     "morgan": "^1.10.0",
+    "nanostores": "^0.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-expanding-textarea": "^2.3.6",

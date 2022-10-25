@@ -1,5 +1,7 @@
+import { useStore } from "@nanostores/react"
 import produce from "immer"
-import { useEffect, useState } from "react"
+import { atom, computed } from "nanostores"
+import { useCallback, useEffect, useMemo } from "react"
 import type { Socket } from "socket.io-client"
 import { connect } from "socket.io-client"
 import type {
@@ -18,14 +20,37 @@ const getSocket = () => {
   return socket
 }
 
+const moduleStateMap = atom<Record<string, Json>>({})
+
+function useModuleState(moduleId: string) {
+  const state = useStore(
+    useMemo(
+      () => computed(moduleStateMap, (state) => state[moduleId]),
+      [moduleId],
+    ),
+  )
+
+  const setState = useCallback(
+    (newState: Json) => {
+      moduleStateMap.set({
+        ...moduleStateMap.get(),
+        [moduleId]: newState,
+      })
+    },
+    [moduleId],
+  )
+
+  return [state, setState] as const
+}
+
 export function DashboardModuleView({
   moduleId,
   module,
 }: {
   moduleId: string
-  module: DashboardModule<any, any>
+  module: DashboardModule<Json, Json>
 }) {
-  const [state, setState] = useState(module.initialState)
+  const [state = module.initialState, setState] = useModuleState(moduleId)
 
   useEffect(() => {
     getSocket().emit("getModuleState", moduleId)
@@ -38,7 +63,7 @@ export function DashboardModuleView({
     return () => {
       socket.off(`moduleState:${moduleId}`, handler)
     }
-  }, [moduleId])
+  }, [moduleId, setState])
 
   const renderArgs: DashboardRenderArgs<Json, Json> = {
     state,
