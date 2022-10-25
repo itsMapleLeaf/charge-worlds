@@ -105,7 +105,9 @@ function Document({ children }: { children: ReactNode }) {
       <body>
         {children}
         <Scripts />
-        <script src="/live-reload.js" />
+        {process.env.NODE_ENV !== "production" && (
+          <script src="/live-reload.js" />
+        )}
         <PendingIndicator />
       </body>
     </html>
