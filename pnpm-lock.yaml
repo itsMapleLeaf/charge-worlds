@@ -49,6 +49,7 @@ specifiers:
   tailwindcss: ^3.2.0
   tsx: ^3.10.4
   typescript: 4.9.1-beta
+  use-sync-external-store: ^1.2.0
   zod: ^3.19.1
 
 dependencies:
@@ -77,6 +78,7 @@ dependencies:
   routes-gen: 0.5.2
   socket.io: 4.5.3
   socket.io-client: 4.5.3
+  use-sync-external-store: 1.2.0_react@18.2.0
   zod: 3.19.1
 
 devDependencies:
