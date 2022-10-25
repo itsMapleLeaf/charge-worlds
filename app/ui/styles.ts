@@ -16,9 +16,9 @@ export const clearButtonClass = clsx(
 )
 
 export const menuPanelClass = clsx(
-  "bg-slate-600 flex flex-col rounded-md shadow-lg overflow-clip min-w-[10rem] transition duration-100 origin-top data-[enter]:scale-100 data-[enter]:opacity-100 data-[leave]:opacity-0 data-[leave]:scale-95",
+  "bg-slate-600 flex flex-col rounded-md max-w-[16rem] shadow-lg overflow-clip min-w-[10rem] transition duration-100 origin-top data-[enter]:scale-100 data-[enter]:opacity-100 data-[leave]:opacity-0 data-[leave]:scale-95",
 )
 
 export const menuItemClass = clsx(
-  "leading-none p-3 data-[active-item]:bg-black/25 cursor-pointer",
+  "leading-tight p-3 data-[active-item]:bg-black/25 cursor-pointer",
 )
