@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/server-runtime"
+import type { LoaderArgs } from "@remix-run/node"
 import { readFile } from "node:fs/promises"
 import { join, resolve } from "node:path"
 
