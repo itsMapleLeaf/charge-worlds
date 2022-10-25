@@ -191,13 +191,9 @@ function DashboardModuleSelect({ windowId }: { windowId: string }) {
           const module = dashboardModuleLibrary[id]
           return (
             <SelectItem key={id} value={id} className={menuItemClass}>
-              <p className="leading-none">
-                {module?.name ?? "⚠ unknown module"}
-              </p>
+              <p>{module?.name ?? "⚠ unknown module"}</p>
               {module?.description && (
-                <p className="text-sm opacity-70 leading-none mt-1">
-                  {module.description}
-                </p>
+                <p className="text-sm opacity-70 mt-1">{module.description}</p>
               )}
             </SelectItem>
           )
