@@ -1,3 +1,4 @@
+import cuid from "cuid"
 import { Plus } from "lucide-react"
 import { z } from "zod"
 import { defineModule } from "../dashboard/dashboard-module"
@@ -26,7 +27,7 @@ export const clocksModule = defineModule({
     if (event.type === "add") {
       updateState((state) => {
         state.clocks.push({
-          id: Math.random().toString(),
+          id: cuid(),
           name: event.name,
           progress: 0,
           maxProgress: 4,
