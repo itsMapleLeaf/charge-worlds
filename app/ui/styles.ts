@@ -19,6 +19,5 @@ export const menuPanelClass = clsx(
 )
 
 export const menuItemClass = clsx(
-  "leading-none p-3 data-[active-item]:bg-black/25 cursor-pointer inline-flex items-center gap-2",
-  activePressClass,
+  "leading-none p-3 data-[active-item]:bg-black/25 cursor-pointer",
 )

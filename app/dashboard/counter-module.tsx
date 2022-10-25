@@ -4,6 +4,7 @@ import { defineModule } from "./dashboard-module"
 
 export const counterModule = defineModule({
   name: "Counter",
+  description: "It counts",
 
   stateSchema: z.number(),
   initialState: 0,

@@ -11,6 +11,7 @@ export type Json =
 
 export type DashboardModule<State extends Json, Event extends Json> = {
   name: string
+  description: string
   stateSchema: ZodType<State>
   initialState: State
   eventSchema: ZodType<Event>

@@ -170,11 +170,21 @@ function DashboardModuleSelect({ windowId }: { windowId: string }) {
         </span>
       </Select>
       <SelectPopover state={select} className={menuPanelClass}>
-        {moduleIds.map((id) => (
-          <SelectItem key={id} value={id} className={menuItemClass}>
-            {dashboardModuleLibrary[id]?.name ?? "⚠ unknown module"}
-          </SelectItem>
-        ))}
+        {moduleIds.map((id) => {
+          const module = dashboardModuleLibrary[id]
+          return (
+            <SelectItem key={id} value={id} className={menuItemClass}>
+              <p className="leading-none">
+                {module?.name ?? "⚠ unknown module"}
+              </p>
+              {module?.description && (
+                <p className="text-sm opacity-70 leading-none mt-1">
+                  {module.description}
+                </p>
+              )}
+            </SelectItem>
+          )
+        })}
       </SelectPopover>
     </>
   )
