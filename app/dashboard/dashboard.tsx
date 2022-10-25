@@ -23,6 +23,7 @@ import {
   menuPanelClass,
 } from "../ui/styles"
 import { dashboardModuleLibrary } from "./dashboard-module-library"
+import { DashboardModuleView } from "./dashboard-module-view"
 
 function useDashboardProvider() {
   const [windowModules, setWindowModules] = useState<{
@@ -132,10 +133,12 @@ function DashboardWindowContent({ windowId }: { windowId: string }) {
 
   return (
     <section className="w-full h-full bg-slate-800">
-      {module ? (
-        module.render({ state: module.initialState, send: () => {} })
+      {module && moduleId ? (
+        <DashboardModuleView moduleId={moduleId} module={module} />
       ) : (
-        <p className="p-4 opacity-50 text-2xl font-light">Module not found</p>
+        <p className="p-4 opacity-50 text-2xl font-light">
+          Couldn&apos;t find that module 🤔
+        </p>
       )}
     </section>
   )

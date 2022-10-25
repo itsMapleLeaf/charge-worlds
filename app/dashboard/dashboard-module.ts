@@ -14,7 +14,9 @@ export type DashboardModule<State extends Json, Event extends Json> = {
   stateSchema: ZodType<State>
   initialState: State
   eventSchema: ZodType<Event>
-  onEvent: (context: DashboardModuleEventArgs<State, Event>) => void
+  onEvent: (
+    context: DashboardModuleEventArgs<State, Event>,
+  ) => void | PromiseLike<unknown>
   render: (context: DashboardRenderArgs<State, Event>) => ReactNode
 }
 

@@ -18,3 +18,8 @@ model User {
   discordId String  @unique
   sessionId String? @unique
 }
+
+model Module {
+  id    String @id
+  state Json   @db.JsonB
+}

@@ -5,6 +5,7 @@ import { createRequestHandler } from "@remix-run/express"
 import compression from "compression"
 import express from "express"
 import morgan from "morgan"
+import { createSocketServer } from "./dashboard/socket-server"
 
 const port = process.env.PORT || 3000
 
@@ -27,6 +28,7 @@ app.use(
   createRequestHandler({ build: serverBuild, mode: process.env.NODE_ENV }),
 )
 
-app.listen(port, () => {
+const httpServer = app.listen(port, () => {
   console.info(`listening on http://localhost:${port}`)
 })
+createSocketServer(httpServer)
