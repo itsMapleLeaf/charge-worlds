@@ -55,26 +55,27 @@ export const clocksModule = defineModule({
       {clocks.length > 0 && (
         <div className="flex flex-wrap justify-center gap-4 ">
           {clocks.map((clock) => (
-            <Clock
-              key={clock.id}
-              {...clock}
-              onNameChange={(name) => {
-                send({ type: "update", id: clock.id, data: { name } })
-              }}
-              onProgressChange={(progress) => {
-                send({ type: "update", id: clock.id, data: { progress } })
-              }}
-              onMaxProgressChange={(maxProgress) => {
-                send({
-                  type: "update",
-                  id: clock.id,
-                  data: { maxProgress },
-                })
-              }}
-              onRemove={() => {
-                send({ type: "remove", id: clock.id })
-              }}
-            />
+            <div key={clock.id} className="rounded-md bg-black/25 p-4">
+              <Clock
+                {...clock}
+                onNameChange={(name) => {
+                  send({ type: "update", id: clock.id, data: { name } })
+                }}
+                onProgressChange={(progress) => {
+                  send({ type: "update", id: clock.id, data: { progress } })
+                }}
+                onMaxProgressChange={(maxProgress) => {
+                  send({
+                    type: "update",
+                    id: clock.id,
+                    data: { maxProgress },
+                  })
+                }}
+                onRemove={() => {
+                  send({ type: "remove", id: clock.id })
+                }}
+              />
+            </div>
           ))}
         </div>
       )}
