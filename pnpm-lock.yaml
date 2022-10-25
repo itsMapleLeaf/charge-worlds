@@ -5,23 +5,29 @@ specifiers:
   '@itsmapleleaf/configs': ^1.1.5
   '@prisma/client': ^4.5.0
   '@remix-run/dev': ^1.7.3
+  '@remix-run/express': ^1.7.3
   '@remix-run/node': ^1.7.3
   '@remix-run/react': ^1.7.3
   '@remix-run/serve': ^1.7.3
-  '@remix-run/server-runtime': ^1.7.3
   '@routes-gen/remix': ^0.3.5
   '@rushstack/eslint-patch': ^1.2.0
+  '@types/compression': ^1.7.2
   '@types/eslint': ^8.4.7
+  '@types/express': ^4.17.14
+  '@types/morgan': ^1.9.3
   '@types/node': ^18.11.3
   '@types/prettier': ^2.7.1
   '@types/react': ^18.0.21
   '@types/react-dom': ^18.0.6
   ariakit: 2.0.0-next.41
   clsx: ^1.2.1
+  compression: ^1.7.4
   cuid: ^2.1.8
   eslint: ^8.25.0
   eslint-plugin-tailwindcss: ^3.6.2
+  express: ^4.18.2
   lucide-react: ^0.92.0
+  morgan: ^1.10.0
   npm-run-all: ^4.1.5
   prettier: ^2.7.1
   prisma: ^4.5.0
@@ -42,14 +48,16 @@ specifiers:
 dependencies:
   '@fontsource/rubik': 4.5.11
   '@prisma/client': 4.5.0_prisma@4.5.0
+  '@remix-run/express': 1.7.3_cwk4saenierp7pa7l5cpbeswge
   '@remix-run/node': 1.7.3_biqbaboplfbrettd7655fr4n2y
   '@remix-run/react': 1.7.3_biqbaboplfbrettd7655fr4n2y
-  '@remix-run/serve': 1.7.3_biqbaboplfbrettd7655fr4n2y
-  '@remix-run/server-runtime': 1.7.3_biqbaboplfbrettd7655fr4n2y
   ariakit: 2.0.0-next.41_biqbaboplfbrettd7655fr4n2y
   clsx: 1.2.1
+  compression: 1.7.4
   cuid: 2.1.8
+  express: 4.18.2
   lucide-react: 0.92.0_sh5qlbywuemxd2y3xkrw2y2kr4
+  morgan: 1.10.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-expanding-textarea: 2.3.6_react@18.2.0
@@ -62,9 +70,13 @@ dependencies:
 devDependencies:
   '@itsmapleleaf/configs': 1.1.5_azkfgtafjurpg3ohphpu6qn5xe
   '@remix-run/dev': 1.7.3_sezze4ptun2xkjucuotrbicmpe
+  '@remix-run/serve': 1.7.3_biqbaboplfbrettd7655fr4n2y
   '@routes-gen/remix': 0.3.5_@remix-run+dev@1.7.3
   '@rushstack/eslint-patch': 1.2.0
+  '@types/compression': 1.7.2
   '@types/eslint': 8.4.7
+  '@types/express': 4.17.14
+  '@types/morgan': 1.9.3
   '@types/node': 18.11.3
   '@types/prettier': 2.7.1
   '@types/react': 18.0.21
@@ -1687,6 +1699,7 @@ packages:
       - react
       - react-dom
       - supports-color
+    dev: true
 
   /@remix-run/server-runtime/1.7.3_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-U5TR2quAlc5dY5VIYYhuXJOVsJelukgFZARwZWfDCs7HQd1hhHvpe1BNwla/lH3LPYFOVeWfYRmuHurXX1nbNw==}
@@ -1781,6 +1794,13 @@ packages:
       '@types/estree': 1.0.0
     dev: true
 
+  /@types/body-parser/1.19.2:
+    resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
+    dependencies:
+      '@types/connect': 3.4.35
+      '@types/node': 18.11.3
+    dev: true
+
   /@types/cacheable-request/6.0.2:
     resolution: {integrity: sha512-B3xVo+dlKM6nnKTcmm5ZtY/OL8bOAOd2Olee9M1zft65ox50OzjEHW91sDiU9j6cvW8Ejg1/Qkf4xd2kugApUA==}
     dependencies:
@@ -1788,6 +1808,18 @@ packages:
       '@types/keyv': 4.2.0
       '@types/node': 18.11.3
       '@types/responselike': 1.0.0
+    dev: true
+
+  /@types/compression/1.7.2:
+    resolution: {integrity: sha512-lwEL4M/uAGWngWFLSG87ZDr2kLrbuR8p7X+QZB1OQlT+qkHsCPDVFnHPyXf4Vyl4yDDorNY+mAhosxkCvppatg==}
+    dependencies:
+      '@types/express': 4.17.14
+    dev: true
+
+  /@types/connect/3.4.35:
+    resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
+    dependencies:
+      '@types/node': 18.11.3
     dev: true
 
   /@types/cookie/0.4.1:
@@ -1820,6 +1852,23 @@ packages:
 
   /@types/estree/1.0.0:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
+    dev: true
+
+  /@types/express-serve-static-core/4.17.31:
+    resolution: {integrity: sha512-DxMhY+NAsTwMMFHBTtJFNp5qiHKJ7TeqOo23zVEM9alT1Ml27Q3xcTH0xwxn7Q0BbMcVEJOs/7aQtUWupUQN3Q==}
+    dependencies:
+      '@types/node': 18.11.3
+      '@types/qs': 6.9.7
+      '@types/range-parser': 1.2.4
+    dev: true
+
+  /@types/express/4.17.14:
+    resolution: {integrity: sha512-TEbt+vaPFQ+xpxFLFssxUDXj5cWCxZJjIcB7Yg0k0GMHGtgtQgpvx/MUQUeAkNbA9AAGrwkAsoeItdTgS7FMyg==}
+    dependencies:
+      '@types/body-parser': 1.19.2
+      '@types/express-serve-static-core': 4.17.31
+      '@types/qs': 6.9.7
+      '@types/serve-static': 1.15.0
     dev: true
 
   /@types/glob/7.2.0:
@@ -1867,12 +1916,22 @@ packages:
     resolution: {integrity: sha512-eC4U9MlIcu2q0KQmXszyn5Akca/0jrQmwDRgpAMJai7qBWq4amIQhZyNau4VYGtCeALvW1/NtjzJJ567aZxfKA==}
     dev: true
 
+  /@types/mime/3.0.1:
+    resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
+    dev: true
+
   /@types/minimatch/5.1.2:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
     dev: true
 
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
+
+  /@types/morgan/1.9.3:
+    resolution: {integrity: sha512-BiLcfVqGBZCyNCnCH3F4o2GmDLrpy0HeBVnNlyZG4fo88ZiE9SoiBe3C+2ezuwbjlEyT+PDZ17//TAlRxAn75Q==}
+    dependencies:
+      '@types/node': 18.11.3
+    dev: true
 
   /@types/ms/0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
@@ -1890,6 +1949,14 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
+
+  /@types/qs/6.9.7:
+    resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
+    dev: true
+
+  /@types/range-parser/1.2.4:
+    resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
+    dev: true
 
   /@types/react-dom/18.0.6:
     resolution: {integrity: sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==}
@@ -1915,6 +1982,13 @@ packages:
 
   /@types/semver/7.3.12:
     resolution: {integrity: sha512-WwA1MW0++RfXmCr12xeYOOC5baSC9mSb0ZqCquFzKhcoF4TvHu5MKOuXsncgZcpVFhB1pXd5hZmM0ryAoCp12A==}
+    dev: true
+
+  /@types/serve-static/1.15.0:
+    resolution: {integrity: sha512-z5xyF6uh8CbjAu9760KDKsH2FcDxZ2tFCsA4HIMWE6IkiYMXfVoa+4f9KX+FN0ZLsaMw1WNG2ETLA6N+/YA+cg==}
+    dependencies:
+      '@types/mime': 3.0.1
+      '@types/node': 18.11.3
     dev: true
 
   /@types/through/0.0.30:

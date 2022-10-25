@@ -3,14 +3,7 @@ import type {
   HtmlMetaDescriptor,
   LinksFunction,
 } from "@remix-run/node"
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  useTransition,
-} from "@remix-run/react"
+import { Links, Meta, Outlet, Scripts, useTransition } from "@remix-run/react"
 import clsx from "clsx"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import reactMosaicCss from "react-mosaic-component/react-mosaic-component.css"
@@ -112,7 +105,7 @@ function Document({ children }: { children: ReactNode }) {
       <body>
         {children}
         <Scripts />
-        <LiveReload />
+        <script src="/live-reload.js" />
         <PendingIndicator />
       </body>
     </html>

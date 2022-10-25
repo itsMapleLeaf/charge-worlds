@@ -82,7 +82,7 @@ export function DashboardNewWindowButton() {
   const { addWindow } = useContext(DashboardContext)
   return (
     <button className={clearButtonClass} onClick={addWindow}>
-      <PlusSquare /> New window
+      <PlusSquare /> New window!!
     </button>
   )
 }

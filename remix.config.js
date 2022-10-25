@@ -4,6 +4,7 @@ const { flatRoutes } = require("remix-flat-routes")
 
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
+  server: "./app/server.ts",
   devServerPort: 8002,
   serverDependenciesToBundle: ["nanostores", "@nanostores/react"],
   ignoredRouteFiles: ["**/*"],
