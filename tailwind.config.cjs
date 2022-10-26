@@ -7,7 +7,6 @@ module.exports = {
     extend: {
       fontFamily: {
         body: ["RubikVariable", "sans-serif"],
-        header: ["OswaldVariable", "sans-serif"],
       },
     },
   },

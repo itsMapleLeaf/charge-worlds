@@ -109,7 +109,7 @@ export function CharacterSheetEditor({
               key={category}
               className="flex flex-col rounded-md bg-black/25 p-4"
             >
-              <h4 className="font-header mb-4 text-center text-xl leading-tight tracking-wide">
+              <h4 className="mb-4 text-center text-xl  leading-tight tracking-wide">
                 {category}
               </h4>
               <div className="grid gap-4">
