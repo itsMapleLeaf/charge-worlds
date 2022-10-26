@@ -22,6 +22,8 @@ export const diceModule = defineModule({
   }),
   onEvent: async ({ event, updateState }) => {
     if (event.type === "roll") {
+      if (typeof window !== "undefined") return
+      
       // eslint-disable-next-line unicorn/prefer-node-protocol
       const crypto = await import("crypto")
       updateState((state) => {
