@@ -11,7 +11,7 @@ import {
   textAreaClass,
 } from "../ui/styles"
 import { characterActionLibrary } from "./character-actions"
-import { CharacterImageInput } from "./character-image-input"
+import { CharacterImage } from "./character-image"
 import type { Character } from "./character-schema"
 
 export function CharacterSheetEditor({
@@ -29,10 +29,7 @@ export function CharacterSheetEditor({
     <div className="flex flex-col gap-4">
       <div className="flex gap-4 flex-wrap [&>*]:basis-48 [&>*]:flex-1">
         <div className="min-h-[20rem]">
-          <CharacterImageInput
-            character={character}
-            onImageChange={(imageUrl) => onCharacterChange({ imageUrl })}
-          />
+          <CharacterImage character={character} />
         </div>
 
         <div className="grid content-between gap-4">

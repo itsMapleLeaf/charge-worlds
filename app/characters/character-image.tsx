@@ -3,17 +3,11 @@ import { useCallback } from "react"
 import { LoadingSpinner } from "../ui/loading"
 import type { Character } from "./character-schema"
 
-export function CharacterImageInput({
-  character,
-  onImageChange,
-}: {
-  character: Character
-  onImageChange: (imageUrl: string) => void
-}) {
+export function CharacterImage({ character }: { character: Character }) {
   return character.imageUrl ? (
     <ImagePreview src={character.imageUrl} />
   ) : (
-    <div className="bg-black/50">
+    <div className="bg-black/25 rounded-md h-full">
       <DropzonePlaceholder />
     </div>
   )
