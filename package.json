@@ -6,12 +6,13 @@
   },
   "scripts": {
     "prepare": "prisma generate",
-    "dev": "NODE_ENV=development run-p --race dev:*",
+    "clean": "rm -rf build public/build .cache",
+    "dev": "pnpm clean && NODE_ENV=development run-p --race dev:*",
     "dev:remix": "remix watch --sourcemap",
-    "dev:server": "tsx watch --clear-screen=false build/index.js",
+    "dev:server": "wait-on file:build/index.js && tsx watch --clear-screen=false build/index.js",
     "dev:tailwind": "pnpm run tailwind --watch",
     "dev:routes": "pnpm run routes --watch",
-    "build": "tsc --noEmit && pnpm run tailwind --minify && pnpm run routes && remix build",
+    "build": "pnpm clean && tsc --noEmit && pnpm run tailwind --minify && pnpm run routes && remix build",
     "start": "NODE_ENV=production node build/index.js",
     "lint": "eslint --ext js,ts,tsx,astro .",
     "lint-fix": "pnpm lint --fix",
@@ -73,7 +74,8 @@
     "remix-flat-routes": "^0.4.4",
     "tailwindcss": "^3.2.0",
     "tsx": "^3.10.4",
-    "typescript": "4.9.1-beta"
+    "typescript": "4.9.1-beta",
+    "wait-on": "^6.0.1"
   },
   "prettier": "@itsmapleleaf/configs/prettier"
 }
