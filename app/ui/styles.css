@@ -5,7 +5,7 @@
 .mosaic-window-toolbar {
   background: theme("colors.slate.700") !important;
   box-shadow: none !important;
-  height: 48px !important;
+  height: 40px !important;
 }
 .mosaic-window-body {
   background: transparent !important;

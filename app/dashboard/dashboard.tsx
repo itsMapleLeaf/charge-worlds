@@ -118,7 +118,7 @@ export function DashboardMosaic() {
           path={path}
           createNode={() => cuid()}
           renderToolbar={() => (
-            <div className="flex items-center justify-between w-full px-3 gap-4">
+            <div className="flex items-center justify-between w-full px-2 gap-4">
               <DashboardModuleSelect windowId={id} />
               <DashboardWindowControls windowPath={path} />
             </div>
