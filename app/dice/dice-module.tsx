@@ -25,7 +25,7 @@ export const diceModule = defineModule({
       // eslint-disable-next-line unicorn/prefer-node-protocol
       const crypto = await import("crypto")
       updateState((state) => {
-        state.rolls.push({
+        const roll: DiceRoll = {
           id: cuid(),
           intent: event.intent,
           rolledBy: event.rolledBy,
@@ -37,7 +37,8 @@ export const diceModule = defineModule({
               result: crypto.randomInt(1, 7),
             }),
           ),
-        })
+        }
+        state.rolls = [...state.rolls, roll].slice(-50)
       })
     }
   },
