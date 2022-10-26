@@ -1,5 +1,6 @@
-import { ImagePlus } from "lucide-react"
-import { useCallback } from "react"
+import clsx from "clsx"
+import { FileX, ImagePlus } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
 import { LoadingSpinner } from "../ui/loading"
 import type { Character } from "./character-schema"
 
@@ -13,50 +14,61 @@ export function CharacterImage({ character }: { character: Character }) {
   )
 }
 
+type AsyncState<T> =
+  | { status: "loading" }
+  | { status: "error"; error: unknown }
+  | { status: "success"; value: T }
+
+function useAsync<T>(callback: () => T | PromiseLike<T>) {
+  const [state, setState] = useState<AsyncState<T>>({ status: "loading" })
+
+  useEffect(() => {
+    let cancelled = false
+
+    setState({ status: "loading" })
+    Promise.resolve(callback()).then(
+      (value) => !cancelled && setState({ status: "success", value }),
+      (error) => !cancelled && setState({ status: "error", error }),
+    )
+
+    return () => {
+      cancelled = true
+    }
+  }, [callback])
+
+  return state
+}
+
 function ImagePreview({ src }: { src: string }) {
-  const ref = useCallback(
-    (root: HTMLElement | null) => {
-      if (!root) return
-
-      const imageElement = root.querySelector(
-        "[data-image]",
-      ) as HTMLImageElement
-
-      const loadingElement = root.querySelector(
-        "[data-loading]",
-      ) as HTMLDivElement
-
-      const image = new Image()
-      image.src = src
-      if (image.complete) {
-        imageElement.style.opacity = "1"
-        loadingElement.style.opacity = "0"
-        return
-      }
-
-      imageElement.style.opacity = "0"
-      loadingElement.style.opacity = "1"
-      image.addEventListener(
-        "load",
-        () => {
-          imageElement.animate([{ opacity: 0 }, { opacity: 1 }], {
-            duration: 200,
-            fill: "forwards",
-          })
-          loadingElement.animate([{ opacity: 1 }, { opacity: 0 }], {
-            duration: 200,
-            fill: "forwards",
-          })
-        },
-        { once: true },
-      )
-    },
-    [src],
-  )
+  const state = useAsync(useCallback(() => loadImage(src), [src]))
 
   return (
-    <div className="group relative h-full" ref={ref}>
-      <div className="absolute inset-0 overflow-clip rounded-md" data-image>
+    <div className="group relative h-full rounded-md bg-black/25 overflow-clip">
+      <div
+        className={clsx(
+          "absolute inset-0 grid place-items-center p-4 transition-opacity",
+          state.status === "loading" ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <LoadingSpinner />
+      </div>
+
+      <div
+        className={clsx(
+          "absolute inset-0 grid gap-4 text-center place-items-center place-content-center p-4 transition-opacity",
+          state.status === "error" ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <FileX size={48} />
+        <p>Failed to load image</p>
+      </div>
+
+      <div
+        className={clsx(
+          "absolute inset-0 transition-opacity",
+          state.status === "success" ? "opacity-100" : "opacity-100",
+        )}
+      >
         <div
           style={{ backgroundImage: `url(${src})` }}
           className="absolute inset-0 scale-110 bg-cover bg-center bg-no-repeat blur-md brightness-50"
@@ -66,17 +78,21 @@ function ImagePreview({ src }: { src: string }) {
           className="absolute inset-0 bg-contain bg-center bg-no-repeat "
         />
       </div>
-      <div
-        className="absolute inset-0 grid place-items-center p-4"
-        data-loading
-      >
-        <LoadingSpinner />
-      </div>
+
       <div className="absolute inset-0 bg-black opacity-0 transition-opacity group-hover:opacity-60">
         <DropzonePlaceholder />
       </div>
     </div>
   )
+}
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image()
+    image.addEventListener("load", () => resolve(image))
+    image.addEventListener("error", reject)
+    image.src = src
+  })
 }
 
 function DropzonePlaceholder() {
