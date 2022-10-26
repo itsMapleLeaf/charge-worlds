@@ -1,24 +1,24 @@
-import { Dices } from "lucide-react"
+import { setRoll } from "../dice/dice-roll-form"
 import { clearButtonClass } from "../ui/styles"
 
 export function CharacterActionRollButton({
-  name,
-  action,
-  level,
+  title,
+  intent,
+  poolSize,
+  children,
 }: {
-  name: string
-  action: string
-  level: number
+  title: string
+  intent: string
+  poolSize: number
+  children: React.ReactNode
 }) {
   return (
     <button
-      title={`Roll ${action}`}
+      title={title}
       className={clearButtonClass}
-      onClick={() => {
-        // setDiceRoll(level + 1, `${name}: ${action}`)
-      }}
+      onClick={() => setRoll(intent, poolSize)}
     >
-      <Dices />
+      {children}
     </button>
   )
 }

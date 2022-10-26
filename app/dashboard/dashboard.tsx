@@ -149,7 +149,7 @@ function DashboardWindowContent({ windowId }: { windowId: string }) {
   const module = moduleId ? dashboardModuleLibrary[moduleId] : undefined
 
   return (
-    <section className="w-full h-full bg-slate-800 overflow-y-auto">
+    <section className="thin-scrollbar w-full h-full bg-slate-800 overflow-y-auto">
       {module && moduleId ? (
         <DashboardModuleView moduleId={moduleId} module={module} />
       ) : (

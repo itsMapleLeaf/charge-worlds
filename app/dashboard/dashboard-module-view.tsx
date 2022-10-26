@@ -1,9 +1,10 @@
 import { useStore } from "@nanostores/react"
 import produce from "immer"
 import { atom, computed } from "nanostores"
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useContext, useEffect, useMemo } from "react"
 import type { Socket } from "socket.io-client"
 import { connect } from "socket.io-client"
+import { UserContext } from "../auth/user-context"
 import type {
   DashboardModule,
   DashboardRenderArgs,
@@ -48,9 +49,10 @@ export function DashboardModuleView({
   module,
 }: {
   moduleId: string
-  module: DashboardModule<Json, Json>
+  module: DashboardModule<Json, Json, [user: { name: string } | undefined]>
 }) {
   const [state = module.initialState, setState] = useModuleState(moduleId)
+  const user = useContext(UserContext)
 
   useEffect(() => {
     getSocket().emit("getModuleState", moduleId)
@@ -78,5 +80,5 @@ export function DashboardModuleView({
     },
   }
 
-  return <>{module.render(renderArgs)}</>
+  return <>{module.render(renderArgs, user)}</>
 }

@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { ChevronsRight, Dices } from "lucide-react"
 import TextArea from "react-expanding-textarea"
 import { Clock } from "../clocks/clock"
 import { entriesTyped } from "../helpers/entries-typed"
@@ -10,6 +11,7 @@ import {
   labelTextClass,
   textAreaClass,
 } from "../ui/styles"
+import { CharacterActionRollButton } from "./character-action-roll-button"
 import { characterActionLibrary } from "./character-actions"
 import { CharacterImage } from "./character-image"
 import type { Character } from "./character-schema"
@@ -100,13 +102,13 @@ export function CharacterSheetEditor({
 
       <section>
         <h3 className={labelTextClass}>Actions</h3>
-        <div className="flex flex-wrap gap-4 [&>*]:basis-48 [&>*]:flex-1">
+        <div className="flex flex-wrap gap-4 [&>*]:flex-1 [&>*]:basis-52">
           {entriesTyped(characterActionLibrary).map(([category, actions]) => (
             <section
               key={category}
               className="flex flex-col rounded-md bg-black/25 p-4"
             >
-              <h4 className="mb-4 text-center text-xl  leading-tight tracking-wide">
+              <h4 className="mb-4 text-center text-xl leading-tight tracking-wide">
                 {category}
               </h4>
               <div className="grid gap-4">
@@ -116,12 +118,24 @@ export function CharacterSheetEditor({
                     className="grid grid-flow-row grid-cols-[1fr,auto] grid-rows-[auto,auto]"
                   >
                     <h5 className={labelTextClass}>{action}</h5>
-                    <div className="row-span-2 flex items-end">
-                      {/* <CharacterActionRollButton
-                        name={character.name}
-                        action={action}
-                        level={character.actionLevels[action] ?? 0}
-                      /> */}
+                    <div
+                      className="row-span-2 flex items-end relative gap-2"
+                      style={{ left: "0.25rem" }}
+                    >
+                      <CharacterActionRollButton
+                        title={`Roll ${action}`}
+                        intent={`${character.name}: ${action}`}
+                        poolSize={(character.actionLevels[action] ?? 0) + 1}
+                      >
+                        <Dices />
+                      </CharacterActionRollButton>
+                      <CharacterActionRollButton
+                        title={`Roll ${action} with momentum`}
+                        intent={`${character.name}: ${action} (+1)`}
+                        poolSize={(character.actionLevels[action] ?? 0) + 2}
+                      >
+                        <ChevronsRight />
+                      </CharacterActionRollButton>
                     </div>
                     <DotCounter
                       value={character.actionLevels[action] ?? 0}

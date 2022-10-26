@@ -4,6 +4,7 @@ import { Link, useLoaderData } from "@remix-run/react"
 import { LogIn, Zap } from "lucide-react"
 import { route } from "routes-gen"
 import { getSessionUser } from "../auth/session"
+import { UserContext } from "../auth/user-context"
 import { UserMenuButton } from "../auth/user-menu-button"
 import {
   DashboardMosaic,
@@ -44,7 +45,9 @@ export default function IndexPage() {
           </nav>
         </header>
         <main className="bg-slate-900 relative">
-          <DashboardMosaic />
+          <UserContext.Provider value={user}>
+            <DashboardMosaic />
+          </UserContext.Provider>
         </main>
       </DashboardProvider>
     </div>

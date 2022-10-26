@@ -9,7 +9,11 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type DashboardModule<State extends Json, Event extends Json> = {
+export type DashboardModule<
+  State extends Json,
+  Event extends Json,
+  ExtraRenderArgs extends unknown[],
+> = {
   name: string
   description: string
   stateSchema: ZodType<State>
@@ -18,7 +22,10 @@ export type DashboardModule<State extends Json, Event extends Json> = {
   onEvent: (
     context: DashboardModuleEventArgs<State, Event>,
   ) => void | PromiseLike<unknown>
-  render: (context: DashboardRenderArgs<State, Event>) => ReactNode
+  render: (
+    context: DashboardRenderArgs<State, Event>,
+    ...args: ExtraRenderArgs
+  ) => ReactNode
 }
 
 export type DashboardModuleEventArgs<State extends Json, Event extends Json> = {
@@ -33,8 +40,10 @@ export type DashboardRenderArgs<State extends Json, Event extends Json> = {
   send: (event: Event) => void
 }
 
-export function defineModule<State extends Json, Event extends Json>(
-  definition: DashboardModule<State, Event>,
-): DashboardModule<State, Event> {
+export function defineModule<
+  State extends Json,
+  Event extends Json,
+  ExtraRenderArgs extends unknown[],
+>(definition: DashboardModule<State, Event, ExtraRenderArgs>) {
   return definition
 }
