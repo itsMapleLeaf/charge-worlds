@@ -6,7 +6,7 @@ import { Counter } from "../ui/counter"
 import { clearButtonClass, inputClass } from "../ui/styles"
 
 const intentStore = new Store("")
-const poolSizeStore = new Store(0)
+const poolSizeStore = new Store(1)
 const focusEmitter = new Emitter<void>()
 
 export function setRoll(intent: string, poolSize: number) {
