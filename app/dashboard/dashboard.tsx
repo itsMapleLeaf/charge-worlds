@@ -37,11 +37,31 @@ const mosaicNodeSchema: z.ZodType<MosaicNode<string>> = z.union([
   }),
 ])
 
+const windowModulesSchema = z.record(z.object({ moduleId: z.string() }))
+
+const defaultWindows: MosaicNode<string> = {
+  direction: "row",
+  first: "characters",
+  second: {
+    direction: "row",
+    first: "clocks",
+    second: "dice",
+    splitPercentage: (1 / 2) * 100,
+  },
+  splitPercentage: (2 / 3) * 100,
+}
+
+const defaultWindowModules: z.infer<typeof windowModulesSchema> = {
+  characters: { moduleId: "characters" },
+  clocks: { moduleId: "clocks" },
+  dice: { moduleId: "dice" },
+}
+
 function useDashboardProvider() {
   const [windowModules, setWindowModules] = useLocalStorage({
     key: "dashboardWindowModules",
-    schema: z.record(z.object({ moduleId: z.string() })),
-    fallback: {},
+    schema: windowModulesSchema,
+    fallback: defaultWindowModules,
   })
 
   const [mosaic, setMosaic] = useLocalStorage<z.infer<
@@ -49,7 +69,7 @@ function useDashboardProvider() {
   > | null>({
     key: "dashboardWindows",
     schema: mosaicNodeSchema.nullable(),
-    fallback: null,
+    fallback: defaultWindows,
   })
 
   const setWindowModule = (windowId: string, moduleId: string) => {
