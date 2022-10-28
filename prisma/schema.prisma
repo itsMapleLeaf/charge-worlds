@@ -12,11 +12,37 @@ datasource db {
 }
 
 model User {
-  id        String  @id @default(cuid())
-  name      String
-  avatarUrl String?
-  discordId String  @unique
-  sessionId String? @unique
+  id          String       @id @default(cuid())
+  name        String
+  avatarUrl   String?
+  discordId   String       @unique
+  sessionId   String?      @unique
+  memberships Membership[]
+}
+
+model World {
+  id          String       @id
+  name        String
+  memberships Membership[]
+}
+
+model Membership {
+  id String @id @default(cuid())
+
+  user   User   @relation(fields: [userDiscordId], references: [discordId], onDelete: Cascade)
+  userDiscordId String
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId String
+
+  role Role
+
+  @@unique([worldId, userDiscordId])
+}
+
+enum Role {
+  OWNER
+  PLAYER
 }
 
 model Module {
