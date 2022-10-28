@@ -1,7 +1,8 @@
 import clsx from "clsx"
 import { EyeOff, Plus } from "lucide-react"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../auth/auth-context"
+import { useDebouncedCallback } from "../helpers/use-debounced-callback"
 import {
   clearButtonClass,
   dividerClass,
@@ -13,7 +14,7 @@ import type { Character } from "./character-schema"
 import { CharacterSheetEditor } from "./character-sheet-editor"
 
 export function CharacterManager({
-  characters,
+  characters: charactersProp,
   onAdd,
   onRemove,
   onUpdate,
@@ -24,6 +25,21 @@ export function CharacterManager({
   onUpdate: (id: string, data: Partial<Character>) => void
 }) {
   const auth = useContext(AuthContext)
+
+  const [characters, setCharacters] = useState(charactersProp)
+  useEffect(() => {
+    setCharacters(charactersProp)
+  }, [charactersProp])
+
+  const onUpdateDebounced = useDebouncedCallback(onUpdate, 800)
+  const handleChange = (id: string, data: Partial<Character>) => {
+    setCharacters((characters) => {
+      return characters.map((character) => {
+        return character.id === id ? { ...character, ...data } : character
+      })
+    })
+    onUpdateDebounced(id, data)
+  }
 
   const [currentCharacterId, setCurrentCharacterId] = useState(
     characters[0]?.id,
@@ -70,7 +86,7 @@ export function CharacterManager({
               <CharacterSheetEditor
                 character={currentCharacter}
                 onCharacterChange={(data) => {
-                  onUpdate(currentCharacter.id, data)
+                  handleChange(currentCharacter.id, data)
                 }}
                 onDelete={() => {
                   onRemove(currentCharacter.id)
