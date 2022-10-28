@@ -6,3 +6,4 @@ export const clockSchema = z.object({
   progress: z.number(),
   maxProgress: z.number(),
 })
+export type Clock = z.infer<typeof clockSchema>

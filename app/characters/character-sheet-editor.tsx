@@ -1,6 +1,8 @@
 import clsx from "clsx"
 import { ChevronsRight, Dices } from "lucide-react"
+import { useContext } from "react"
 import TextArea from "react-expanding-textarea"
+import { AuthContext } from "../auth/auth-context"
 import { Clock } from "../clocks/clock"
 import { entriesTyped } from "../helpers/entries-typed"
 import { Counter, DotCounter } from "../ui/counter"
@@ -13,20 +15,25 @@ import {
 } from "../ui/styles"
 import { CharacterActionRollButton } from "./character-action-roll-button"
 import { characterActionLibrary } from "./character-actions"
+import { CharacterColorButton } from "./character-color-button"
+import { CharacterDeleteButton } from "./character-delete-button"
+import { CharacterHideButton } from "./character-hide-button"
 import { CharacterImage } from "./character-image"
 import type { Character } from "./character-schema"
 
 export function CharacterSheetEditor({
   character,
-  readonlyMomentum,
-  footer,
   onCharacterChange,
+  onDelete,
 }: {
   character: Character
-  readonlyMomentum?: boolean
-  footer: React.ReactNode
   onCharacterChange: (character: Partial<Character>) => void
+  onDelete: () => void
 }) {
+  const auth = useContext(AuthContext)
+  const isPlayer = auth.membership?.role === "PLAYER"
+  const isGameMaster = auth.membership?.role === "OWNER"
+  const isSpectator = !auth.membership
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-4 flex-wrap [&>*]:basis-48 [&>*]:flex-1">
@@ -42,6 +49,7 @@ export function CharacterSheetEditor({
               value={character.name}
               onChange={(e) => onCharacterChange({ name: e.target.value })}
               className={inputClass}
+              readOnly={isSpectator}
             />
           </Field>
           <Field label="Group">
@@ -51,6 +59,7 @@ export function CharacterSheetEditor({
               value={character.group}
               onChange={(e) => onCharacterChange({ group: e.target.value })}
               className={inputClass}
+              readOnly={isSpectator}
             />
           </Field>
           <Field label="Reference image">
@@ -61,18 +70,19 @@ export function CharacterSheetEditor({
               onChange={(event) =>
                 onCharacterChange({ imageUrl: event.target.value })
               }
+              readOnly={isSpectator}
             />
           </Field>
           <section>
             <h2 className={labelTextClass}>Momentum</h2>
             <div className={clsx(inputClass, "grid place-items-center")}>
-              {readonlyMomentum ? (
-                <p className="font-medium">{character.momentum}</p>
-              ) : (
+              {isGameMaster ? (
                 <Counter
                   value={character.momentum}
                   onChange={(momentum) => onCharacterChange({ momentum })}
                 />
+              ) : (
+                <p className="font-medium">{character.momentum}</p>
               )}
             </div>
           </section>
@@ -84,7 +94,9 @@ export function CharacterSheetEditor({
               name="Stress"
               progress={character.stress}
               maxProgress={4}
-              onProgressChange={(stress) => onCharacterChange({ stress })}
+              onProgressChange={(stress) => {
+                isGameMaster && onCharacterChange({ stress })
+              }}
             />
           </div>
           <Field label="Condition">
@@ -93,6 +105,7 @@ export function CharacterSheetEditor({
               value={character.condition}
               onChange={(e) => onCharacterChange({ condition: e.target.value })}
               className={textAreaClass}
+              readOnly={isSpectator}
             />
           </Field>
         </div>
@@ -118,29 +131,36 @@ export function CharacterSheetEditor({
                     className="grid grid-flow-row grid-cols-[1fr,auto] grid-rows-[auto,auto]"
                   >
                     <h5 className={labelTextClass}>{action}</h5>
+
                     <div
                       className="row-span-2 flex items-end relative gap-2"
                       style={{ left: "0.25rem" }}
                     >
-                      <CharacterActionRollButton
-                        title={`Roll ${action}`}
-                        intent={`${character.name}: ${action}`}
-                        poolSize={(character.actionLevels[action] ?? 0) + 1}
-                      >
-                        <Dices />
-                      </CharacterActionRollButton>
-                      <CharacterActionRollButton
-                        title={`Roll ${action} with momentum`}
-                        intent={`${character.name}: ${action} (+1)`}
-                        poolSize={(character.actionLevels[action] ?? 0) + 2}
-                      >
-                        <ChevronsRight />
-                      </CharacterActionRollButton>
+                      {!isSpectator && (
+                        <>
+                          <CharacterActionRollButton
+                            title={`Roll ${action}`}
+                            intent={`${character.name}: ${action}`}
+                            poolSize={(character.actionLevels[action] ?? 0) + 1}
+                          >
+                            <Dices />
+                          </CharacterActionRollButton>
+                          <CharacterActionRollButton
+                            title={`Roll ${action} with momentum`}
+                            intent={`${character.name}: ${action} (+1)`}
+                            poolSize={(character.actionLevels[action] ?? 0) + 2}
+                          >
+                            <ChevronsRight />
+                          </CharacterActionRollButton>
+                        </>
+                      )}
                     </div>
+
                     <DotCounter
                       value={character.actionLevels[action] ?? 0}
                       max={4}
                       onChange={(level) => {
+                        if (isSpectator) return
                         onCharacterChange({
                           actionLevels: {
                             ...character.actionLevels,
@@ -166,6 +186,7 @@ export function CharacterSheetEditor({
             value={character.concept}
             onChange={(e) => onCharacterChange({ concept: e.target.value })}
             className={textAreaClass}
+            readOnly={isSpectator}
           />
         </Field>
         <Field label="Appearance">
@@ -174,14 +195,16 @@ export function CharacterSheetEditor({
             value={character.appearance}
             onChange={(e) => onCharacterChange({ appearance: e.target.value })}
             className={textAreaClass}
+            readOnly={isSpectator}
           />
         </Field>
         <Field label="Ties">
           <TextArea
-            placeholder="Who are your friends and enemies?"
+            placeholder="Who are your friends, family, and enemies?"
             value={character.ties}
             onChange={(e) => onCharacterChange({ ties: e.target.value })}
             className={textAreaClass}
+            readOnly={isSpectator}
           />
         </Field>
         <Field label="Talents">
@@ -190,13 +213,34 @@ export function CharacterSheetEditor({
             value={character.talents}
             onChange={(e) => onCharacterChange({ talents: e.target.value })}
             className={textAreaClass}
+            readOnly={isSpectator}
           />
         </Field>
       </div>
 
       <hr className={dividerClass} />
 
-      {footer}
+      <section className="flex flex-wrap gap-4">
+        {(isGameMaster || isPlayer) && (
+          <CharacterColorButton
+            onSelectColor={(color) => {
+              onCharacterChange({ color })
+            }}
+          />
+        )}
+        {isGameMaster && (
+          <CharacterHideButton
+            hidden={character.hidden}
+            onHiddenChange={(hidden) => {
+              onCharacterChange({ hidden })
+            }}
+          />
+        )}
+        <div className="flex-1" />
+        {isGameMaster && (
+          <CharacterDeleteButton character={character} onDelete={onDelete} />
+        )}
+      </section>
     </div>
   )
 }

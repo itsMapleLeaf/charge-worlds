@@ -11,6 +11,14 @@ export const charactersModule = defineModule({
   stateSchema: z.object({ characters: z.array(characterSchema) }),
   initialState: { characters: [] },
 
+  stateView: (state, context) => {
+    if (context.auth.membership?.role === "OWNER") return state
+    return {
+      ...state,
+      characters: state.characters.filter((c) => c.hidden !== true),
+    }
+  },
+
   eventSchema: z.union([
     z.object({ type: z.literal("add"), name: z.string() }),
     z.object({ type: z.literal("remove"), id: z.string() }),

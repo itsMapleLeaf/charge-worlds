@@ -1,16 +1,14 @@
 import clsx from "clsx"
 import { EyeOff, Plus } from "lucide-react"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { AuthContext } from "../auth/auth-context"
 import {
   clearButtonClass,
   dividerClass,
   maxWidthContainerClass,
   navLinkClass,
 } from "../ui/styles"
-import { CharacterColorButton } from "./character-color-button"
 import { characterColors } from "./character-colors"
-import { CharacterDeleteButton } from "./character-delete-button"
-import { CharacterHideButton } from "./character-hide-button"
 import type { Character } from "./character-schema"
 import { CharacterSheetEditor } from "./character-sheet-editor"
 
@@ -25,6 +23,8 @@ export function CharacterManager({
   onRemove: (id: string) => void
   onUpdate: (id: string, data: Partial<Character>) => void
 }) {
+  const auth = useContext(AuthContext)
+
   const [currentCharacterId, setCurrentCharacterId] = useState(
     characters[0]?.id,
   )
@@ -34,8 +34,6 @@ export function CharacterManager({
 
   const colorClasses =
     characterColors[currentCharacter?.color ?? "gray"] ?? characterColors.gray!
-
-  let isAdmin = true
 
   return (
     <div
@@ -56,49 +54,27 @@ export function CharacterManager({
                 {character.hidden && <EyeOff size={16} />}
               </button>
             ))}
-            <button
-              className={clearButtonClass}
-              onClick={() => onAdd("New Character")}
-            >
-              <Plus />
-              Add new
-            </button>
+            {auth.membership?.role === "OWNER" && (
+              <button
+                className={clearButtonClass}
+                onClick={() => onAdd("New Character")}
+              >
+                <Plus />
+                Add new
+              </button>
+            )}
           </nav>
           {currentCharacter && (
             <>
               <hr className={dividerClass} />
               <CharacterSheetEditor
                 character={currentCharacter}
-                readonlyMomentum={!isAdmin}
-                footer={
-                  <>
-                    <section className="flex flex-wrap gap-4">
-                      <CharacterColorButton
-                        onSelectColor={(color) => {
-                          onUpdate(currentCharacter.id, { color })
-                        }}
-                      />
-                      {isAdmin && (
-                        <CharacterHideButton
-                          hidden={currentCharacter.hidden}
-                          onHiddenChange={(hidden) => {
-                            onUpdate(currentCharacter.id, { hidden })
-                          }}
-                        />
-                      )}
-                      <div className="flex-1" />
-                      {isAdmin && (
-                        <CharacterDeleteButton
-                          character={currentCharacter}
-                          onDelete={() => onRemove(currentCharacter.id)}
-                        />
-                      )}
-                    </section>
-                  </>
-                }
-                onCharacterChange={(data) =>
+                onCharacterChange={(data) => {
                   onUpdate(currentCharacter.id, data)
-                }
+                }}
+                onDelete={() => {
+                  onRemove(currentCharacter.id)
+                }}
               />
             </>
           )}

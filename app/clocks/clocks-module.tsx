@@ -1,9 +1,12 @@
 import cuid from "cuid"
 import { Plus } from "lucide-react"
+import { useContext } from "react"
 import { z } from "zod"
+import { AuthContext } from "../auth/auth-context"
 import { defineModule } from "../dashboard/dashboard-module"
 import { clearButtonClass } from "../ui/styles"
 import { Clock } from "./clock"
+import type { Clock as ClockType } from "./clock-schema"
 import { clockSchema } from "./clock-schema"
 
 export const clocksModule = defineModule({
@@ -51,46 +54,71 @@ export const clocksModule = defineModule({
   },
 
   render: ({ state: { clocks }, send }) => (
+    <ClockManager
+      clocks={clocks}
+      onAdd={(name) => send({ type: "add", name })}
+      onRemove={(id) => send({ type: "remove", id })}
+      onUpdate={(id, data) => send({ type: "update", id, data })}
+    />
+  ),
+})
+
+function ClockManager({
+  clocks,
+  onAdd,
+  onRemove,
+  onUpdate,
+}: {
+  clocks: ClockType[]
+  onAdd: (name: string) => void
+  onRemove: (id: string) => void
+  onUpdate: (id: string, data: Partial<ClockType>) => void
+}) {
+  const auth = useContext(AuthContext)
+  const isSpectator = !auth.membership
+  return (
     <div className="grid gap-4 p-4">
       {clocks.length > 0 && (
         <div className="flex flex-wrap justify-center gap-4 ">
           {clocks.map((clock) => (
             <div key={clock.id} className="rounded-md bg-black/25 p-4">
-              <Clock
-                {...clock}
-                onNameChange={(name) => {
-                  send({ type: "update", id: clock.id, data: { name } })
-                }}
-                onProgressChange={(progress) => {
-                  send({ type: "update", id: clock.id, data: { progress } })
-                }}
-                onMaxProgressChange={(maxProgress) => {
-                  send({
-                    type: "update",
-                    id: clock.id,
-                    data: { maxProgress },
-                  })
-                }}
-                onRemove={() => {
-                  send({ type: "remove", id: clock.id })
-                }}
-              />
+              {isSpectator ? (
+                <Clock {...clock} onProgressChange={() => {}} />
+              ) : (
+                <Clock
+                  {...clock}
+                  onNameChange={(name) => {
+                    onUpdate(clock.id, { name })
+                  }}
+                  onProgressChange={(progress) => {
+                    onUpdate(clock.id, { progress })
+                  }}
+                  onMaxProgressChange={(maxProgress) => {
+                    onUpdate(clock.id, { maxProgress })
+                  }}
+                  onRemove={() => {
+                    onRemove(clock.id)
+                  }}
+                />
+              )}
             </div>
           ))}
         </div>
       )}
-      <div className="flex justify-center">
-        <button
-          type="button"
-          className={clearButtonClass}
-          onClick={() => {
-            send({ type: "add", name: "New Clock" })
-          }}
-        >
-          <Plus />
-          Add clock
-        </button>
-      </div>
+      {isSpectator ? undefined : (
+        <div className="flex justify-center">
+          <button
+            type="button"
+            className={clearButtonClass}
+            onClick={() => {
+              onAdd("New Clock")
+            }}
+          >
+            <Plus />
+            Add clock
+          </button>
+        </div>
+      )}
     </div>
-  ),
-})
+  )
+}

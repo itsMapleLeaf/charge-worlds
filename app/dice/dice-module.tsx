@@ -23,7 +23,7 @@ export const diceModule = defineModule({
   onEvent: async ({ event, updateState }) => {
     if (event.type === "roll") {
       if (typeof window !== "undefined") return
-      
+
       // eslint-disable-next-line unicorn/prefer-node-protocol
       const crypto = await import("crypto")
       updateState((state) => {
@@ -45,14 +45,19 @@ export const diceModule = defineModule({
     }
   },
 
-  render: ({ state: { rolls }, send }, user: { name: string } | undefined) => (
+  render: ({ state, send, context }) => (
     <div className="h-full flex flex-col">
-      <DiceRollList rolls={rolls} />
-      {user && (
+      <DiceRollList rolls={state.rolls} />
+      {context.auth.user && context.auth.membership && (
         <div className="p-4">
           <DiceRollForm
             onSubmit={(intent, poolSize) => {
-              send({ type: "roll", intent, poolSize, rolledBy: user.name })
+              send({
+                type: "roll",
+                intent,
+                poolSize,
+                rolledBy: context.auth.user!.name,
+              })
             }}
           />
         </div>
