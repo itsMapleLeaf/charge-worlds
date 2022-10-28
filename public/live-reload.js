@@ -7,7 +7,7 @@ function tryReload() {
   let interval = setInterval(() => {
     controller?.abort()
     controller = new AbortController()
-    fetch("/", { signal: controller.signal })
+    fetch("/up", { signal: controller.signal })
       .then((response) => {
         if (response.ok) {
           clearInterval(interval)
