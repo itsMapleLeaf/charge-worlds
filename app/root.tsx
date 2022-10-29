@@ -116,9 +116,9 @@ export default function App() {
               <div className="flex-1" />
 
               <nav className="flex items-center gap-4">
-                {matches.some((m) => m.pathname === route("/dashboard")) && (
-                  <DashboardNewWindowButton />
-                )}
+                {matches.some(
+                  (m) => m.pathname.replace(/\/$/, "") === route("/dashboard"),
+                ) && <DashboardNewWindowButton />}
 
                 {data.user ? (
                   <UserMenuButton user={data.user} />
