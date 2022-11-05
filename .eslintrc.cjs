@@ -27,4 +27,12 @@ module.exports = {
     "tailwindcss/migration-from-tailwind-2": "off",
     "unicorn/no-null": "off",
   },
+  overrides: [
+    {
+      files: ["app/routes/**"],
+      rules: {
+        "unicorn/filename-case": "off",
+      },
+    },
+  ],
 }
