@@ -9,6 +9,7 @@ import { z } from "zod"
 import { getMembership } from "../auth/membership"
 import { getSessionUser } from "../auth/session"
 import { db } from "../core/db.server"
+import { assert } from "../helpers/assert"
 import { defineField } from "../helpers/form"
 import {
   inputClass,
@@ -28,18 +29,24 @@ function formatZodError(error: ZodError) {
 
 const userDiscordIdField = defineField("userDiscordId", snowflakeSchema)
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request, params }: LoaderArgs) {
+  assert(params.worldId, "worldId is required")
+
   const [user, world] = await Promise.all([
     getSessionUser(request),
     getDefaultWorld(),
   ])
   if (!user) {
-    return redirect(route("/dashboard"))
+    return redirect(
+      route(`/worlds/:worldId/dashboard`, { worldId: params.worldId }),
+    )
   }
 
   const membership = await getMembership(user, world)
   if (membership?.role !== "OWNER") {
-    return redirect(route("/dashboard"))
+    return redirect(
+      route(`/worlds/:worldId/dashboard`, { worldId: params.worldId }),
+    )
   }
 
   const players = await db.membership.findMany({
