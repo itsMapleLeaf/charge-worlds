@@ -24,12 +24,13 @@ model World {
   id          String       @id
   name        String
   memberships Membership[]
+  modules     Module[]
 }
 
 model Membership {
   id String @id @default(cuid())
 
-  user   User   @relation(fields: [userDiscordId], references: [discordId], onDelete: Cascade)
+  user          User   @relation(fields: [userDiscordId], references: [discordId], onDelete: Cascade)
   userDiscordId String
 
   world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
@@ -48,4 +49,7 @@ enum Role {
 model Module {
   id    String @id
   state Json   @db.JsonB
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId String
 }

@@ -27,6 +27,7 @@ export function createSocketServer(httpServer: http.Server) {
     client: Socket<ClientToServerEvents, ServerToClientEvents>,
     moduleId: string,
     queuedAction: Json,
+    worldId: string,
   ) {
     const module = dashboardModuleLibrary[moduleId]
     if (!module) {
@@ -49,7 +50,7 @@ export function createSocketServer(httpServer: http.Server) {
     const moduleDb = await db.module.upsert({
       where: { id: moduleId },
       update: {},
-      create: { id: moduleId, state: module.initialState },
+      create: { id: moduleId, worldId, state: module.initialState },
     })
 
     const stateResult = module.stateSchema.safeParse(moduleDb.state)
@@ -99,7 +100,7 @@ export function createSocketServer(httpServer: http.Server) {
     await db.module.upsert({
       where: { id: moduleId },
       update: { state },
-      create: { id: moduleId, state },
+      create: { id: moduleId, worldId, state },
     })
 
     queueRunning.delete(moduleId)
@@ -126,11 +127,9 @@ export function createSocketServer(httpServer: http.Server) {
   }
 
   async function getClientAuth(client: Socket): Promise<Auth> {
-    const url = new URL(
-      client.request.url!,
-      `http://${client.request.headers.host ?? "0.0.0.0"}`,
-    )
+    const url = getRequestUrl(client.request)
     const request = new Request(url)
+
     for (const [key, value] of Object.entries(client.request.headers)) {
       if (Array.isArray(value)) {
         request.headers.append(key, value.join(","))
@@ -165,6 +164,15 @@ export function createSocketServer(httpServer: http.Server) {
   }
 
   socketServer.on("connection", (client) => {
+    const url = getRequestUrl(client.request)
+
+    const worldId = url.searchParams.get("worldId")
+    if (!worldId) {
+      client.emit("socketError", "worldId query param is required")
+      client.disconnect()
+      return
+    }
+
     client.on("getModuleState", async (moduleId) => {
       const module = dashboardModuleLibrary[moduleId]
       if (!module) {
@@ -175,7 +183,7 @@ export function createSocketServer(httpServer: http.Server) {
 
       const moduleDb = await db.module.upsert({
         where: { id: moduleId },
-        create: { id: moduleId, state: module.initialState },
+        create: { id: moduleId, worldId, state: module.initialState },
         update: {},
       })
 
@@ -194,7 +202,11 @@ export function createSocketServer(httpServer: http.Server) {
     })
 
     client.on("moduleAction", async (moduleId, action) => {
-      void addAction(client, moduleId, action)
+      void addAction(client, moduleId, action, worldId)
     })
   })
+}
+
+function getRequestUrl(request: http.IncomingMessage) {
+  return new URL(request.url!, `http://${request.headers.host ?? "0.0.0.0"}`)
 }
