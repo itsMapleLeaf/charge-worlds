@@ -1,9 +1,8 @@
 import { redirect } from "@remix-run/node"
 import { route } from "routes-gen"
-import { defaultWorldId } from "../world/world-db.server"
+import { db } from "../core/db.server"
 
-export function loader() {
-  return redirect(
-    route("/worlds/:worldId/dashboard", { worldId: defaultWorldId }),
-  )
+export async function loader() {
+  const world = await db.world.findFirstOrThrow()
+  return redirect(route("/worlds/:worldId/dashboard", { worldId: world.id }))
 }
