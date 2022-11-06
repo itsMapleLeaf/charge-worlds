@@ -43,6 +43,7 @@ export type FormActionGroupResponse<
   Actions extends Record<string, FormAction<any>>,
 > = {
   [K in keyof Actions]: {
+    hasErrors: boolean
     data?: Awaited<ReturnType<Actions[K]["action"]>>
     fieldErrors?: Record<string, string[]>
     globalError?: string
@@ -74,7 +75,7 @@ export function defineFormActionGroup<
 
     if (Object.values(errors).some((e) => e.length > 0)) {
       return json(
-        { [body.actionType]: { fieldErrors: errors } },
+        { [body.actionType]: { hasErrors: true, fieldErrors: errors } },
         { status: 400 },
       )
     }
@@ -91,13 +92,16 @@ export function defineFormActionGroup<
         return redirect(redirectTo)
       }
 
-      return json({ [body.actionType]: { data } })
+      return json({
+        [body.actionType]: { hasErrors: false, data },
+      })
     } catch (error) {
       console.error(error)
       return json(
         {
           [body.actionType]: {
-            globalError: "An unexpected error occurred.",
+            hasErrors: true,
+            globalError: "An unexpected error occurred",
           },
         },
         { status: 400 },
