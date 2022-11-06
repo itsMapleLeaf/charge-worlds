@@ -25,8 +25,7 @@ export function UserMenuButton({
           />
         ) : (
           <User />
-        )}{" "}
-        {user.name}
+        )}
       </MenuButton>
       <Menu state={menu} className={menuPanelClass} portal>
         <MenuItem

@@ -2,17 +2,32 @@ import type {
   ErrorBoundaryComponent,
   HtmlMetaDescriptor,
   LinksFunction,
+  LoaderArgs,
 } from "@remix-run/node"
-import { Links, Meta, Outlet, Scripts, useTransition } from "@remix-run/react"
+import { json } from "@remix-run/node"
+import {
+  Link,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  useLoaderData,
+  useTransition,
+} from "@remix-run/react"
 import clsx from "clsx"
+import { LogIn, Zap } from "lucide-react"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import reactMosaicCss from "react-mosaic-component/react-mosaic-component.css"
+import { route } from "routes-gen"
 import favicon from "./assets/favicon.svg"
+import { getSessionUser } from "./auth/session"
+import { UserMenuButton } from "./auth/user-menu-button"
 import { getAppMeta } from "./core/meta"
 import styles from "./generated/styles.css"
+import { pick } from "./helpers/pick"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { LoadingSpinner } from "./ui/loading"
-import { maxWidthContainerClass } from "./ui/styles"
+import { clearButtonClass, maxWidthContainerClass } from "./ui/styles"
 
 export const meta = (): HtmlMetaDescriptor => getAppMeta()
 
@@ -23,10 +38,39 @@ export const links: LinksFunction = () => [
   { rel: "icon", href: favicon },
 ]
 
+export async function loader({ request, params }: LoaderArgs) {
+  const user = await getSessionUser(request)
+  return json({
+    user: user && pick(user, ["name", "avatarUrl"]),
+  })
+}
+
 export default function App() {
+  const data = useLoaderData<typeof loader>()
   return (
-    <Document>
-      <Outlet />
+    <Document bodyClassName="min-h-screen grid grid-rows-[auto,1fr]">
+      <header className="bg-slate-800 flex py-4 px-6 gap-x-4 gap-y-2 items-center">
+        <Link to={route("/")} className="flex items-center gap-2 mr-2">
+          <Zap />
+          <h1 className="text-2xl font-light">Charge Worlds</h1>
+        </Link>
+        <div className="flex-1" />
+        <nav className="flex items-center gap-4">
+          {data.user ? (
+            <UserMenuButton user={data.user} />
+          ) : (
+            <Link
+              to={route("/auth/discord/login")}
+              className={clearButtonClass}
+            >
+              <LogIn /> Discord sign in
+            </Link>
+          )}
+        </nav>
+      </header>
+      <main className="bg-slate-900">
+        <Outlet />
+      </main>
     </Document>
   )
 }
@@ -66,7 +110,13 @@ export function ErrorBoundary({
   )
 }
 
-function Document({ children }: { children: ReactNode }) {
+function Document({
+  children,
+  bodyClassName,
+}: {
+  children: ReactNode
+  bodyClassName?: string
+}) {
   return (
     <html
       lang="en"
@@ -77,7 +127,7 @@ function Document({ children }: { children: ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className={bodyClassName}>
         {children}
         <Scripts />
         {process.env.NODE_ENV !== "production" && (

@@ -1,18 +1,12 @@
 import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import {
-  Link,
-  Outlet,
-  useLoaderData,
-  useMatches,
-  useParams,
-} from "@remix-run/react"
-import { Dices, LayoutDashboard, LogIn, Wrench } from "lucide-react"
+import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react"
+import { LayoutDashboard, PlusSquare, Wrench } from "lucide-react"
+import { useId } from "react"
 import { route } from "routes-gen"
 import { AuthContext } from "../auth/auth-context"
 import { getMembership } from "../auth/membership"
 import { getSessionUser } from "../auth/session"
-import { UserMenuButton } from "../auth/user-menu-button"
 import { getAppMeta } from "../core/meta"
 import {
   DashboardNewWindowButton,
@@ -43,65 +37,61 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export default function WorldPage() {
   const data = useLoaderData<typeof loader>()
-  const matches = useMatches()
   const params = useParams()
 
   assert(params.worldId, "worldId is required")
   const worldId = params.worldId
 
+  const worldHeadingId = useId()
+
   return (
     <AuthContext.Provider value={data}>
-      <div className="fixed inset-0 grid grid-rows-[auto,1fr]">
-        <DashboardProvider>
-          <header className="bg-slate-800 flex py-4 px-6 gap-x-4 gap-y-2 flex-wrap items-center">
-            <div className="flex items-center gap-2 mr-2">
-              <Dices />
-              <h1 className="text-3xl font-light">{data.world.name}</h1>
+      <DashboardProvider>
+        <section
+          className="h-full grid grid-cols-[auto,1fr]"
+          aria-labelledby={worldHeadingId}
+        >
+          <nav className="thin-scrollbar flex flex-col py-4 gap-4 w-12 items-center md:w-64 md:px-4 md:items-start bg-black/25">
+            <h2
+              className="text-3xl font-light sr-only md:not-sr-only"
+              id={worldHeadingId}
+            >
+              {data.world.name}
+            </h2>
+
+            <div className="flex items-center gap-4">
+              <DashboardNewWindowButton>
+                <PlusSquare />
+                <span className="sr-only md:not-sr-only">New window</span>
+              </DashboardNewWindowButton>
             </div>
 
+            <div className="flex-1" />
+
             {data.membership?.role === "OWNER" && (
-              <nav className="flex items-center gap-4">
+              <>
                 <Link
                   to={route("/worlds/:worldId/dashboard", { worldId })}
                   className={clearButtonClass}
                 >
-                  <LayoutDashboard /> Dashboard
+                  <LayoutDashboard />
+                  <span className="sr-only md:not-sr-only">Dashboard</span>
                 </Link>
                 <Link
                   to={route("/worlds/:worldId/settings", { worldId })}
                   className={clearButtonClass}
                 >
-                  <Wrench /> Settings
+                  <Wrench />
+                  <span className="sr-only md:not-sr-only">Settings</span>
                 </Link>
-              </nav>
+              </>
             )}
-
-            <div className="flex-1" />
-
-            <nav className="flex items-center gap-4">
-              {matches.some(
-                (m) =>
-                  m.pathname.replace(/\/$/, "") ===
-                  route("/worlds/:worldId/dashboard", { worldId }),
-              ) && <DashboardNewWindowButton />}
-
-              {data.user ? (
-                <UserMenuButton user={data.user} />
-              ) : (
-                <Link
-                  to={route("/auth/discord/login")}
-                  className={clearButtonClass}
-                >
-                  <LogIn /> Discord sign in
-                </Link>
-              )}
-            </nav>
-          </header>
-          <main className="bg-slate-900 relative">
+          </nav>
+          <div>
             <Outlet />
-          </main>
-        </DashboardProvider>
-      </div>
+          </div>
+        </section>
+      </DashboardProvider>
     </AuthContext.Provider>
   )
 }

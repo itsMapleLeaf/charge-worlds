@@ -139,7 +139,7 @@ export default function SettingsPage() {
 
   return (
     <div className={maxWidthContainerClass}>
-      <div className="py-8 px-4 grid gap-4">
+      <div className="py-4 grid gap-4">
         <section className="bg-slate-800 p-4 rounded-md shadow-md">
           <h2 className="text-3xl font-light mb-4">Overview</h2>
           <Form method="post" className="grid gap-4">

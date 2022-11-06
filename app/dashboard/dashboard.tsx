@@ -1,13 +1,7 @@
 import { Select, SelectItem, SelectPopover, useSelectState } from "ariakit"
 import clsx from "clsx"
 import cuid from "cuid"
-import {
-  ChevronDown,
-  Maximize2,
-  PlusSquare,
-  SeparatorVertical,
-  X,
-} from "lucide-react"
+import { ChevronDown, Maximize2, SeparatorVertical, X } from "lucide-react"
 import { createContext, useContext } from "react"
 import type { MosaicBranch, MosaicNode } from "react-mosaic-component"
 import {
@@ -116,11 +110,15 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function DashboardNewWindowButton() {
+export function DashboardNewWindowButton({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const { addWindow } = useContext(DashboardContext)
   return (
     <button className={clearButtonClass} onClick={addWindow}>
-      <PlusSquare /> New window
+      {children}
     </button>
   )
 }
@@ -131,7 +129,7 @@ export function DashboardMosaic({ worldId }: { worldId: string }) {
     <Mosaic
       value={mosaic}
       onChange={setMosaic}
-      className=""
+      className="isolate"
       renderTile={(id, path) => (
         <MosaicWindow
           title=""
