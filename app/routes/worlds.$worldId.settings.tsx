@@ -1,9 +1,14 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import type { Params } from "@remix-run/react"
-import { Form, useActionData, useLoaderData } from "@remix-run/react"
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useTransition,
+} from "@remix-run/react"
 import { Minus, Plus, Save } from "lucide-react"
-import { useId } from "react"
+import { useEffect, useId, useRef } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
 import { requireWorldOwner } from "../auth/membership"
@@ -180,8 +185,17 @@ export default function SettingsPage() {
 function AddPlayerForm() {
   const fieldId = useId()
   const actionData = useActionData<typeof action>()
+  const transition = useTransition()
+  const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    if (transition.state === "idle" && !actionData?.addPlayer.hasErrors) {
+      formRef.current!.reset()
+    }
+  }, [actionData?.addPlayer.hasErrors, transition.state])
+
   return (
-    <Form method="post">
+    <Form method="post" ref={formRef}>
       <input {...actionGroup.types.addPlayer} />
       <Field
         label="Discord user ID"
