@@ -8,36 +8,13 @@ import clsx from "clsx"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import reactMosaicCss from "react-mosaic-component/react-mosaic-component.css"
 import favicon from "./assets/favicon.svg"
+import { getAppMeta } from "./core/meta"
 import styles from "./generated/styles.css"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { LoadingSpinner } from "./ui/loading"
 import { maxWidthContainerClass } from "./ui/styles"
 
-export const meta = (): HtmlMetaDescriptor => {
-  const title = "Charge Worlds"
-  const description = "Virtual environment for the Charge RPG system"
-  const siteUrl = "https://charge-worlds.mapleleaf.dev"
-
-  return {
-    // eslint-disable-next-line unicorn/text-encoding-identifier-case
-    "charset": "utf-8",
-    "viewport": "width=device-width,initial-scale=1",
-
-    title,
-    description,
-    "theme-color": "#1e293b",
-
-    "og:type": "website",
-    "og:url": siteUrl,
-    "og:title": title,
-    "og:description": description,
-
-    "twitter:card": "summary_large_image",
-    "twitter:url": siteUrl,
-    "twitter:title": title,
-    "twitter:description": description,
-  }
-}
+export const meta = (): HtmlMetaDescriptor => getAppMeta()
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: "/rubik/variable.css" },
