@@ -5,7 +5,8 @@ import { Server } from "socket.io"
 import type { Auth } from "../auth/auth-context"
 import { getSessionUser } from "../auth/session"
 import { db } from "../core/db.server"
-import { getDefaultWorld } from "../world/world-db.server"
+import { raise } from "../helpers/errors"
+import { getWorld } from "../world/world-db.server"
 import type {
   DashboardModule,
   DashboardModuleEventArgs,
@@ -125,12 +126,11 @@ export function createSocketServer(httpServer: http.Server) {
   }
 
   async function getClientAuth(client: Socket): Promise<Auth> {
-    const request = new Request(
-      new URL(
-        client.request.url!,
-        `http://${client.request.headers.host ?? "0.0.0.0"}`,
-      ),
+    const url = new URL(
+      client.request.url!,
+      `http://${client.request.headers.host ?? "0.0.0.0"}`,
     )
+    const request = new Request(url)
     for (const [key, value] of Object.entries(client.request.headers)) {
       if (Array.isArray(value)) {
         request.headers.append(key, value.join(","))
@@ -140,7 +140,10 @@ export function createSocketServer(httpServer: http.Server) {
     }
 
     const [world, user] = await Promise.all([
-      getDefaultWorld(),
+      getWorld(
+        url.searchParams.get("worldId") ??
+          raise(new Error("No world id query")),
+      ),
       getSessionUser(request),
     ])
 

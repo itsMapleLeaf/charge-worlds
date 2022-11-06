@@ -125,7 +125,7 @@ export function DashboardNewWindowButton() {
   )
 }
 
-export function DashboardMosaic() {
+export function DashboardMosaic({ worldId }: { worldId: string }) {
   const { mosaic, setMosaic } = useContext(DashboardContext)
   return (
     <Mosaic
@@ -144,7 +144,7 @@ export function DashboardMosaic() {
             </div>
           )}
         >
-          <DashboardWindowContent windowId={id} />
+          <DashboardWindowContent windowId={id} worldId={worldId} />
         </MosaicWindow>
       )}
       zeroStateView={
@@ -162,7 +162,13 @@ export function DashboardMosaic() {
   )
 }
 
-function DashboardWindowContent({ windowId }: { windowId: string }) {
+function DashboardWindowContent({
+  windowId,
+  worldId,
+}: {
+  windowId: string
+  worldId: string
+}) {
   const { windowModules } = useContext(DashboardContext)
   const moduleId =
     windowModules[windowId]?.moduleId ?? Object.keys(dashboardModuleLibrary)[0]
@@ -171,7 +177,11 @@ function DashboardWindowContent({ windowId }: { windowId: string }) {
   return (
     <section className="thin-scrollbar w-full h-full bg-slate-800 overflow-y-auto">
       {module && moduleId ? (
-        <DashboardModuleView moduleId={moduleId} module={module} />
+        <DashboardModuleView
+          moduleId={moduleId}
+          module={module}
+          worldId={worldId}
+        />
       ) : (
         <p className="p-4 opacity-50 text-2xl font-light">
           Couldn&apos;t find that module 🤔
