@@ -4,7 +4,6 @@ export const maxWidthContainerClass = clsx(
   "mx-auto w-full max-w-screen-md px-4",
 )
 
-
 export const activePressClass = clsx(
   "transition-transform active:transition-none active:scale-95",
 )
@@ -47,8 +46,11 @@ export const inputBaseClass = clsx(
 export const inputClass = clsx(
   inputBaseClass,
   "inline-flex min-h-[3rem] flex-wrap items-center p-3 leading-tight",
+  "[&:not(:placeholder-shown)]:invalid:border border-red-400",
 )
 
 export const textAreaClass = clsx(inputBaseClass, "p-3")
 
 export const labelTextClass = clsx("mb-1.5 text-sm font-medium leading-none")
+
+export const errorTextClass = clsx("text-red-400 text-sm")

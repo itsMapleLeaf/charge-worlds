@@ -35,3 +35,11 @@ export async function requireMembership(user: User, world: World) {
     raise(new Response(undefined, { status: 403 }))
   )
 }
+
+export async function requireWorldOwner(user: User, world: World) {
+  const membership = await requireMembership(user, world)
+  if (membership.role !== "OWNER") {
+    throw new Response(undefined, { status: 403 })
+  }
+  return membership
+}

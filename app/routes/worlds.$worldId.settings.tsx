@@ -1,53 +1,102 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
-import { json, redirect } from "@remix-run/node"
+import { json } from "@remix-run/node"
+import type { Params } from "@remix-run/react"
 import { Form, useActionData, useLoaderData } from "@remix-run/react"
-import { Minus, Plus } from "lucide-react"
+import { Minus, Plus, Save } from "lucide-react"
 import { useId } from "react"
 import { route } from "routes-gen"
-import type { ZodError } from "zod"
 import { z } from "zod"
-import { getMembership } from "../auth/membership"
-import { getSessionUser } from "../auth/session"
+import { requireWorldOwner } from "../auth/membership"
+import { requireSessionUser } from "../auth/session"
 import { db } from "../core/db.server"
 import { assert } from "../helpers/assert"
-import { defineField } from "../helpers/form"
+import { discordIdSchema } from "../helpers/discord-id"
+import { defineFormAction, defineFormActionGroup } from "../helpers/form"
+import { Field } from "../ui/field"
 import {
+  errorTextClass,
   inputClass,
-  labelTextClass,
   maxWidthContainerClass,
   solidButtonClass,
 } from "../ui/styles"
-import { getDefaultWorld } from "../world/world-db.server"
+import { getWorld } from "../world/world-db.server"
 
-const snowflakeSchema = z
-  .string()
-  .regex(/^\d+$/, "Value must be a valid snowflake (discord ID)")
+const thisRoute = (params: Params) =>
+  route("/worlds/:worldId/settings", params as any)
 
-function formatZodError(error: ZodError) {
-  return error.issues.map((i) => i.message).join("\n")
-}
+const updateWorld = defineFormAction({
+  fields: {
+    name: z.string().max(256),
+  },
+  async action(values, { params }) {
+    await db.world.update({
+      where: { id: params.worldId! },
+      data: {
+        name: values.name,
+      },
+    })
+  },
+})
 
-const userDiscordIdField = defineField("userDiscordId", snowflakeSchema)
+const addPlayer = defineFormAction({
+  fields: {
+    discordUserId: discordIdSchema,
+  },
+  async action(values, { params }) {
+    const data = {
+      role: "PLAYER",
+      world: { connect: { id: params.worldId! } },
+      user: {
+        connectOrCreate: {
+          where: { discordId: values.discordUserId },
+          create: { discordId: values.discordUserId, name: "Unknown" },
+        },
+      },
+    } as const
+
+    await db.membership.upsert({
+      where: {
+        worldId_userDiscordId: {
+          worldId: params.worldId!,
+          userDiscordId: values.discordUserId,
+        },
+      },
+      update: data,
+      create: data,
+    })
+  },
+})
+
+const removePlayer = defineFormAction({
+  fields: {
+    discordUserId: discordIdSchema,
+  },
+  async action(values, { params }) {
+    await db.membership.delete({
+      where: {
+        worldId_userDiscordId: {
+          worldId: params.worldId!,
+          userDiscordId: values.discordUserId,
+        },
+      },
+    })
+  },
+})
+
+const actionGroup = defineFormActionGroup({
+  updateWorld,
+  addPlayer,
+  removePlayer,
+})
 
 export async function loader({ request, params }: LoaderArgs) {
   assert(params.worldId, "worldId is required")
 
   const [user, world] = await Promise.all([
-    getSessionUser(request),
-    getDefaultWorld(),
+    requireSessionUser(request),
+    getWorld(params.worldId),
   ])
-  if (!user) {
-    return redirect(
-      route(`/worlds/:worldId/dashboard`, { worldId: params.worldId }),
-    )
-  }
-
-  const membership = await getMembership(user, world)
-  if (membership?.role !== "OWNER") {
-    return redirect(
-      route(`/worlds/:worldId/dashboard`, { worldId: params.worldId }),
-    )
-  }
+  await requireWorldOwner(user, world)
 
   const players = await db.membership.findMany({
     where: {
@@ -64,127 +113,134 @@ export async function loader({ request, params }: LoaderArgs) {
     },
   })
 
-  return json({ players })
+  return json({ players, world: { name: world.name } })
 }
 
-export async function action({ request }: ActionArgs) {
-  const method = request.method.toLowerCase()
+export async function action(args: ActionArgs) {
+  assert(args.params.worldId, "worldId is required")
 
-  if (method === "post") {
-    const form = await request.formData()
+  const [user, world] = await Promise.all([
+    requireSessionUser(args.request),
+    getWorld(args.params.worldId),
+  ])
+  await requireWorldOwner(user, world)
 
-    const userDiscordId = userDiscordIdField.safeParse(form)
-    if (!userDiscordId.success) {
-      return json(
-        { success: false, error: formatZodError(userDiscordId.error) },
-        { status: 400 },
-      )
-    }
-
-    const world = await getDefaultWorld()
-
-    await db.membership.create({
-      data: {
-        user: {
-          connectOrCreate: {
-            where: { discordId: userDiscordId.data },
-            create: { discordId: userDiscordId.data, name: "Unknown" },
-          },
-        },
-        world: { connect: { id: world.id } },
-        role: "PLAYER",
-      },
-    })
-
-    return json({ success: true, error: "" })
-  }
-
-  if (method === "delete") {
-    const form = await request.formData()
-
-    const userDiscordId = userDiscordIdField.safeParse(form)
-    if (!userDiscordId.success) {
-      return json(
-        { success: false, error: formatZodError(userDiscordId.error) },
-        { status: 400 },
-      )
-    }
-
-    const world = await getDefaultWorld()
-
-    await db.membership.delete({
-      where: {
-        worldId_userDiscordId: {
-          userDiscordId: userDiscordId.data,
-          worldId: world.id,
-        },
-      },
-    })
-
-    return json({ success: true, error: "" })
-  }
-
-  return json({ success: false, error: "Invalid method" }, { status: 405 })
+  return actionGroup.handleSubmit(args, thisRoute(args.params))
 }
 
 export default function SettingsPage() {
-  const { players } = useLoaderData<typeof loader>()
+  const { players, world } = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
-  const inputId = useId()
+
   return (
     <div className={maxWidthContainerClass}>
-      <section className="px-4 py-8">
-        <h2 className="text-3xl font-light">Add players</h2>
-
-        {actionData?.error && (
-          <p className="text-red-400">{actionData.error}</p>
-        )}
-
-        <div className="mt-4 grid grid-cols-[1fr,auto] gap-2">
-          <Form method="post" className="contents" replace>
-            <div className="col-span-2 -mb-1">
-              <label className={labelTextClass} htmlFor={inputId}>
-                Discord user ID
-              </label>
-            </div>
-            <userDiscordIdField.input
-              id={inputId}
-              className={inputClass}
-              placeholder="0123456789"
-              required
-            />
-            <button title="Add player" className={solidButtonClass}>
-              <Plus />
-            </button>
-          </Form>
-
-          {players.map((player) => (
-            <Form
-              key={player.userDiscordId}
-              method="delete"
-              className="contents"
-              replace
+      <div className="py-8 px-4 grid gap-4">
+        <section className="bg-slate-800 p-4 rounded-md shadow-md">
+          <h2 className="text-3xl font-light mb-4">Overview</h2>
+          <Form method="post" className="grid gap-4">
+            <input {...actionGroup.types.updateWorld} />
+            <Field
+              label="World name"
+              errors={actionData?.updateWorld?.fieldErrors?.name}
             >
-              <p className={inputClass}>
-                <span>{player.user.name}</span>
-                <span className="ml-1 opacity-75 block">
-                  ({player.userDiscordId})
-                </span>
-              </p>
-              <userDiscordIdField.input
-                type="hidden"
-                value={player.userDiscordId}
+              <input
+                {...updateWorld.fields.name.input}
+                defaultValue={world.name}
+                className={inputClass}
+                placeholder="My Awesome World"
               />
-              <button
-                title={`Remove ${player.user.name}`}
-                className={solidButtonClass}
-              >
-                <Minus />
+            </Field>
+            <div>
+              <button className={solidButtonClass} type="submit">
+                <Save /> Save
               </button>
-            </Form>
-          ))}
-        </div>
-      </section>
+            </div>
+            {actionData?.updateWorld?.globalError && (
+              <p className={errorTextClass}>
+                {actionData?.updateWorld?.globalError}
+              </p>
+            )}
+          </Form>
+        </section>
+
+        <section className="bg-slate-800 p-4 rounded-md shadow-md">
+          <h2 className="text-3xl font-light">Players</h2>
+          <div className="mt-4 grid gap-2">
+            <AddPlayerForm />
+            {players.map((player) => (
+              <RemovePlayerForm key={player.userDiscordId} player={player} />
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
+  )
+}
+
+function AddPlayerForm() {
+  const fieldId = useId()
+  const actionData = useActionData<typeof action>()
+  return (
+    <Form method="post">
+      <input {...actionGroup.types.addPlayer} />
+      <Field
+        label="Discord user ID"
+        errors={actionData?.addPlayer?.fieldErrors?.discordUserId?.concat(
+          actionData?.addPlayer?.globalError || [],
+        )}
+      >
+        <div className="flex gap-2">
+          <input
+            {...addPlayer.fields.discordUserId.input}
+            id={fieldId}
+            className={inputClass}
+            placeholder="123456789012345678"
+            pattern="[0-9]+"
+            title="A valid discord ID (digits only)"
+          />
+          <button className={solidButtonClass} type="submit" title="Add player">
+            <Plus />
+          </button>
+        </div>
+      </Field>
+    </Form>
+  )
+}
+
+function RemovePlayerForm({
+  player,
+}: {
+  player: { userDiscordId: string; user: { name: string } }
+}) {
+  const actionData = useActionData<typeof action>()
+  return (
+    <Form method="post">
+      <input {...actionGroup.types.removePlayer} />
+      <input
+        {...removePlayer.fields.discordUserId.hidden(player.userDiscordId)}
+      />
+      <div className="flex gap-2">
+        <div className="flex-1">
+          <p className={inputClass}>
+            <span>{player.user.name}</span>
+            <span className="ml-1 opacity-75 block">
+              ({player.userDiscordId})
+            </span>
+          </p>
+        </div>
+        <button
+          className={solidButtonClass}
+          type="submit"
+          title="Remove player"
+        >
+          <Minus />
+        </button>
+      </div>
+      {actionData?.removePlayer?.globalError && (
+        <p className={errorTextClass}>
+          {actionData?.removePlayer?.globalError}
+        </p>
+      )}
+    </Form>
   )
 }
