@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/node"
+import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import {
   Link,
@@ -7,36 +7,37 @@ import {
   useMatches,
   useParams,
 } from "@remix-run/react"
-import { LayoutDashboard, LogIn, Wrench, Zap } from "lucide-react"
+import { Dices, LayoutDashboard, LogIn, Wrench } from "lucide-react"
 import { route } from "routes-gen"
 import { AuthContext } from "../auth/auth-context"
 import { getMembership } from "../auth/membership"
 import { getSessionUser } from "../auth/session"
 import { UserMenuButton } from "../auth/user-menu-button"
+import { getAppMeta } from "../core/meta"
 import {
   DashboardNewWindowButton,
   DashboardProvider,
 } from "../dashboard/dashboard"
 import { assert } from "../helpers/assert"
+import { pick } from "../helpers/pick"
 import { clearButtonClass } from "../ui/styles"
-import { getDefaultWorld } from "../world/world-db.server"
+import { getWorld } from "../world/world-db.server"
 
-export async function loader({ request }: LoaderArgs) {
+export const meta: MetaFunction<typeof loader> = ({ data }) =>
+  getAppMeta({ title: data.world.name })
+
+export async function loader({ request, params }: LoaderArgs) {
   const [world, user] = await Promise.all([
-    getDefaultWorld(),
+    getWorld(params.worldId!),
     getSessionUser(request),
   ])
 
   const membership = user && (await getMembership(user, world))
 
   return json({
-    user: user && {
-      name: user.name,
-      avatarUrl: user.avatarUrl,
-    },
-    membership: membership && {
-      role: membership?.role,
-    },
+    user: user && pick(user, ["name", "avatarUrl"]),
+    membership: membership && pick(membership, ["role"]),
+    world: pick(world, ["name"]),
   })
 }
 
@@ -54,8 +55,8 @@ export default function WorldPage() {
         <DashboardProvider>
           <header className="bg-slate-800 flex py-4 px-6 gap-x-4 gap-y-2 flex-wrap items-center">
             <div className="flex items-center gap-2 mr-2">
-              <Zap />
-              <h1 className="text-3xl font-light">Charge Worlds</h1>
+              <Dices />
+              <h1 className="text-3xl font-light">{data.world.name}</h1>
             </div>
 
             {data.membership?.role === "OWNER" && (
