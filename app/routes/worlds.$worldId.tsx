@@ -6,7 +6,7 @@ import { useId } from "react"
 import { route } from "routes-gen"
 import { AuthContext } from "../auth/auth-context"
 import { getMembership } from "../auth/membership"
-import { getSessionUser } from "../auth/session"
+import { getSessionUser } from "../auth/session.server"
 import { getAppMeta } from "../core/meta"
 import {
   DashboardNewWindowButton,

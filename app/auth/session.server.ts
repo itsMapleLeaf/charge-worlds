@@ -1,12 +1,11 @@
 import { createCookie } from "@remix-run/node"
 import cuid from "cuid"
 import { z } from "zod"
-import { discordLogin } from "../auth/discord"
 import { db } from "../core/db.server"
 import { env } from "../core/env.server"
 import type { User } from "../generated/prisma"
 import { raise } from "../helpers/errors"
-import { getDiscordAuthUser } from "./discord"
+import { discordLogin, getDiscordAuthUser } from "./discord"
 
 const sessionSchema = z.object({
   sessionId: z.string(),
