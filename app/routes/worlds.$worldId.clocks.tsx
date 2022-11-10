@@ -15,6 +15,7 @@ import { parseUnsignedInteger } from "../helpers/parse-unsigned-integer"
 import { useDebouncedCallback } from "../helpers/use-debounced-callback"
 import { clearButtonClass } from "../ui/styles"
 import { getWorld } from "../world/world-db.server"
+import { getWorldEmitter } from "./worlds.$worldId.events/emitter"
 
 const addClockAction = new FormAction({
   fields: {},
@@ -24,6 +25,7 @@ const addClockAction = new FormAction({
         worldId: params.worldId!,
       },
     })
+    getWorldEmitter(params.worldId!).emit("update")
   },
 })
 
@@ -31,10 +33,11 @@ const removeClockAction = new FormAction({
   fields: {
     clockId: z.string(),
   },
-  async action(values) {
+  async action(values, { params }) {
     await db.clock.delete({
       where: { id: values.clockId },
     })
+    getWorldEmitter(params.worldId!).emit("update")
   },
 })
 
@@ -45,11 +48,12 @@ const updateClockAction = new FormAction({
     progress: z.string().transform(parseUnsignedInteger).optional(),
     maxProgress: z.string().transform(parseUnsignedInteger).optional(),
   },
-  async action({ clockId, ...data }) {
+  async action({ clockId, ...data }, { params }) {
     await db.clock.update({
       where: { id: clockId },
       data,
     })
+    getWorldEmitter(params.worldId!).emit("update")
   },
 })
 

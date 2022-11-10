@@ -1,11 +1,14 @@
 import type { LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { useLoaderData } from "@remix-run/react"
+import { useLoaderData, useParams } from "@remix-run/react"
+import { useEffect } from "react"
+import { route } from "routes-gen"
 import { getSessionUser } from "../auth/session.server"
 import { db } from "../core/db.server"
 import { DiceRollList } from "../dice/dice-roll-list"
 import { parseKeys } from "../helpers/parse-keys"
 import { pick } from "../helpers/pick"
+import { useInvalidate } from "./invalidate"
 import { ClocksManager } from "./worlds.$worldId.clocks"
 import { DiceRollForm } from "./worlds.$worldId.dice"
 
@@ -55,7 +58,18 @@ export async function loader({ request, params }: LoaderArgs) {
 }
 
 export default function DashboardPage() {
+  const { worldId } = parseKeys(useParams(), ["worldId"])
   const data = useLoaderData<typeof loader>()
+  const invalidate = useInvalidate()
+
+  useEffect(() => {
+    const source = new EventSource(
+      route("/worlds/:worldId/events", { worldId }),
+    )
+    source.addEventListener("message", invalidate)
+    return () => source.close()
+  }, [invalidate, worldId])
+
   return (
     <div className="grid grid-flow-col auto-cols-fr h-full">
       <section>

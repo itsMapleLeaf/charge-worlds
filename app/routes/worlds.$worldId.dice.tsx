@@ -13,6 +13,7 @@ import { parseKeys } from "../helpers/parse-keys"
 import { Store, useStore } from "../helpers/store"
 import { Counter } from "../ui/counter"
 import { clearButtonClass, inputClass } from "../ui/styles"
+import { getWorldEmitter } from "./worlds.$worldId.events/emitter"
 
 const addDiceLog = new FormAction({
   fields: {
@@ -44,6 +45,8 @@ const addDiceLog = new FormAction({
         resultType,
       },
     })
+
+    getWorldEmitter(worldId).emit("update")
   },
 })
 
