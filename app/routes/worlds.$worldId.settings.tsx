@@ -16,7 +16,7 @@ import { requireSessionUser } from "../auth/session"
 import { db } from "../core/db.server"
 import { assert } from "../helpers/assert"
 import { discordIdSchema } from "../helpers/discord-id"
-import { defineFormAction, defineFormActionGroup } from "../helpers/form"
+import { FormAction, FormActionGroup } from "../helpers/form"
 import { Field } from "../ui/field"
 import {
   errorTextClass,
@@ -29,7 +29,7 @@ import { getWorld } from "../world/world-db.server"
 const thisRoute = (params: Params) =>
   route("/worlds/:worldId/settings", params as any)
 
-const updateWorld = defineFormAction({
+const updateWorld = new FormAction({
   fields: {
     name: z.string().max(256),
   },
@@ -43,7 +43,7 @@ const updateWorld = defineFormAction({
   },
 })
 
-const addPlayer = defineFormAction({
+const addPlayer = new FormAction({
   fields: {
     discordUserId: discordIdSchema,
   },
@@ -72,7 +72,7 @@ const addPlayer = defineFormAction({
   },
 })
 
-const removePlayer = defineFormAction({
+const removePlayer = new FormAction({
   fields: {
     discordUserId: discordIdSchema,
   },
@@ -88,7 +88,7 @@ const removePlayer = defineFormAction({
   },
 })
 
-const actionGroup = defineFormActionGroup({
+const actionGroup = new FormActionGroup({
   updateWorld,
   addPlayer,
   removePlayer,

@@ -5,7 +5,7 @@ import { assert } from "./assert"
 import { raise } from "./errors"
 import { mapValues } from "./object"
 
-type FormFieldSchema = ZodType<unknown, ZodTypeDef, string>
+type FormFieldSchema = ZodType<unknown, ZodTypeDef, string | undefined>
 type FormFieldRecord = Record<string, FormFieldSchema>
 
 type FormActionFn<Fields extends FormFieldRecord> = (
@@ -15,27 +15,38 @@ type FormActionFn<Fields extends FormFieldRecord> = (
   actionArgs: ActionArgs,
 ) => void | Promise<unknown>
 
-type FormAction<Fields extends FormFieldRecord = FormFieldRecord> = ReturnType<
-  typeof defineFormAction<Fields>
->
+export class FormAction<Fields extends FormFieldRecord = FormFieldRecord> {
+  constructor(
+    private readonly args: { fields: Fields; action: FormActionFn<Fields> },
+  ) {}
 
-export function defineFormAction<Fields extends FormFieldRecord>(args: {
-  fields: Fields
-  action: FormActionFn<Fields>
-}) {
-  const fieldHelpers = mapValues(args.fields, (schema, name) => ({
-    schema,
-    input: getFieldInputProps(name as string, schema),
-    hidden: (value: z.output<Fields[keyof Fields]>) => ({
-      type: "hidden" as const,
-      name,
-      value,
-    }),
-  }))
+  get action() {
+    return this.args.action
+  }
 
-  return {
-    fields: fieldHelpers,
-    action: args.action,
+  get fields() {
+    return mapValues(this.args.fields, (schema, name) => ({
+      schema,
+      input: getFieldInputProps(name as string, schema),
+      hidden: (value: z.input<Fields[keyof Fields]>) => ({
+        type: "hidden" as const,
+        name,
+        value,
+      }),
+    }))
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  formData(
+    values: UndefinedToOptional<{ [K in keyof Fields]: z.input<Fields[K]> }>,
+  ) {
+    const formData = new FormData()
+    for (const [name, value] of Object.entries(values)) {
+      if (typeof value === "string") {
+        formData.append(name, value)
+      }
+    }
+    return formData
   }
 }
 
@@ -50,10 +61,27 @@ export type FormActionGroupResponse<
   }
 }
 
-export function defineFormActionGroup<
-  Actions extends Record<string, FormAction<any>>,
->(actions: Actions) {
-  async function handleSubmit(
+export class FormActionGroup<Actions extends Record<string, FormAction<any>>> {
+  constructor(readonly actions: Actions) {}
+
+  get types() {
+    return mapValues(this.actions, (_, name) => ({
+      type: "hidden" as const,
+      name: "actionType" as const,
+      value: name,
+    }))
+  }
+
+  formData<K extends Extract<keyof Actions, string>>(
+    action: K,
+    input: Parameters<Actions[K]["formData"]>[0],
+  ) {
+    const data = this.actions[action]!.formData(input)
+    data.append("actionType", action)
+    return data
+  }
+
+  async handleSubmit(
     args: ActionArgs,
     redirectTo?: string,
   ): Promise<TypedResponse<FormActionGroupResponse<Actions>>> {
@@ -62,7 +90,7 @@ export function defineFormActionGroup<
     const body = Object.fromEntries(await args.request.formData())
     assert(typeof body.actionType === "string", "Missing actionType")
 
-    const action = actions[body.actionType]
+    const action = this.actions[body.actionType]
     assert(action, `Unknown actionType: ${body.actionType}`)
 
     const valueResults = mapValues(action.fields, (field, name) => {
@@ -108,16 +136,6 @@ export function defineFormActionGroup<
       )
     }
   }
-
-  return {
-    actions,
-    types: mapValues(actions, (_, name) => ({
-      type: "hidden" as const,
-      name: "actionType" as const,
-      value: name,
-    })),
-    handleSubmit,
-  }
 }
 
 export type FieldProps = {
@@ -128,10 +146,7 @@ export type FieldProps = {
   maxLength?: number
 }
 
-function getFieldInputProps(
-  name: string,
-  schema: ZodType<unknown, ZodTypeDef, string>,
-): FieldProps {
+function getFieldInputProps(name: string, schema: FormFieldSchema): FieldProps {
   if (!(schema instanceof ZodString)) {
     return {
       name,
@@ -146,4 +161,13 @@ function getFieldInputProps(
     minLength: schema.minLength ?? undefined,
     maxLength: schema.maxLength ?? undefined,
   }
+}
+
+type UndefinedToOptional<T extends object> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: Exclude<T[K], undefined>
+} & {
+  [K in keyof T as undefined extends T[K] ? K : never]?: Exclude<
+    T[K],
+    undefined
+  >
 }
