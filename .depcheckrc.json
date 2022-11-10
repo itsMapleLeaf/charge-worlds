@@ -1,0 +1,19 @@
+{
+  "parsers": {
+    "**/*.js": "jsx",
+    "**/*.cjs": "jsx",
+    "**/*.mjs": "jsx",
+    "**/*.ts": "typescript",
+    "**/*.tsx": "typescript"
+  },
+  "ignores": [
+    "@fontsource/rubik",
+    "@prisma/client",
+    "use-sync-external-store",
+    "eslint-plugin-tailwindcss",
+    "@routes-gen/remix",
+    "@types/eslint",
+    "@types/node-cron",
+    "@itsmapleleaf/configs/prettier"
+  ]
+}
