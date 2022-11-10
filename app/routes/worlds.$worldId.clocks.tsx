@@ -11,15 +11,10 @@ import { Clock } from "../clocks/clock"
 import { db } from "../core/db.server"
 import { FormAction, FormActionGroup } from "../helpers/form"
 import { parseKeys } from "../helpers/parse-keys"
+import { parseUnsignedInteger } from "../helpers/parse-unsigned-integer"
 import { useDebouncedCallback } from "../helpers/use-debounced-callback"
 import { clearButtonClass } from "../ui/styles"
 import { getWorld } from "../world/world-db.server"
-
-function parsePositiveInteger(input: unknown) {
-  const value = Number(input)
-  if (Number.isInteger(value) && value > 0) return value
-  throw new Error("Must be a positive integer")
-}
 
 const addClockAction = new FormAction({
   fields: {},
@@ -47,8 +42,8 @@ const updateClockAction = new FormAction({
   fields: {
     clockId: z.string(),
     name: z.string().max(64).optional(),
-    progress: z.string().transform(parsePositiveInteger).optional(),
-    maxProgress: z.string().transform(parsePositiveInteger).optional(),
+    progress: z.string().transform(parseUnsignedInteger).optional(),
+    maxProgress: z.string().transform(parseUnsignedInteger).optional(),
   },
   async action({ clockId, ...data }) {
     await db.clock.update({

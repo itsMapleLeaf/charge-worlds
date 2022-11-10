@@ -1,4 +1,4 @@
-import { setRoll } from "../dice/dice-roll-form"
+import { setRoll } from "../routes/worlds.$worldId.dice"
 import { clearButtonClass } from "../ui/styles"
 
 export function CharacterActionRollButton({
