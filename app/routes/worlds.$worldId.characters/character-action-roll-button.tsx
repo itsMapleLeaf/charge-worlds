@@ -1,5 +1,5 @@
-import { setRoll } from "../routes/worlds.$worldId.dice"
-import { clearButtonClass } from "../ui/styles"
+import { clearButtonClass } from "../../ui/styles"
+import { setRoll } from "../worlds.$worldId.dice"
 
 export function CharacterActionRollButton({
   title,

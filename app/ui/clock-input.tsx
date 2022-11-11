@@ -1,12 +1,12 @@
 import clsx from "clsx"
 import { X } from "lucide-react"
 import { useEffect, useRef } from "react"
-import { Counter } from "../ui/counter"
-import { activePressClass } from "../ui/styles"
+import { Counter } from "./counter"
+import { activePressClass } from "./styles"
 
 const positiveMod = (n: number, m: number) => ((n % m) + m) % m
 
-export function Clock({
+export function ClockInput({
   name,
   progress,
   maxProgress,

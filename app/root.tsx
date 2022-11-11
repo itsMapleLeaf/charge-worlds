@@ -32,7 +32,7 @@ import { clearButtonClass, maxWidthContainerClass } from "./ui/styles"
 export const meta = (): HtmlMetaDescriptor => getAppMeta()
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: "/rubik/variable.css" },
+  { rel: "stylesheet", href: "/assets/rubik/variable.css" },
   { rel: "stylesheet", href: reactMosaicCss },
   { rel: "stylesheet", href: styles },
   { rel: "icon", href: favicon },

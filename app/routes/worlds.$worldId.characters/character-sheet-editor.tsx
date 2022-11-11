@@ -2,18 +2,18 @@ import clsx from "clsx"
 import { ChevronsRight, Dices } from "lucide-react"
 import { useContext } from "react"
 import TextArea from "react-expanding-textarea"
-import { AuthContext } from "../auth/auth-context"
-import { Clock } from "../clocks/clock"
-import type { Character } from "../generated/prisma"
-import { entriesTyped } from "../helpers/entries-typed"
-import { Counter, DotCounter } from "../ui/counter"
-import { Field } from "../ui/field"
+import { AuthContext } from "../../auth/auth-context"
+import type { Character } from "../../generated/prisma"
+import { entriesTyped } from "../../helpers/entries-typed"
+import { ClockInput } from "../../ui/clock-input"
+import { Counter, DotCounter } from "../../ui/counter"
+import { Field } from "../../ui/field"
 import {
   dividerClass,
   inputClass,
   labelTextClass,
   textAreaClass,
-} from "../ui/styles"
+} from "../../ui/styles"
 import { CharacterActionRollButton } from "./character-action-roll-button"
 import { characterActionLibrary } from "./character-actions"
 import { CharacterColorButton } from "./character-color-button"
@@ -103,7 +103,7 @@ export function CharacterSheetEditor({
 
         <div className="flex flex-col gap-4">
           <div className="flex-1 rounded-md bg-black/25 p-4 flex items-center justify-center">
-            <Clock
+            <ClockInput
               name="Stress"
               progress={character.stress}
               maxProgress={4}

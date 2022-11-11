@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { FileX, ImagePlus } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
-import { LoadingSpinner } from "../ui/loading"
+import { LoadingSpinner } from "../../ui/loading"
 
 export function CharacterImage({ src }: { src: string | undefined }) {
   return src ? (

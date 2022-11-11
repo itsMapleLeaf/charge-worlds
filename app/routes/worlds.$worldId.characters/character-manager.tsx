@@ -1,15 +1,15 @@
 import clsx from "clsx"
 import { EyeOff, Plus } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
-import { AuthContext } from "../auth/auth-context"
-import type { Character } from "../generated/prisma"
-import { useDebouncedCallback } from "../helpers/use-debounced-callback"
+import { AuthContext } from "../../auth/auth-context"
+import type { Character } from "../../generated/prisma"
+import { useDebouncedCallback } from "../../helpers/use-debounced-callback"
 import {
   clearButtonClass,
   dividerClass,
   maxWidthContainerClass,
   navLinkClass,
-} from "../ui/styles"
+} from "../../ui/styles"
 import { characterColors } from "./character-colors"
 import { CharacterSheetEditor } from "./character-sheet-editor"
 

@@ -3,13 +3,13 @@ import { useFetcher, useParams } from "@remix-run/react"
 import { route } from "routes-gen"
 import { z } from "zod"
 import { requireSessionUser } from "../../auth/session.server"
-import { CharacterManager } from "../../characters/character-manager"
 import { db } from "../../core/db.server"
 import type { Character, Prisma } from "../../generated/prisma"
 import { FormAction, FormActionGroup } from "../../helpers/form"
 import { parseKeys } from "../../helpers/parse-keys"
 import { parseUnsignedInteger } from "../../helpers/parse-unsigned-integer"
 import { getWorldEmitter } from "../worlds.$worldId.events/emitter"
+import { CharacterManager } from "./character-manager"
 
 const addCharacterAction = new FormAction({
   fields: {},

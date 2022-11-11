@@ -1,12 +1,11 @@
 import { Eye, EyeOff } from "lucide-react"
-import { solidButtonClass } from "../ui/styles"
-import type { Character } from "./character-schema"
+import { solidButtonClass } from "../../ui/styles"
 
 export function CharacterHideButton({
   hidden,
   onHiddenChange,
 }: {
-  hidden: Character["hidden"]
+  hidden: boolean
   onHiddenChange: (hidden: boolean) => void
 }) {
   return (

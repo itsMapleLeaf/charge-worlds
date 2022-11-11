@@ -8,14 +8,14 @@ import { AuthContext } from "../auth/auth-context"
 import { getMembership } from "../auth/membership"
 import { getSessionUser } from "../auth/session.server"
 import { getAppMeta } from "../core/meta"
-import {
-  DashboardNewWindowButton,
-  DashboardProvider,
-} from "../dashboard/dashboard"
 import { assert } from "../helpers/assert"
 import { pick } from "../helpers/pick"
 import { clearButtonClass } from "../ui/styles"
 import { getWorld } from "../world/world-db.server"
+import {
+  DashboardNewWindowButton,
+  DashboardProvider,
+} from "./worlds.$worldId.dashboard/dashboard"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) =>
   getAppMeta({ title: data.world.name })

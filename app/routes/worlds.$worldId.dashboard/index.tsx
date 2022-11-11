@@ -3,12 +3,17 @@ import { json } from "@remix-run/node"
 import { useLoaderData, useParams } from "@remix-run/react"
 import { useEffect } from "react"
 import { route } from "routes-gen"
-import { getSessionUser } from "../auth/session.server"
-import { db } from "../core/db.server"
-import { DashboardMosaic } from "../dashboard/dashboard"
-import { parseKeys } from "../helpers/parse-keys"
-import { pick } from "../helpers/pick"
-import { useInvalidate } from "./invalidate"
+import { getSessionUser } from "../../auth/session.server"
+import { db } from "../../core/db.server"
+import { parseKeys } from "../../helpers/parse-keys"
+import { pick } from "../../helpers/pick"
+import { useInvalidate } from "../invalidate"
+import { CharactersModule } from "../worlds.$worldId.characters"
+import { ClocksManager } from "../worlds.$worldId.clocks"
+import { DiceRollForm } from "../worlds.$worldId.dice"
+import type { DiceRoll } from "../worlds.$worldId.dice/dice-roll-list"
+import { DiceRollList } from "../worlds.$worldId.dice/dice-roll-list"
+import { DashboardMosaic } from "./dashboard"
 
 export async function loader({ request, params }: LoaderArgs) {
   const { worldId } = parseKeys(params, ["worldId"])
@@ -81,6 +86,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardMosaic
+      modules={dashboardModules}
       moduleData={{
         characters: { characters: data.characters },
         clocks: { clocks: data.clocks },
@@ -91,4 +97,39 @@ export default function DashboardPage() {
       }}
     />
   )
+}
+
+const dashboardModules = {
+  characters: {
+    name: "Characters",
+    description: "Manage your characters",
+    component: CharactersModule,
+  },
+  clocks: {
+    name: "Clocks",
+    description:
+      "Track the progress of world forces, and other progressful things",
+    component: ClocksManager,
+  },
+  dice: {
+    name: "Dice",
+    description: "Roll some dice!",
+    component: function DiceModule(props: {
+      rolls: DiceRoll[]
+      rollFormVisible: boolean
+    }) {
+      return (
+        <div className="flex flex-col h-full">
+          <section className="flex-1 min-h-0">
+            <DiceRollList rolls={props.rolls} />
+          </section>
+          {props.rollFormVisible && (
+            <div className="p-4">
+              <DiceRollForm />
+            </div>
+          )}
+        </div>
+      )
+    },
+  },
 }

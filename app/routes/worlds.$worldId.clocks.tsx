@@ -7,12 +7,12 @@ import { z } from "zod"
 import { AuthContext } from "../auth/auth-context"
 import { requireMembership } from "../auth/membership"
 import { requireSessionUser } from "../auth/session.server"
-import { Clock } from "../clocks/clock"
 import { db } from "../core/db.server"
 import { FormAction, FormActionGroup } from "../helpers/form"
 import { parseKeys } from "../helpers/parse-keys"
 import { parseUnsignedInteger } from "../helpers/parse-unsigned-integer"
 import { useDebouncedCallback } from "../helpers/use-debounced-callback"
+import { ClockInput } from "../ui/clock-input"
 import { clearButtonClass } from "../ui/styles"
 import { getWorld } from "../world/world-db.server"
 import { getWorldEmitter } from "./worlds.$worldId.events/emitter"
@@ -137,9 +137,9 @@ export function ClocksManager({ clocks: clocksProp }: { clocks: ClockType[] }) {
           {clocks.map((clock) => (
             <div key={clock.id} className="rounded-md bg-black/25 p-4">
               {isSpectator ? (
-                <Clock {...clock} onProgressChange={() => {}} />
+                <ClockInput {...clock} onProgressChange={() => {}} />
               ) : (
-                <Clock
+                <ClockInput
                   {...clock}
                   onNameChange={(name) => {
                     updateClock({ id: clock.id, name })
