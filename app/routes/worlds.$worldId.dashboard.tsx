@@ -9,6 +9,7 @@ import { DiceRollList } from "../dice/dice-roll-list"
 import { parseKeys } from "../helpers/parse-keys"
 import { pick } from "../helpers/pick"
 import { useInvalidate } from "./invalidate"
+import CharactersModule from "./worlds.$worldId.characters"
 import { ClocksManager } from "./worlds.$worldId.clocks"
 import { DiceRollForm } from "./worlds.$worldId.dice"
 
@@ -49,9 +50,20 @@ export async function loader({ request, params }: LoaderArgs) {
     },
   })
 
+  const charactersFilter =
+    membership?.role === "OWNER"
+      ? { worldId }
+      : { AND: [{ worldId }, { hidden: false }] }
+
+  const characters = await db.character.findMany({
+    where: charactersFilter,
+    orderBy: { id: "asc" },
+  })
+
   return json({
     user: user && pick(user, ["name"]),
     membership: membership && pick(membership, ["role"]),
+    characters,
     clocks,
     diceLogs: diceLogs.reverse(),
   })
@@ -85,6 +97,9 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+      <section>
+        <CharactersModule characters={data.characters} />
+      </section>
     </div>
   )
 }

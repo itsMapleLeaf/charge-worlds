@@ -4,6 +4,7 @@ import { useContext } from "react"
 import TextArea from "react-expanding-textarea"
 import { AuthContext } from "../auth/auth-context"
 import { Clock } from "../clocks/clock"
+import type { Character } from "../generated/prisma"
 import { entriesTyped } from "../helpers/entries-typed"
 import { Counter, DotCounter } from "../ui/counter"
 import { Field } from "../ui/field"
@@ -19,7 +20,6 @@ import { CharacterColorButton } from "./character-color-button"
 import { CharacterDeleteButton } from "./character-delete-button"
 import { CharacterHideButton } from "./character-hide-button"
 import { CharacterImage } from "./character-image"
-import type { Character } from "./character-schema"
 
 export function CharacterSheetEditor({
   character,
@@ -34,11 +34,24 @@ export function CharacterSheetEditor({
   const isPlayer = auth.membership?.role === "PLAYER"
   const isGameMaster = auth.membership?.role === "OWNER"
   const isSpectator = !auth.membership
+
+  const actionLevels: Record<string, number> = {}
+  if (
+    typeof character.actionLevels === "object" &&
+    character.actionLevels !== null
+  ) {
+    for (const [key, value] of Object.entries(character.actionLevels)) {
+      if (typeof value === "number") {
+        actionLevels[key] = value
+      }
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-4 flex-wrap [&>*]:basis-48 [&>*]:flex-1">
         <div className="min-h-[20rem]">
-          <CharacterImage character={character} />
+          <CharacterImage src={character.imageUrl ?? undefined} />
         </div>
 
         <div className="grid content-between gap-4">
@@ -141,14 +154,14 @@ export function CharacterSheetEditor({
                           <CharacterActionRollButton
                             title={`Roll ${action}`}
                             intent={`${character.name}: ${action}`}
-                            poolSize={(character.actionLevels[action] ?? 0) + 1}
+                            poolSize={(actionLevels[action] ?? 0) + 1}
                           >
                             <Dices />
                           </CharacterActionRollButton>
                           <CharacterActionRollButton
                             title={`Roll ${action} with momentum`}
                             intent={`${character.name}: ${action} (+1)`}
-                            poolSize={(character.actionLevels[action] ?? 0) + 2}
+                            poolSize={(actionLevels[action] ?? 0) + 2}
                           >
                             <ChevronsRight />
                           </CharacterActionRollButton>
@@ -157,13 +170,13 @@ export function CharacterSheetEditor({
                     </div>
 
                     <DotCounter
-                      value={character.actionLevels[action] ?? 0}
+                      value={actionLevels[action] ?? 0}
                       max={4}
                       onChange={(level) => {
                         if (isSpectator) return
                         onCharacterChange({
                           actionLevels: {
-                            ...character.actionLevels,
+                            ...actionLevels,
                             [action]: level,
                           },
                         })

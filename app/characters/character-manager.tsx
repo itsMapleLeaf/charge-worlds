@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { EyeOff, Plus } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../auth/auth-context"
+import type { Character } from "../generated/prisma"
 import { useDebouncedCallback } from "../helpers/use-debounced-callback"
 import {
   clearButtonClass,
@@ -10,7 +11,6 @@ import {
   navLinkClass,
 } from "../ui/styles"
 import { characterColors } from "./character-colors"
-import type { Character } from "./character-schema"
 import { CharacterSheetEditor } from "./character-sheet-editor"
 
 export function CharacterManager({
@@ -20,7 +20,7 @@ export function CharacterManager({
   onUpdate,
 }: {
   characters: Character[]
-  onAdd: (name: string) => void
+  onAdd: () => void
   onRemove: (id: string) => void
   onUpdate: (id: string, data: Partial<Character>) => void
 }) {
@@ -71,10 +71,7 @@ export function CharacterManager({
               </button>
             ))}
             {auth.membership?.role === "OWNER" && (
-              <button
-                className={clearButtonClass}
-                onClick={() => onAdd("New Character")}
-              >
+              <button className={clearButtonClass} onClick={onAdd}>
                 <Plus />
                 Add new
               </button>

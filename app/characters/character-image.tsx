@@ -2,11 +2,10 @@ import clsx from "clsx"
 import { FileX, ImagePlus } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 import { LoadingSpinner } from "../ui/loading"
-import type { Character } from "./character-schema"
 
-export function CharacterImage({ character }: { character: Character }) {
-  return character.imageUrl ? (
-    <ImagePreview src={character.imageUrl} />
+export function CharacterImage({ src }: { src: string | undefined }) {
+  return src ? (
+    <ImagePreview src={src} />
   ) : (
     <div className="bg-black/25 rounded-md h-full">
       <DropzonePlaceholder />
