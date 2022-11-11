@@ -86,7 +86,7 @@ export default function DashboardPage() {
         clocks: { clocks: data.clocks },
         dice: {
           rolls: data.diceLogs,
-          rollFormVisible: data.membership?.role === "OWNER",
+          rollFormVisible: !!data.membership,
         },
       }}
     />
