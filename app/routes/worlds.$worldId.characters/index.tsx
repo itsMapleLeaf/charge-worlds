@@ -1,5 +1,6 @@
 import type { ActionArgs } from "@remix-run/node"
-import { useFetcher, useParams } from "@remix-run/react"
+import { useFetcher, useParams, useTransition } from "@remix-run/react"
+import { useEffect, useState } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
 import { requireSessionUser } from "../../auth/session.server"
@@ -8,6 +9,7 @@ import type { Character, Prisma } from "../../generated/prisma"
 import { FormAction, FormActionGroup } from "../../helpers/form"
 import { parseKeys } from "../../helpers/parse-keys"
 import { parseUnsignedInteger } from "../../helpers/parse-unsigned-integer"
+import { useDebouncedCallback } from "../../helpers/use-debounced-callback"
 import { emitWorldUpdate } from "../worlds.$worldId.events/emitter"
 import { CharacterManager } from "./character-manager"
 
@@ -78,14 +80,27 @@ export async function action({ request, params, ...args }: ActionArgs) {
   return characterActions.handleSubmit({ request, params, ...args })
 }
 
-export function CharactersModule({ characters }: { characters: Character[] }) {
-  const fetcher = useFetcher<typeof action>()
+export function CharactersModule({
+  characters: charactersProp,
+}: {
+  characters: Character[]
+}) {
   const { worldId } = parseKeys(useParams(), ["worldId"])
-  const actionRoute =
-    route("/worlds/:worldId/characters", { worldId }) + "?noreload"
+  const fetcher = useFetcher<typeof action>()
+  const submitDebounced = useDebouncedCallback(fetcher.submit, 800)
+  const [pendingCharacters, setPendingCharacters] = useState<Character[]>()
+  const transition = useTransition()
+  const actionRoute = route("/worlds/:worldId/characters", { worldId })
+
+  useEffect(() => {
+    if (transition.state === "idle") {
+      setPendingCharacters(undefined)
+    }
+  }, [transition.state])
+
   return (
     <CharacterManager
-      characters={characters}
+      characters={pendingCharacters ?? charactersProp}
       onAdd={() => {
         fetcher.submit(characterActions.formData("addCharacterAction", {}), {
           action: actionRoute,
@@ -102,7 +117,13 @@ export function CharactersModule({ characters }: { characters: Character[] }) {
         )
       }}
       onUpdate={(id, data) => {
-        fetcher.submit(
+        setPendingCharacters((characters) => {
+          return (characters ?? charactersProp).map((character) => {
+            return character.id === id ? { ...character, ...data } : character
+          })
+        })
+
+        submitDebounced(
           characterActions.formData("updateCharacterAction", {
             id,
             ...data,

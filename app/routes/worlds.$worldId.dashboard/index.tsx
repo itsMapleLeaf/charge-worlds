@@ -1,6 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import type { ShouldReloadFunction } from "@remix-run/react"
 import { useLoaderData, useParams } from "@remix-run/react"
 import { getSessionUser } from "../../auth/session.server"
 import { db } from "../../core/db.server"
@@ -69,12 +68,6 @@ export async function loader({ request, params }: LoaderArgs) {
     clocks,
     diceLogs: diceLogs.reverse(),
   })
-}
-
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
-  if (!submission) return false
-  const url = new URL(submission.action, window.location.origin)
-  return !url.searchParams.has("noreload")
 }
 
 export default function DashboardPage() {

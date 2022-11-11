@@ -1,5 +1,5 @@
 import type { ActionArgs } from "@remix-run/node"
-import { useFetcher, useParams } from "@remix-run/react"
+import { useFetcher, useParams, useTransition } from "@remix-run/react"
 import { Plus } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
 import { route } from "routes-gen"
@@ -90,12 +90,19 @@ export function ClocksManager({ clocks: clocksProp }: { clocks: ClockType[] }) {
   const thisRoute = route("/worlds/:worldId/clocks", { worldId })
   const fetcher = useFetcher<typeof action>()
   const submitDebounced = useDebouncedCallback(fetcher.submit, 500)
+  const transition = useTransition()
 
   const auth = useContext(AuthContext)
   const isSpectator = !auth.membership
 
-  const [clocks, setClocks] = useState(clocksProp)
-  useEffect(() => setClocks(clocksProp), [clocksProp])
+  const [pendingClocks, setPendingClocks] = useState<ClockType[]>()
+  const clocks = pendingClocks ?? clocksProp
+
+  useEffect(() => {
+    if (transition.state === "idle") {
+      setPendingClocks(undefined)
+    }
+  }, [transition.state])
 
   const updateClock = (data: {
     id: string
@@ -103,7 +110,7 @@ export function ClocksManager({ clocks: clocksProp }: { clocks: ClockType[] }) {
     progress?: number
     maxProgress?: number
   }) => {
-    setClocks(
+    setPendingClocks(
       clocks.map((clock) =>
         clock.id === data.id ? { ...clock, ...data } : clock,
       ),
@@ -125,7 +132,7 @@ export function ClocksManager({ clocks: clocksProp }: { clocks: ClockType[] }) {
   }
 
   const removeClock = (id: string) => {
-    setClocks(clocks.filter((clock) => clock.id !== id))
+    setPendingClocks(clocks.filter((clock) => clock.id !== id))
 
     submitDebounced(actionGroup.formData("removeClock", { clockId: id }), {
       action: thisRoute,
