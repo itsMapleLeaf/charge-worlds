@@ -8,7 +8,7 @@ import type { Character, Prisma } from "../../generated/prisma"
 import { FormAction, FormActionGroup } from "../../helpers/form"
 import { parseKeys } from "../../helpers/parse-keys"
 import { parseUnsignedInteger } from "../../helpers/parse-unsigned-integer"
-import { getWorldEmitter } from "../worlds.$worldId.events/emitter"
+import { emitWorldUpdate } from "../worlds.$worldId.events/emitter"
 import { CharacterManager } from "./character-manager"
 
 const addCharacterAction = new FormAction({
@@ -18,7 +18,7 @@ const addCharacterAction = new FormAction({
     await db.character.create({
       data: { worldId: params.worldId!, ownerId: user.id },
     })
-    getWorldEmitter(params.worldId!).emit("update")
+    emitWorldUpdate(params.worldId!, user.id)
   },
 })
 
@@ -27,11 +27,11 @@ const removeCharacterAction = new FormAction({
     id: z.string(),
   },
   async action(values, { request, params }) {
-    await requireSessionUser(request)
+    const user = await requireSessionUser(request)
     await db.character.delete({
       where: { id: values.id },
     })
-    getWorldEmitter(params.worldId!).emit("update")
+    emitWorldUpdate(params.worldId!, user.id)
   },
 })
 
@@ -58,12 +58,13 @@ const updateCharacterAction = new FormAction({
     color: z.string().optional(),
     imageUrl: z.string().optional(),
   },
-  async action({ id, ...data }, { params }) {
+  async action({ id, ...data }, { request, params }) {
+    const user = await requireSessionUser(request)
     await db.character.update({
       where: { id },
       data,
     })
-    getWorldEmitter(params.worldId!).emit("update")
+    emitWorldUpdate(params.worldId!, user.id)
   },
 })
 
@@ -80,13 +81,14 @@ export async function action({ request, params, ...args }: ActionArgs) {
 export function CharactersModule({ characters }: { characters: Character[] }) {
   const fetcher = useFetcher<typeof action>()
   const { worldId } = parseKeys(useParams(), ["worldId"])
-  const thisRoute = route("/worlds/:worldId/characters", { worldId })
+  const actionRoute =
+    route("/worlds/:worldId/characters", { worldId }) + "?noreload"
   return (
     <CharacterManager
       characters={characters}
       onAdd={() => {
         fetcher.submit(characterActions.formData("addCharacterAction", {}), {
-          action: thisRoute,
+          action: actionRoute,
           method: "post",
         })
       }}
@@ -94,7 +96,7 @@ export function CharactersModule({ characters }: { characters: Character[] }) {
         fetcher.submit(
           characterActions.formData("removeCharacterAction", { id }),
           {
-            action: thisRoute,
+            action: actionRoute,
             method: "post",
           },
         )
@@ -114,7 +116,7 @@ export function CharactersModule({ characters }: { characters: Character[] }) {
             imageUrl: data.imageUrl ?? undefined,
           }),
           {
-            action: thisRoute,
+            action: actionRoute,
             method: "post",
           },
         )

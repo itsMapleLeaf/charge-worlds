@@ -15,17 +15,18 @@ import { useDebouncedCallback } from "../helpers/use-debounced-callback"
 import { ClockInput } from "../ui/clock-input"
 import { clearButtonClass } from "../ui/styles"
 import { getWorld } from "../world/world-db.server"
-import { getWorldEmitter } from "./worlds.$worldId.events/emitter"
+import { emitWorldUpdate } from "./worlds.$worldId.events/emitter"
 
 const addClockAction = new FormAction({
   fields: {},
-  async action(values, { params }) {
+  async action(values, { request, params }) {
+    const user = await requireSessionUser(request)
     await db.clock.create({
       data: {
         worldId: params.worldId!,
       },
     })
-    getWorldEmitter(params.worldId!).emit("update")
+    emitWorldUpdate(params.worldId!, user.id)
   },
 })
 
@@ -33,11 +34,12 @@ const removeClockAction = new FormAction({
   fields: {
     clockId: z.string(),
   },
-  async action(values, { params }) {
+  async action(values, { request, params }) {
+    const user = await requireSessionUser(request)
     await db.clock.delete({
       where: { id: values.clockId },
     })
-    getWorldEmitter(params.worldId!).emit("update")
+    emitWorldUpdate(params.worldId!, user.id)
   },
 })
 
@@ -48,12 +50,13 @@ const updateClockAction = new FormAction({
     progress: z.string().transform(parseUnsignedInteger).optional(),
     maxProgress: z.string().transform(parseUnsignedInteger).optional(),
   },
-  async action({ clockId, ...data }, { params }) {
+  async action({ clockId, ...data }, { request, params }) {
+    const user = await requireSessionUser(request)
     await db.clock.update({
       where: { id: clockId },
       data,
     })
-    getWorldEmitter(params.worldId!).emit("update")
+    emitWorldUpdate(params.worldId!, user.id)
   },
 })
 

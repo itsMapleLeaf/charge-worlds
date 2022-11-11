@@ -1,8 +1,7 @@
 import type { LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
+import type { ShouldReloadFunction } from "@remix-run/react"
 import { useLoaderData, useParams } from "@remix-run/react"
-import { useEffect } from "react"
-import { route } from "routes-gen"
 import { getSessionUser } from "../../auth/session.server"
 import { db } from "../../core/db.server"
 import { parseKeys } from "../../helpers/parse-keys"
@@ -13,6 +12,7 @@ import { ClocksManager } from "../worlds.$worldId.clocks"
 import { DiceRollForm } from "../worlds.$worldId.dice"
 import type { DiceRoll } from "../worlds.$worldId.dice/dice-roll-list"
 import { DiceRollList } from "../worlds.$worldId.dice/dice-roll-list"
+import { useWorldEvents } from "../worlds.$worldId.events"
 import { DashboardMosaic } from "./dashboard"
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -63,7 +63,7 @@ export async function loader({ request, params }: LoaderArgs) {
   })
 
   return json({
-    user: user && pick(user, ["name"]),
+    user: user && pick(user, ["name", "id"]),
     membership: membership && pick(membership, ["role"]),
     characters,
     clocks,
@@ -71,18 +71,22 @@ export async function loader({ request, params }: LoaderArgs) {
   })
 }
 
+export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+  if (!submission) return false
+  const url = new URL(submission.action, window.location.origin)
+  return !url.searchParams.has("noreload")
+}
+
 export default function DashboardPage() {
   const { worldId } = parseKeys(useParams(), ["worldId"])
   const data = useLoaderData<typeof loader>()
   const invalidate = useInvalidate()
 
-  useEffect(() => {
-    const source = new EventSource(
-      route("/worlds/:worldId/events", { worldId }),
-    )
-    source.addEventListener("message", invalidate)
-    return () => source.close()
-  }, [invalidate, worldId])
+  useWorldEvents(worldId, (event) => {
+    if (event.sourceUserId !== data.user?.id) {
+      invalidate()
+    }
+  })
 
   return (
     <DashboardMosaic
