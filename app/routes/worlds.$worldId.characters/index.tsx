@@ -1,6 +1,6 @@
 import type { ActionArgs } from "@remix-run/node"
-import { useFetcher, useParams, useTransition } from "@remix-run/react"
-import { useEffect, useState } from "react"
+import { useFetcher, useParams } from "@remix-run/react"
+import { useState } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
 import { requireSessionUser } from "../../auth/session.server"
@@ -10,6 +10,7 @@ import { FormAction, FormActionGroup } from "../../helpers/form"
 import { parseKeys } from "../../helpers/parse-keys"
 import { parseUnsignedInteger } from "../../helpers/parse-unsigned-integer"
 import { useDebouncedCallback } from "../../helpers/use-debounced-callback"
+import { useIdleTransitionCallback } from "../../helpers/use-idle-transition-callback"
 import { emitWorldUpdate } from "../worlds.$worldId.events/emitter"
 import { CharacterManager } from "./character-manager"
 
@@ -89,14 +90,13 @@ export function CharactersModule({
   const fetcher = useFetcher<typeof action>()
   const submitDebounced = useDebouncedCallback(fetcher.submit, 800)
   const [pendingCharacters, setPendingCharacters] = useState<Character[]>()
-  const transition = useTransition()
   const actionRoute = route("/worlds/:worldId/characters", { worldId })
 
-  useEffect(() => {
-    if (transition.state === "idle") {
+  useIdleTransitionCallback(() => {
+    if (!submitDebounced.active()) {
       setPendingCharacters(undefined)
     }
-  }, [transition.state])
+  })
 
   return (
     <CharacterManager

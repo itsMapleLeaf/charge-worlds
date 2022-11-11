@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react"
+import { useMemo, useRef } from "react"
 import { useLatestRef } from "./react"
 
 export function useDebouncedCallback<Args extends unknown[]>(
@@ -7,13 +7,17 @@ export function useDebouncedCallback<Args extends unknown[]>(
 ) {
   const callbackRef = useLatestRef(callback)
   const timeoutRef = useRef<number>()
-  return useCallback(
-    (...args: Args) => {
+  const activeRef = useRef(false)
+  return useMemo(() => {
+    const callback = (...args: Args) => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      activeRef.current = true
       timeoutRef.current = window.setTimeout(() => {
         callbackRef.current(...args)
+        activeRef.current = false
       }, delay)
-    },
-    [callbackRef, delay],
-  )
+    }
+    callback.active = () => activeRef.current
+    return callback
+  }, [callbackRef, delay])
 }
