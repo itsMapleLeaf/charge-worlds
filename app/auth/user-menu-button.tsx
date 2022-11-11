@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react"
+import { Form } from "@remix-run/react"
 import { Menu, MenuButton, MenuItem, useMenuState } from "ariakit"
 import { LogOut, User } from "lucide-react"
 import { route } from "routes-gen"
@@ -28,15 +28,18 @@ export function UserMenuButton({
         )}
       </MenuButton>
       <Menu state={menu} className={menuPanelClass} portal>
-        <MenuItem
-          as={Link}
-          to={route("/auth/logout")}
-          className={menuItemClass}
+        <Form
+          method="post"
+          action={route("/auth/logout")}
+          reloadDocument
+          className="contents"
         >
-          <div className="flex gap-2 items-center leading-none">
-            <LogOut /> Sign out
-          </div>
-        </MenuItem>
+          <MenuItem as="button" type="submit" className={menuItemClass}>
+            <div className="flex gap-2 items-center leading-none">
+              <LogOut /> Sign out
+            </div>
+          </MenuItem>
+        </Form>
       </Menu>
     </>
   )
