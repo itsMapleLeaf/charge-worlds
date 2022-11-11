@@ -2,7 +2,7 @@ import { Select, SelectItem, SelectPopover, useSelectState } from "ariakit"
 import clsx from "clsx"
 import cuid from "cuid"
 import { ChevronDown, Maximize2, SeparatorVertical, X } from "lucide-react"
-import { createContext, useContext } from "react"
+import { createContext, createElement, useContext } from "react"
 import type { MosaicBranch, MosaicNode } from "react-mosaic-component"
 import {
   Mosaic,
@@ -18,8 +18,8 @@ import {
   menuItemClass,
   menuPanelClass,
 } from "../ui/styles"
+import type { DashboardModuleData } from "./dashboard-module-library"
 import { dashboardModuleLibrary } from "./dashboard-module-library"
-import { DashboardModuleView } from "./dashboard-module-view"
 
 const mosaicNodeSchema: z.ZodType<MosaicNode<string>> = z.union([
   z.string(),
@@ -123,7 +123,11 @@ export function DashboardNewWindowButton({
   )
 }
 
-export function DashboardMosaic({ worldId }: { worldId: string }) {
+export function DashboardMosaic({
+  moduleData,
+}: {
+  moduleData: DashboardModuleData
+}) {
   const { mosaic, setMosaic } = useContext(DashboardContext)
   return (
     <Mosaic
@@ -142,7 +146,7 @@ export function DashboardMosaic({ worldId }: { worldId: string }) {
             </div>
           )}
         >
-          <DashboardWindowContent windowId={id} worldId={worldId} />
+          <DashboardWindowContent windowId={id} moduleData={moduleData} />
         </MosaicWindow>
       )}
       zeroStateView={
@@ -162,24 +166,28 @@ export function DashboardMosaic({ worldId }: { worldId: string }) {
 
 function DashboardWindowContent({
   windowId,
-  worldId,
+  moduleData,
 }: {
   windowId: string
-  worldId: string
+  moduleData: DashboardModuleData
 }) {
   const { windowModules } = useContext(DashboardContext)
+
   const moduleId =
     windowModules[windowId]?.moduleId ?? Object.keys(dashboardModuleLibrary)[0]
-  const module = moduleId ? dashboardModuleLibrary[moduleId] : undefined
+
+  const module = moduleId
+    ? dashboardModuleLibrary[moduleId as keyof typeof dashboardModuleLibrary]
+    : undefined
 
   return (
     <section className="thin-scrollbar w-full h-full bg-slate-800 overflow-y-auto">
       {module && moduleId ? (
-        <DashboardModuleView
-          moduleId={moduleId}
-          module={module}
-          worldId={worldId}
-        />
+        // lord please save me from this purgatory
+        createElement(
+          module.component as any,
+          moduleData[moduleId as keyof DashboardModuleData] as any,
+        )
       ) : (
         <p className="p-4 opacity-50 text-2xl font-light">
           Couldn&apos;t find that module 🤔
@@ -211,12 +219,17 @@ function DashboardModuleSelect({ windowId }: { windowId: string }) {
       >
         <ChevronDown />
         <span className="text-lg font-medium flex-1 min-w-0 overflow-hidden overflow-ellipsis whitespace-nowrap">
-          {dashboardModuleLibrary[select.value]?.name}
+          {
+            dashboardModuleLibrary[
+              select.value as keyof typeof dashboardModuleLibrary
+            ]?.name
+          }
         </span>
       </Select>
       <SelectPopover state={select} className={menuPanelClass}>
         {moduleIds.map((id) => {
-          const module = dashboardModuleLibrary[id]
+          const module =
+            dashboardModuleLibrary[id as keyof typeof dashboardModuleLibrary]
           return (
             <SelectItem key={id} value={id} className={menuItemClass}>
               <p>{module?.name ?? "⚠ unknown module"}</p>

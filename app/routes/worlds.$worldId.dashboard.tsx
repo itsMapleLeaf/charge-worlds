@@ -5,13 +5,10 @@ import { useEffect } from "react"
 import { route } from "routes-gen"
 import { getSessionUser } from "../auth/session.server"
 import { db } from "../core/db.server"
-import { DiceRollList } from "../dice/dice-roll-list"
+import { DashboardMosaic } from "../dashboard/dashboard"
 import { parseKeys } from "../helpers/parse-keys"
 import { pick } from "../helpers/pick"
 import { useInvalidate } from "./invalidate"
-import CharactersModule from "./worlds.$worldId.characters"
-import { ClocksManager } from "./worlds.$worldId.clocks"
-import { DiceRollForm } from "./worlds.$worldId.dice"
 
 export async function loader({ request, params }: LoaderArgs) {
   const { worldId } = parseKeys(params, ["worldId"])
@@ -83,23 +80,15 @@ export default function DashboardPage() {
   }, [invalidate, worldId])
 
   return (
-    <div className="grid grid-flow-col auto-cols-fr h-full">
-      <section>
-        <ClocksManager clocks={data.clocks} />
-      </section>
-      <div className="flex flex-col">
-        <section className="flex-1 min-h-0">
-          <DiceRollList rolls={data.diceLogs} />
-        </section>
-        {data.membership && (
-          <div className="p-4">
-            <DiceRollForm />
-          </div>
-        )}
-      </div>
-      <section>
-        <CharactersModule characters={data.characters} />
-      </section>
-    </div>
+    <DashboardMosaic
+      moduleData={{
+        characters: { characters: data.characters },
+        clocks: { clocks: data.clocks },
+        dice: {
+          rolls: data.diceLogs,
+          rollFormVisible: data.membership?.role === "OWNER",
+        },
+      }}
+    />
   )
 }

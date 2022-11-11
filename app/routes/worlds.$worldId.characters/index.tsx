@@ -77,11 +77,7 @@ export async function action({ request, params, ...args }: ActionArgs) {
   return characterActions.handleSubmit({ request, params, ...args })
 }
 
-export default function CharactersModule({
-  characters,
-}: {
-  characters: Character[]
-}) {
+export function CharactersModule({ characters }: { characters: Character[] }) {
   const fetcher = useFetcher<typeof action>()
   const { worldId } = parseKeys(useParams(), ["worldId"])
   const thisRoute = route("/worlds/:worldId/characters", { worldId })
