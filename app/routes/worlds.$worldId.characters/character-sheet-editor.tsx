@@ -69,7 +69,7 @@ export function CharacterSheetEditor({
               readOnly={isSpectator}
             />
           </Field>
-          <Field label="Group">
+          <Field label="Profession(s)">
             <DebouncedInput
               type="text"
               placeholder="Whom do you side with?"
