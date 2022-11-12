@@ -2,7 +2,6 @@ import type { ActionArgs, TypedResponse } from "@remix-run/node"
 import type { z, ZodType, ZodTypeDef } from "zod"
 import { ZodString } from "zod"
 import { assert } from "./assert"
-import { raise } from "./errors"
 import { mapValues } from "./object"
 
 type FormFieldSchema = ZodType<unknown, ZodTypeDef, string | undefined>
@@ -47,6 +46,26 @@ export class FormAction<Fields extends FormFieldRecord = FormFieldRecord> {
       }
     }
     return formData
+  }
+
+  parseSubmission(input: FormData | undefined) {
+    if (!input) return
+
+    const values = {} as UndefinedToOptional<{
+      [K in keyof Fields]: z.output<Fields[K]>
+    }>
+
+    for (const [name, schema] of Object.entries(this.args.fields)) {
+      const value = input.get(name) ?? undefined
+      const result = schema.safeParse(value)
+      if (!result.success) return
+      if (result.data !== undefined) {
+        // @ts-expect-error
+        values[name] = result.data
+      }
+    }
+
+    return values
   }
 }
 
@@ -108,11 +127,12 @@ export class FormActionGroup<Actions extends Record<string, FormAction<any>>> {
       )
     }
 
-    const values = mapValues(valueResults, (result) =>
-      result.success
-        ? result.data
-        : raise("Unexpected error: failed to parse form values"),
-    )
+    const values: Record<string, any> = {}
+    for (const [name, result] of Object.entries(valueResults)) {
+      if (result.data !== undefined) {
+        values[name] = result.data
+      }
+    }
 
     try {
       const data = await action.action(values, args)

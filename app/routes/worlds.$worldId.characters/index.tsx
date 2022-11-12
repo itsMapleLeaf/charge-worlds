@@ -1,16 +1,13 @@
 import type { ActionArgs } from "@remix-run/node"
 import { useFetcher, useParams } from "@remix-run/react"
-import { useState } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
 import { requireSessionUser } from "../../auth/session.server"
 import { db } from "../../core/db.server"
-import type { Character, Prisma } from "../../generated/prisma"
+import type { Character } from "../../generated/prisma"
 import { FormAction, FormActionGroup } from "../../helpers/form"
 import { parseKeys } from "../../helpers/parse-keys"
 import { parseUnsignedInteger } from "../../helpers/parse-unsigned-integer"
-import { useDebouncedCallback } from "../../helpers/use-debounced-callback"
-import { useIdleTransitionCallback } from "../../helpers/use-idle-transition-callback"
 import { emitWorldUpdate } from "../worlds.$worldId.events/emitter"
 import { CharacterManager } from "./character-manager"
 
@@ -40,7 +37,7 @@ const removeCharacterAction = new FormAction({
 
 const updateCharacterAction = new FormAction({
   fields: {
-    id: z.string().optional(),
+    id: z.string(),
     name: z.string().optional(),
     group: z.string().optional(),
     concept: z.string().optional(),
@@ -51,13 +48,15 @@ const updateCharacterAction = new FormAction({
     condition: z.string().optional(),
     actionLevels: z
       .string()
-      .transform((json): Prisma.InputJsonValue => JSON.parse(json))
+      .transform((json) => JSON.parse(json))
       .optional(),
     talents: z.string().optional(),
     hidden: z
       .string()
-      .transform((value) => value === "true")
-      .optional(),
+      .optional()
+      .transform((value) => {
+        return value === "true" ? true : value === "false" ? false : undefined
+      }),
     color: z.string().optional(),
     imageUrl: z.string().optional(),
   },
@@ -81,26 +80,25 @@ export async function action({ request, params, ...args }: ActionArgs) {
   return characterActions.handleSubmit({ request, params, ...args })
 }
 
-export function CharactersModule({
-  characters: charactersProp,
-}: {
-  characters: Character[]
-}) {
+export function CharactersModule(props: { characters: Character[] }) {
   const { worldId } = parseKeys(useParams(), ["worldId"])
   const fetcher = useFetcher<typeof action>()
-  const submitDebounced = useDebouncedCallback(fetcher.submit, 800)
-  const [pendingCharacters, setPendingCharacters] = useState<Character[]>()
   const actionRoute = route("/worlds/:worldId/characters", { worldId })
 
-  useIdleTransitionCallback(() => {
-    if (!submitDebounced.active()) {
-      setPendingCharacters(undefined)
-    }
-  })
+  let characters = props.characters
+
+  const updateSubmission = updateCharacterAction.parseSubmission(
+    fetcher.submission?.formData,
+  )
+  if (updateSubmission) {
+    characters = characters.map((c) =>
+      c.id === updateSubmission.id ? { ...c, ...updateSubmission } : c,
+    )
+  }
 
   return (
     <CharacterManager
-      characters={pendingCharacters ?? charactersProp}
+      characters={characters}
       onAdd={() => {
         fetcher.submit(characterActions.formData("addCharacterAction", {}), {
           action: actionRoute,
@@ -117,13 +115,7 @@ export function CharactersModule({
         )
       }}
       onUpdate={(id, data) => {
-        setPendingCharacters((characters) => {
-          return (characters ?? charactersProp).map((character) => {
-            return character.id === id ? { ...character, ...data } : character
-          })
-        })
-
-        submitDebounced(
+        fetcher.submit(
           characterActions.formData("updateCharacterAction", {
             id,
             ...data,
@@ -132,7 +124,7 @@ export function CharactersModule({
             actionLevels: data.actionLevels
               ? JSON.stringify(data.actionLevels)
               : undefined,
-            hidden: data.hidden ? "true" : "false",
+            hidden: data.hidden !== undefined ? String(data.hidden) : undefined,
             color: data.color ?? undefined,
             imageUrl: data.imageUrl ?? undefined,
           }),

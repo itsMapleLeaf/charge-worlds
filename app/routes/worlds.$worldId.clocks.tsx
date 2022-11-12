@@ -1,7 +1,7 @@
 import type { ActionArgs } from "@remix-run/node"
 import { useFetcher, useParams } from "@remix-run/react"
 import { Plus } from "lucide-react"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
 import { AuthContext } from "../auth/auth-context"
@@ -11,8 +11,6 @@ import { db } from "../core/db.server"
 import { FormAction, FormActionGroup } from "../helpers/form"
 import { parseKeys } from "../helpers/parse-keys"
 import { parseUnsignedInteger } from "../helpers/parse-unsigned-integer"
-import { useDebouncedCallback } from "../helpers/use-debounced-callback"
-import { useIdleTransitionCallback } from "../helpers/use-idle-transition-callback"
 import { ClockInput } from "../ui/clock-input"
 import { clearButtonClass } from "../ui/styles"
 import { getWorld } from "../world/world-db.server"
@@ -86,23 +84,27 @@ export type ClockType = {
   maxProgress: number
 }
 
-export function ClocksManager({ clocks: clocksProp }: { clocks: ClockType[] }) {
+export function ClocksManager(props: { clocks: ClockType[] }) {
   const { worldId } = parseKeys(useParams(), ["worldId"])
   const thisRoute = route("/worlds/:worldId/clocks", { worldId })
   const fetcher = useFetcher<typeof action>()
-  const submitDebounced = useDebouncedCallback(fetcher.submit, 500)
 
   const auth = useContext(AuthContext)
   const isSpectator = !auth.membership
 
-  const [pendingClocks, setPendingClocks] = useState<ClockType[]>()
-  const clocks = pendingClocks ?? clocksProp
+  let clocks = props.clocks
 
-  useIdleTransitionCallback(() => {
-    if (!submitDebounced.active()) {
-      setPendingClocks(undefined)
-    }
-  })
+  const updateSubmission = updateClockAction.parseSubmission(
+    fetcher.submission?.formData,
+  )
+  if (updateSubmission) {
+    clocks = clocks.map((clock) => {
+      if (clock.id === updateSubmission.clockId) {
+        return { ...clock, ...updateSubmission }
+      }
+      return clock
+    })
+  }
 
   const updateClock = (data: {
     id: string
@@ -110,13 +112,7 @@ export function ClocksManager({ clocks: clocksProp }: { clocks: ClockType[] }) {
     progress?: number
     maxProgress?: number
   }) => {
-    setPendingClocks(
-      clocks.map((clock) =>
-        clock.id === data.id ? { ...clock, ...data } : clock,
-      ),
-    )
-
-    submitDebounced(
+    fetcher.submit(
       actionGroup.formData("updateClock", {
         clockId: data.id,
         name: data.name,

@@ -1,12 +1,15 @@
 import clsx from "clsx"
 import { ChevronsRight, Dices } from "lucide-react"
 import { useContext } from "react"
-import TextArea from "react-expanding-textarea"
 import { AuthContext } from "../../auth/auth-context"
 import type { Character } from "../../generated/prisma"
 import { entriesTyped } from "../../helpers/entries-typed"
 import { ClockInput } from "../../ui/clock-input"
 import { Counter, DotCounter } from "../../ui/counter"
+import {
+  DebouncedExpandingTextArea,
+  DebouncedInput,
+} from "../../ui/debounced-input"
 import { Field } from "../../ui/field"
 import {
   dividerClass,
@@ -56,33 +59,34 @@ export function CharacterSheetEditor({
 
         <div className="grid content-between gap-4">
           <Field label="Name">
-            <input
+            <DebouncedInput
               type="text"
               placeholder="What should we call you?"
               value={character.name}
-              onChange={(e) => onCharacterChange({ name: e.target.value })}
+              onChangeText={(name) => onCharacterChange({ name })}
+              debouncePeriod={500}
               className={inputClass}
               readOnly={isSpectator}
             />
           </Field>
           <Field label="Group">
-            <input
+            <DebouncedInput
               type="text"
               placeholder="Whom do you side with?"
               value={character.group}
-              onChange={(e) => onCharacterChange({ group: e.target.value })}
+              onChangeText={(group) => onCharacterChange({ group })}
+              debouncePeriod={500}
               className={inputClass}
               readOnly={isSpectator}
             />
           </Field>
           <Field label="Reference image">
-            <input
+            <DebouncedInput
               className={inputClass}
               placeholder="https://the/image.png"
               value={character.imageUrl ?? ""}
-              onChange={(event) =>
-                onCharacterChange({ imageUrl: event.target.value })
-              }
+              onChangeText={(imageUrl) => onCharacterChange({ imageUrl })}
+              debouncePeriod={500}
               readOnly={isSpectator}
             />
           </Field>
@@ -113,10 +117,11 @@ export function CharacterSheetEditor({
             />
           </div>
           <Field label="Condition">
-            <TextArea
+            <DebouncedExpandingTextArea
               placeholder="How're you doing?"
               value={character.condition}
-              onChange={(e) => onCharacterChange({ condition: e.target.value })}
+              onChangeText={(condition) => onCharacterChange({ condition })}
+              debouncePeriod={500}
               className={textAreaClass}
               readOnly={isSpectator}
             />
@@ -194,37 +199,41 @@ export function CharacterSheetEditor({
 
       <div className="grid gap-4">
         <Field label="Concept">
-          <TextArea
+          <DebouncedExpandingTextArea
             placeholder="Describe yourself."
             value={character.concept}
-            onChange={(e) => onCharacterChange({ concept: e.target.value })}
+            onChangeText={(concept) => onCharacterChange({ concept })}
+            debouncePeriod={500}
             className={textAreaClass}
             readOnly={isSpectator}
           />
         </Field>
         <Field label="Appearance">
-          <TextArea
+          <DebouncedExpandingTextArea
             placeholder="How do you look? What do you like to wear?"
             value={character.appearance}
-            onChange={(e) => onCharacterChange({ appearance: e.target.value })}
+            onChangeText={(appearance) => onCharacterChange({ appearance })}
+            debouncePeriod={500}
             className={textAreaClass}
             readOnly={isSpectator}
           />
         </Field>
         <Field label="Ties">
-          <TextArea
+          <DebouncedExpandingTextArea
             placeholder="Who are your friends, family, and enemies?"
             value={character.ties}
-            onChange={(e) => onCharacterChange({ ties: e.target.value })}
+            onChangeText={(ties) => onCharacterChange({ ties })}
+            debouncePeriod={500}
             className={textAreaClass}
             readOnly={isSpectator}
           />
         </Field>
         <Field label="Talents">
-          <TextArea
+          <DebouncedExpandingTextArea
             placeholder="stat buffs stat buffs stat buffs"
             value={character.talents}
-            onChange={(e) => onCharacterChange({ talents: e.target.value })}
+            onChangeText={(talents) => onCharacterChange({ talents })}
+            debouncePeriod={500}
             className={textAreaClass}
             readOnly={isSpectator}
           />
