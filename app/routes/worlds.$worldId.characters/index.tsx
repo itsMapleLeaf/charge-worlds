@@ -119,8 +119,9 @@ export function CharactersModule(props: { characters: Character[] }) {
           characterActions.formData("updateCharacterAction", {
             id,
             ...data,
-            momentum: data.momentum ? String(data.momentum) : undefined,
-            stress: data.stress ? String(data.stress) : undefined,
+            momentum:
+              data.momentum !== undefined ? String(data.momentum) : undefined,
+            stress: data.stress !== undefined ? String(data.stress) : undefined,
             actionLevels: data.actionLevels
               ? JSON.stringify(data.actionLevels)
               : undefined,
