@@ -9,7 +9,7 @@ import {
   maxWidthContainerClass,
   navLinkClass,
 } from "../../ui/styles"
-import { characterColors } from "./character-colors"
+import { characterColors, defaultCharacterColor } from "./character-colors"
 import { CharacterSheetEditor } from "./character-sheet-editor"
 
 export function CharacterManager({
@@ -33,7 +33,7 @@ export function CharacterManager({
     characters[0]
 
   const colorClasses =
-    characterColors[currentCharacter?.color ?? "gray"] ?? characterColors.gray!
+    characterColors[currentCharacter?.color ?? "gray"] ?? defaultCharacterColor
 
   return (
     <div

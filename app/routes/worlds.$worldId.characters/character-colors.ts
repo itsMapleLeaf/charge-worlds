@@ -5,11 +5,13 @@ export type CharacterColorClasses = {
   border: string
 }
 
+export const defaultCharacterColor = {
+  background: clsx("bg-neutral-800"),
+  border: clsx("bg-neutral-700"),
+}
+
 export const characterColors: Record<string, CharacterColorClasses> = {
-  gray: {
-    background: clsx("bg-slate-800"),
-    border: clsx("border-gray-600"),
-  },
+  neutral: defaultCharacterColor,
   red: {
     background: clsx("bg-[#612323]"),
     border: clsx("border-[#782b2b]"),
