@@ -38,19 +38,19 @@ const removeCharacterAction = new FormAction({
 const updateCharacterAction = new FormAction({
   fields: {
     id: z.string(),
-    name: z.string().optional(),
-    group: z.string().optional(),
-    concept: z.string().optional(),
-    appearance: z.string().optional(),
-    ties: z.string().optional(),
+    name: z.string().max(128).optional(),
+    group: z.string().max(128).optional(),
+    concept: z.string().max(50_000).optional(),
+    appearance: z.string().max(50_000).optional(),
+    ties: z.string().max(50_000).optional(),
+    condition: z.string().max(50_000).optional(),
+    talents: z.string().max(50_000).optional(),
     momentum: z.string().transform(parseUnsignedInteger).optional(),
     stress: z.string().transform(parseUnsignedInteger).optional(),
-    condition: z.string().optional(),
     actionLevels: z
       .string()
       .transform((json) => JSON.parse(json))
       .optional(),
-    talents: z.string().optional(),
     hidden: z
       .string()
       .optional()

@@ -20,7 +20,7 @@ const addDiceLog = new FormAction({
     pool: z
       .string()
       .transform((value) => z.number().int().parse(Number(value))),
-    intent: z.string().optional(),
+    intent: z.string().max(256).optional(),
   },
   async action(values, { request, params }) {
     const user = await requireSessionUser(request)
