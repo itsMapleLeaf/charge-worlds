@@ -1,3 +1,7 @@
+import { useEffect } from "react"
+import ReconnectingEventSource from "reconnecting-eventsource"
+import { useLatestRef } from "./react"
+
 type Cleanup = () => void
 
 const encoder = new TextEncoder()
@@ -28,4 +32,15 @@ export function eventStream(
       "Connection": "keep-alive",
     },
   })
+}
+
+export function useEventSource(url: string, callback: (data: string) => void) {
+  const callbackRef = useLatestRef(callback)
+  useEffect(() => {
+    const source = new ReconnectingEventSource(url)
+    source.addEventListener("message", (event) => {
+      callbackRef.current(String(event.data))
+    })
+    return () => source.close()
+  }, [callbackRef, url])
 }
