@@ -1,16 +1,18 @@
 import type { ComponentProps } from "react"
-import { useState } from "react"
+import { createElement, useState } from "react"
 import TextArea from "react-expanding-textarea"
 import { autoRef } from "../helpers/react"
 import { useDebouncedCallback } from "../helpers/use-debounced-callback"
 
-export type DebouncedInputProps = {
+export type DebouncedInputOptions = {
   value: string
   onChangeText: (value: string) => void
   debouncePeriod: number
 }
 
-export function useDebouncedInput(props: DebouncedInputProps) {
+export type DebouncedInputProps = ReturnType<typeof useDebouncedInput>
+
+export function useDebouncedInput(props: DebouncedInputOptions) {
   const [pendingValue, setPendingValue] = useState<string>()
 
   const onChangeTextDebounced = useDebouncedCallback((text: string) => {
@@ -27,46 +29,38 @@ export function useDebouncedInput(props: DebouncedInputProps) {
   }
 }
 
-export const DebouncedInput = autoRef(function DebouncedInput({
-  value,
-  debouncePeriod,
-  onChangeText,
-  ...props
-}: ComponentProps<"input"> & DebouncedInputProps) {
-  return (
-    <input
-      {...props}
-      {...useDebouncedInput({ debouncePeriod, onChangeText, value })}
-    />
-  )
-})
-
-export const DebouncedTextArea = autoRef(function DebouncedTextArea({
-  value,
-  debouncePeriod,
-  onChangeText,
-  ...props
-}: ComponentProps<"textarea"> & DebouncedInputProps) {
-  return (
-    <textarea
-      {...props}
-      {...useDebouncedInput({ debouncePeriod, onChangeText, value })}
-    />
-  )
-})
-
-export const DebouncedExpandingTextArea = autoRef(
-  function DebouncedExpandingTextArea({
+function createDebouncedInputComponent<C extends React.ElementType>(
+  component: C,
+  name: string,
+) {
+  function Component({
     value,
     debouncePeriod,
     onChangeText,
     ...props
-  }: ComponentProps<typeof TextArea> & DebouncedInputProps) {
-    return (
-      <TextArea
-        {...props}
-        {...useDebouncedInput({ debouncePeriod, onChangeText, value })}
-      />
-    )
-  },
+  }: ComponentProps<C> & DebouncedInputOptions) {
+    return createElement(component, {
+      ...props,
+      ...useDebouncedInput({ value, debouncePeriod, onChangeText }),
+    })
+  }
+
+  Component.displayName = name
+
+  return autoRef(Component)
+}
+
+export const DebouncedInput = createDebouncedInputComponent(
+  "input",
+  "DebouncedInput",
+)
+
+export const DebouncedTextArea = createDebouncedInputComponent(
+  "textarea",
+  "DebouncedTextArea",
+)
+
+export const DebouncedExpandingTextArea = createDebouncedInputComponent(
+  TextArea,
+  "DebouncedExpandingTextArea",
 )
