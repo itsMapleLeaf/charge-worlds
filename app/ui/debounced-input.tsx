@@ -27,22 +27,46 @@ export function useDebouncedInput(props: DebouncedInputProps) {
   }
 }
 
-export const DebouncedInput = autoRef(function DebouncedInput(
-  props: ComponentProps<"input"> & DebouncedInputProps,
-) {
-  return <input {...props} {...useDebouncedInput(props)} />
+export const DebouncedInput = autoRef(function DebouncedInput({
+  value,
+  debouncePeriod,
+  onChangeText,
+  ...props
+}: ComponentProps<"input"> & DebouncedInputProps) {
+  return (
+    <input
+      {...props}
+      {...useDebouncedInput({ debouncePeriod, onChangeText, value })}
+    />
+  )
 })
 
-export const DebouncedTextArea = autoRef(function DebouncedTextArea(
-  props: ComponentProps<"textarea"> & DebouncedInputProps,
-) {
-  return <textarea {...props} {...useDebouncedInput(props)} />
+export const DebouncedTextArea = autoRef(function DebouncedTextArea({
+  value,
+  debouncePeriod,
+  onChangeText,
+  ...props
+}: ComponentProps<"textarea"> & DebouncedInputProps) {
+  return (
+    <textarea
+      {...props}
+      {...useDebouncedInput({ debouncePeriod, onChangeText, value })}
+    />
+  )
 })
 
 export const DebouncedExpandingTextArea = autoRef(
-  function DebouncedExpandingTextArea(
-    props: ComponentProps<typeof TextArea> & DebouncedInputProps,
-  ) {
-    return <TextArea {...props} {...useDebouncedInput(props)} />
+  function DebouncedExpandingTextArea({
+    value,
+    debouncePeriod,
+    onChangeText,
+    ...props
+  }: ComponentProps<typeof TextArea> & DebouncedInputProps) {
+    return (
+      <TextArea
+        {...props}
+        {...useDebouncedInput({ debouncePeriod, onChangeText, value })}
+      />
+    )
   },
 )
