@@ -16,6 +16,7 @@ import {
   updateTree,
 } from "react-mosaic-component"
 import { z } from "zod"
+import { isObject } from "../../helpers/is-object"
 import { useLocalStorage } from "../../helpers/local-storage"
 import {
   activePressClass,
@@ -94,7 +95,7 @@ function useDashboardProvider() {
             path,
             spec: (node) => ({
               direction:
-                typeof parent === "object" && parent?.direction === "row"
+                isObject(parent) && parent.direction === "row"
                   ? "column"
                   : "row",
               first: windowId,
