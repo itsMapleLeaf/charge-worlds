@@ -31,7 +31,7 @@ export function CharacterFieldsEditor(props: CharacterFieldsEditorProps) {
         return (
           <Field key={field.id} label={field.name}>
             <InputComponent
-              placeholder={`Enter ${field.name.toLowerCase()}.`}
+              placeholder={`Enter your ${field.name.toLowerCase()}.`}
               value={fieldValueMap[field.id] ?? ""}
               onChangeText={(value) => props.onChange(field.id, value)}
               debouncePeriod={500}
