@@ -2,8 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../app/generated/prisma"
+  previewFeatures = ["extendedWhereUnique"]
 }
 
 datasource db {
@@ -23,13 +24,14 @@ model User {
 }
 
 model World {
-  id          String       @id @default(cuid())
-  createdAt   DateTime     @default(now())
-  name        String
-  memberships Membership[]
-  characters  Character[]
-  clocks      Clock[]
-  diceLogs    DiceLog[]
+  id              String           @id @default(cuid())
+  createdAt       DateTime         @default(now())
+  name            String
+  memberships     Membership[]
+  characters      Character[]
+  clocks          Clock[]
+  diceLogs        DiceLog[]
+  characterFields CharacterField[]
 }
 
 model Membership {
@@ -49,6 +51,17 @@ model Membership {
 enum Role {
   OWNER
   PLAYER
+}
+
+model CharacterField {
+  id     String  @id @default(cuid())
+  name   String
+  isLong Boolean
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId String
+
+  fieldValues CharacterFieldValue[]
 }
 
 model Character {
@@ -72,6 +85,21 @@ model Character {
 
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
+
+  fieldValues CharacterFieldValue[]
+}
+
+model CharacterFieldValue {
+  id    String @id @default(cuid())
+  value String
+
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId String
+
+  field   CharacterField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  fieldId String
+
+  @@unique([characterId, fieldId])
 }
 
 model Clock {
