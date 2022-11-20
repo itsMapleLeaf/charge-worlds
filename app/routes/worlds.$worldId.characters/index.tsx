@@ -1,6 +1,7 @@
 import type { ActionArgs } from "@remix-run/node"
 import { useFetcher, useParams } from "@remix-run/react"
 import clsx from "clsx"
+import produce from "immer"
 import { EyeOff, Plus } from "lucide-react"
 import { useContext, useState } from "react"
 import { route } from "routes-gen"
@@ -96,9 +97,10 @@ const updateCharacterFieldValueAction = new FormAction({
   },
   async action({ characterId, fieldId, value }, { request, params }) {
     const user = await requireSessionUser(request)
-    await db.characterFieldValue.update({
+    await db.characterFieldValue.upsert({
       where: { characterId_fieldId: { characterId, fieldId } },
-      data: { value },
+      create: { characterId, fieldId, value },
+      update: { value },
     })
     emitWorldUpdate(params.worldId!, user.id)
   },
@@ -141,15 +143,22 @@ export function CharactersModule(props: {
       fetcher.submission?.formData,
     )
   if (updateFieldValueSubmission) {
-    characters = characters.map((c) => {
-      if (c.id !== updateFieldValueSubmission.characterId) return c
-      return {
-        ...c,
-        fieldValues: c.fieldValues.map((fv) =>
-          fv.fieldId === updateFieldValueSubmission.fieldId
-            ? { ...fv, value: updateFieldValueSubmission.value }
-            : fv,
-        ),
+    characters = produce(characters, (draft) => {
+      const character = draft.find(
+        (c) => c.id === updateFieldValueSubmission.characterId,
+      )
+      if (!character) return
+
+      const fieldValue = character.fieldValues.find(
+        (fv) => fv.fieldId === updateFieldValueSubmission.fieldId,
+      )
+      if (fieldValue) {
+        fieldValue.value = updateFieldValueSubmission.value
+      } else {
+        character.fieldValues.push({
+          fieldId: updateFieldValueSubmission.fieldId,
+          value: updateFieldValueSubmission.value,
+        })
       }
     })
   }
