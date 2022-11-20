@@ -2,7 +2,7 @@ import { Select, SelectItem, SelectPopover, useSelectState } from "ariakit"
 import clsx from "clsx"
 import cuid from "cuid"
 import { ChevronDown, Maximize2, SeparatorVertical, X } from "lucide-react"
-import type { ReactElement } from "react"
+import type { ReactElement, ReactNode } from "react"
 import { createContext, useContext } from "react"
 import type { MosaicBranch, MosaicNode } from "react-mosaic-component"
 import {
@@ -23,6 +23,7 @@ import {
 export type DashboardModule = {
   name: string
   description: string
+  icon: ReactNode
   component: (props: any) => ReactElement
 }
 
@@ -75,14 +76,16 @@ function useDashboardProvider() {
     setWindowModules({ ...windowModules, [windowId]: { moduleId } })
   }
 
-  const addWindow = () => {
+  const addWindow = (moduleId: string) => {
+    const windowId = cuid()
+    setWindowModule(windowId, moduleId)
     if (!mosaic) {
-      setMosaic(cuid())
+      setMosaic(windowId)
     } else {
       setMosaic({
         direction: "row",
         first: mosaic,
-        second: cuid(),
+        second: windowId,
         splitPercentage: 50,
       })
     }
@@ -115,16 +118,25 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function DashboardNewWindowButton({
-  children,
+export function DashboardWindowButtons({
+  modules,
 }: {
-  children: React.ReactNode
+  modules: Record<string, DashboardModule>
 }) {
   const { addWindow } = useContext(DashboardContext)
   return (
-    <button className={clearButtonClass} onClick={addWindow}>
-      {children}
-    </button>
+    <div className="grid gap-4">
+      {Object.entries(modules).map(([moduleId, module]) => (
+        <button
+          key={moduleId}
+          className={clearButtonClass}
+          onClick={() => addWindow(moduleId)}
+        >
+          {module.icon}
+          <span className="sr-only md:not-sr-only">{module.name}</span>
+        </button>
+      ))}
+    </div>
   )
 }
 

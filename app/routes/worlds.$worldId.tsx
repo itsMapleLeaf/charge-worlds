@@ -1,7 +1,7 @@
 import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react"
-import { LayoutDashboard, PlusSquare, Wrench } from "lucide-react"
+import { LayoutDashboard, Wrench } from "lucide-react"
 import { useId } from "react"
 import { route } from "routes-gen"
 import { AuthContext } from "../auth/auth-context"
@@ -13,9 +13,10 @@ import { pick } from "../helpers/pick"
 import { clearButtonClass } from "../ui/styles"
 import { getWorld } from "../world/world-db.server"
 import {
-  DashboardNewWindowButton,
   DashboardProvider,
+  DashboardWindowButtons,
 } from "./worlds.$worldId.dashboard/dashboard"
+import { dashboardModules } from "./worlds.$worldId.dashboard/dashboard-modules"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) =>
   getAppMeta({ title: data.world.name })
@@ -59,12 +60,7 @@ export default function WorldPage() {
               {data.world.name}
             </h2>
 
-            <div className="flex items-center gap-4">
-              <DashboardNewWindowButton>
-                <PlusSquare />
-                <span className="sr-only md:not-sr-only">New window</span>
-              </DashboardNewWindowButton>
-            </div>
+            <DashboardWindowButtons modules={dashboardModules} />
 
             <div className="flex-1" />
 
