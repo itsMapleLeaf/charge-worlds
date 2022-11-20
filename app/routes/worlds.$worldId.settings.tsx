@@ -5,9 +5,10 @@ import {
   Form,
   useActionData,
   useLoaderData,
+  useSubmit,
   useTransition,
 } from "@remix-run/react"
-import { Minus, Plus, Save } from "lucide-react"
+import { Minus, Plus, Save, X } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
@@ -17,10 +18,13 @@ import { db } from "../core/db.server"
 import { assert } from "../helpers/assert"
 import { discordIdSchema } from "../helpers/discord-id"
 import { FormAction, FormActionGroup } from "../helpers/form"
+import { useDebouncedCallback } from "../helpers/use-debounced-callback"
 import { Field } from "../ui/field"
 import {
+  clearButtonClass,
   errorTextClass,
   inputClass,
+  labelTextClass,
   maxWidthContainerClass,
   solidButtonClass,
 } from "../ui/styles"
@@ -88,10 +92,54 @@ const removePlayer = new FormAction({
   },
 })
 
+const addCharacterField = new FormAction({
+  fields: {},
+  async action(values, { params }) {
+    await db.characterField.create({
+      data: {
+        name: "New Field",
+        isLong: false,
+        worldId: params.worldId!,
+      },
+    })
+  },
+})
+
+const updateCharacterField = new FormAction({
+  fields: {
+    id: z.string(),
+    name: z.string().max(256),
+    isLong: z
+      .enum(["on"])
+      .optional()
+      .transform((v) => v === "on"),
+  },
+  async action({ id, ...data }, { params }) {
+    await db.characterField.update({
+      where: { id },
+      data,
+    })
+  },
+})
+
+const removeCharacterField = new FormAction({
+  fields: {
+    id: z.string(),
+  },
+  async action({ id }, { params }) {
+    await db.characterField.delete({ where: { id } })
+  },
+})
+
 const actionGroup = new FormActionGroup({
   updateWorld,
+
   addPlayer,
   removePlayer,
+
+  addCharacterField,
+  updateCharacterField,
+  removeCharacterField,
 })
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -118,7 +166,17 @@ export async function loader({ request, params }: LoaderArgs) {
     },
   })
 
-  return json({ players, world: { name: world.name } })
+  const characterFields = await db.characterField.findMany({
+    where: { worldId: world.id },
+    orderBy: { id: "desc" },
+    select: { id: true, name: true, isLong: true },
+  })
+
+  return json({
+    players,
+    world: { name: world.name },
+    characterFields,
+  })
 }
 
 export async function action(args: ActionArgs) {
@@ -134,14 +192,13 @@ export async function action(args: ActionArgs) {
 }
 
 export default function SettingsPage() {
-  const { players, world } = useLoaderData<typeof loader>()
+  const data = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
 
   return (
     <div className={maxWidthContainerClass}>
       <div className="py-4 grid gap-4">
-        <section className="bg-slate-800 p-4 rounded-md shadow-md">
-          <h2 className="text-3xl font-light mb-4">Overview</h2>
+        <PageSection title="Overview">
           <Form method="post" className="grid gap-4">
             <input {...actionGroup.types.updateWorld} />
             <Field
@@ -150,7 +207,7 @@ export default function SettingsPage() {
             >
               <input
                 {...updateWorld.fields.name.input}
-                defaultValue={world.name}
+                defaultValue={data.world.name}
                 className={inputClass}
                 placeholder="My Awesome World"
               />
@@ -166,19 +223,68 @@ export default function SettingsPage() {
               </p>
             )}
           </Form>
-        </section>
+        </PageSection>
 
-        <section className="bg-slate-800 p-4 rounded-md shadow-md">
-          <h2 className="text-3xl font-light">Players</h2>
-          <div className="mt-4 grid gap-2">
+        <PageSection title="Players">
+          <div className="grid gap-2">
             <AddPlayerForm />
-            {players.map((player) => (
+            {data.players.map((player) => (
               <RemovePlayerForm key={player.userDiscordId} player={player} />
             ))}
           </div>
-        </section>
+        </PageSection>
+
+        <PageSection title="Character Fields">
+          <div className="grid gap-2">
+            {[
+              actionData?.addCharacterField?.globalError,
+              actionData?.updateCharacterField?.globalError,
+              actionData?.removeCharacterField?.globalError,
+            ]
+              .filter(Boolean)
+              .map((error, index) => (
+                <p key={index} className={errorTextClass}>
+                  {error}
+                </p>
+              ))}
+          </div>
+
+          <div className="grid gap-2">
+            {actionData?.updateCharacterField?.fieldErrors?.name?.map(
+              (error, index) => (
+                <p key={index} className={errorTextClass}>
+                  {error}
+                </p>
+              ),
+            )}
+
+            <CharacterFieldsList />
+
+            <Form method="post">
+              <input {...actionGroup.types.addCharacterField} />
+              <button className={solidButtonClass} type="submit">
+                <Plus /> Add Field
+              </button>
+            </Form>
+          </div>
+        </PageSection>
       </div>
     </div>
+  )
+}
+
+function PageSection({
+  title,
+  children,
+}: {
+  title: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <section className="bg-slate-800 p-4 rounded-md shadow-md grid gap-4">
+      <h2 className="text-3xl font-light">{title}</h2>
+      <div>{children}</div>
+    </section>
   )
 }
 
@@ -189,10 +295,10 @@ function AddPlayerForm() {
   const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
-    if (transition.state === "idle" && !actionData?.addPlayer.hasErrors) {
+    if (transition.state === "idle" && !actionData?.addPlayer?.hasErrors) {
       formRef.current!.reset()
     }
-  }, [actionData?.addPlayer.hasErrors, transition.state])
+  }, [actionData?.addPlayer?.hasErrors, transition.state])
 
   return (
     <Form method="post" ref={formRef}>
@@ -255,6 +361,93 @@ function RemovePlayerForm({
           {actionData?.removePlayer?.globalError}
         </p>
       )}
+    </Form>
+  )
+}
+
+function CharacterFieldsList() {
+  const data = useLoaderData<typeof loader>()
+  const actionData = useActionData<typeof action>()
+
+  return (
+    <div
+      className="grid grid-cols-[1fr,auto,auto,auto] gap-2"
+      role="table"
+      aria-label="Character Fields Table"
+    >
+      <div role="row" className="contents">
+        <div role="columnheader" className={labelTextClass}>
+          Name
+        </div>
+        <div role="columnheader" className={labelTextClass}>
+          Long?
+        </div>
+        <div></div>
+        <div></div>
+      </div>
+
+      {data.characterFields.map((field) => (
+        <div key={field.id} role="row" className="contents">
+          <CharacterFieldForm field={field} />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function CharacterFieldForm({
+  field,
+}: {
+  field: { id: string; name: string; isLong: boolean }
+}) {
+  const formRef = useRef<HTMLFormElement>(null)
+  const submit = useSubmit()
+
+  const submitDebounced = useDebouncedCallback(
+    () => submit(formRef.current!),
+    500,
+  )
+
+  return (
+    <Form method="post" className="contents" ref={formRef}>
+      <input {...actionGroup.types.updateCharacterField} />
+      <input {...updateCharacterField.fields.id.hidden(field.id)} />
+      <div role="cell">
+        <input
+          {...updateCharacterField.fields.name.input}
+          defaultValue={field.name}
+          className={inputClass}
+          placeholder="Field name"
+          onChange={submitDebounced}
+        />
+      </div>
+      <div role="cell" className="place-self-center">
+        <input
+          {...updateCharacterField.fields.isLong.input}
+          required={false}
+          type="checkbox"
+          defaultChecked={field.isLong}
+          onChange={submitDebounced}
+        />
+      </div>
+
+      <Form
+        role="cell"
+        method="post"
+        className="place-self-center leading-none"
+      >
+        <input {...actionGroup.types.removeCharacterField} />
+        <input {...removeCharacterField.fields.id.hidden(field.id)} />
+        <button className={clearButtonClass} title="Remove">
+          <X />
+        </button>
+      </Form>
+
+      <div role="cell" className="place-self-center leading-none">
+        <button className={clearButtonClass} type="submit" title="Save">
+          <Save />
+        </button>
+      </div>
     </Form>
   )
 }
