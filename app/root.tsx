@@ -148,7 +148,7 @@ function PendingIndicator() {
   return (
     <div
       className={clsx(
-        "pointer-events-none fixed left-0 bottom-0 p-4 transition",
+        "pointer-events-none fixed right-0 bottom-0 p-4 transition",
         pending ? "opacity-100" : "opacity-0",
       )}
     >
