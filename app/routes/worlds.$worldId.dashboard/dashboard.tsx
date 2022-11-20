@@ -6,10 +6,14 @@ import type { ReactElement, ReactNode } from "react"
 import { createContext, useContext } from "react"
 import type { MosaicBranch, MosaicNode } from "react-mosaic-component"
 import {
+  Corner,
+  getNodeAtPath,
+  getPathToCorner,
   Mosaic,
   MosaicContext,
   MosaicWindow,
   MosaicWindowContext,
+  updateTree,
 } from "react-mosaic-component"
 import { z } from "zod"
 import { useLocalStorage } from "../../helpers/local-storage"
@@ -82,12 +86,24 @@ function useDashboardProvider() {
     if (!mosaic) {
       setMosaic(windowId)
     } else {
-      setMosaic({
-        direction: "row",
-        first: mosaic,
-        second: windowId,
-        splitPercentage: 50,
-      })
+      const path = getPathToCorner(mosaic, Corner.TOP_LEFT)
+      const parent = getNodeAtPath(mosaic, path.slice(0, -1))
+      setMosaic(
+        updateTree(mosaic, [
+          {
+            path,
+            spec: (node) => ({
+              direction:
+                typeof parent === "object" && parent?.direction === "row"
+                  ? "column"
+                  : "row",
+              first: windowId,
+              second: node,
+              splitPercentage: (1 / 2) * 100,
+            }),
+          },
+        ]),
+      )
     }
   }
 
