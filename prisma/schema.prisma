@@ -30,7 +30,6 @@ model World {
   characters  Character[]
   clocks      Clock[]
   diceLogs    DiceLog[]
-  modules     Module[]
 }
 
 model Membership {
@@ -103,12 +102,4 @@ model DiceLog {
 enum DiceResultType {
   HIGHEST
   LOWEST
-}
-
-model Module {
-  id    String @id
-  state Json   @db.JsonB
-
-  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
-  worldId String
 }
