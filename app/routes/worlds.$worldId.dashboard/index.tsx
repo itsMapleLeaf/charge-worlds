@@ -13,7 +13,13 @@ import { dashboardModules } from "./dashboard-modules"
 export async function loader({ request, params }: LoaderArgs) {
   const { worldId } = parseKeys(params, ["worldId"])
 
-  const user = await getSessionUser(request)
+  const [user, characterFields] = await Promise.all([
+    getSessionUser(request),
+    db.characterField.findMany({
+      where: { worldId },
+      select: { id: true, name: true, isLong: true },
+    }),
+  ])
 
   const membership =
     user &&
@@ -55,12 +61,16 @@ export async function loader({ request, params }: LoaderArgs) {
   const characters = await db.character.findMany({
     where: charactersFilter,
     orderBy: { id: "asc" },
+    include: {
+      fieldValues: { select: { fieldId: true, value: true } },
+    },
   })
 
   return json({
     user: user && pick(user, ["name", "id"]),
     membership: membership && pick(membership, ["role"]),
     characters,
+    characterFields,
     clocks,
     diceLogs: diceLogs.reverse(),
   })
@@ -81,7 +91,10 @@ export default function DashboardPage() {
     <DashboardMosaic
       modules={dashboardModules}
       moduleData={{
-        characters: { characters: data.characters },
+        characters: {
+          characters: data.characters,
+          characterFields: data.characterFields,
+        },
         clocks: { clocks: data.clocks },
         dice: {
           rolls: data.diceLogs,

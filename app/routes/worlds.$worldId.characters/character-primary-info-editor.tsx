@@ -23,7 +23,7 @@ export function CharacterPrimaryInfoEditor({
 }) {
   return (
     <div className="flex gap-4 flex-wrap [&>*]:basis-48 [&>*]:flex-1">
-      <div className="min-h-[20rem]">
+      <div className="min-h-[16rem]">
         <CharacterImage src={character.imageUrl ?? undefined} />
       </div>
 
@@ -34,17 +34,6 @@ export function CharacterPrimaryInfoEditor({
             placeholder="What should we call you?"
             value={character.name}
             onChangeText={(name) => onCharacterChange({ name })}
-            debouncePeriod={500}
-            className={inputClass}
-            readOnly={isSpectator}
-          />
-        </Field>
-        <Field label="Profession(s)">
-          <DebouncedInput
-            type="text"
-            placeholder="Whom do you side with?"
-            value={character.group}
-            onChangeText={(group) => onCharacterChange({ group })}
             debouncePeriod={500}
             className={inputClass}
             readOnly={isSpectator}
