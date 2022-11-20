@@ -12,6 +12,7 @@ export const clearButtonClass = clsx(
   "hover:text-blue-300 ring-inset",
   "focus:outline-none focus-visible:ring-2 ring-blue-300 [&_*:focus]:outline-none",
   "uppercase inline-flex items-center gap-2 text-lg p-2 -m-2",
+  "leading-none",
   activePressClass,
 )
 
