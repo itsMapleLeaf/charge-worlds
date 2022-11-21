@@ -30,8 +30,8 @@ export const dashboardModules = satisfies<Record<string, DashboardModule>>()({
       rollFormVisible: boolean
     }) {
       return (
-        <div className="flex flex-col h-full">
-          <section className="flex-1 min-h-0">
+        <div className="flex h-full flex-col">
+          <section className="min-h-0 flex-1">
             <DiceRollList rolls={props.rolls} />
           </section>
           {props.rollFormVisible && (

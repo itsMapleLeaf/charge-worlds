@@ -7,7 +7,7 @@ export function CharacterImage({ src }: { src: string | undefined }) {
   return src ? (
     <ImagePreview src={src} />
   ) : (
-    <div className="bg-black/25 rounded-md h-full">
+    <div className="h-full rounded-md bg-black/25">
       <DropzonePlaceholder />
     </div>
   )
@@ -42,7 +42,7 @@ function ImagePreview({ src }: { src: string }) {
   const state = useAsync(useCallback(() => loadImage(src), [src]))
 
   return (
-    <div className="group relative h-full rounded-md bg-black/25 overflow-clip">
+    <div className="group relative h-full overflow-clip rounded-md bg-black/25">
       <div
         className={clsx(
           "absolute inset-0 grid place-items-center p-4 transition-opacity",
@@ -54,7 +54,7 @@ function ImagePreview({ src }: { src: string }) {
 
       <div
         className={clsx(
-          "absolute inset-0 grid gap-4 text-center place-items-center place-content-center p-4 transition-opacity",
+          "absolute inset-0 grid place-content-center place-items-center gap-4 p-4 text-center transition-opacity",
           state.status === "error" ? "opacity-100" : "opacity-0",
         )}
       >

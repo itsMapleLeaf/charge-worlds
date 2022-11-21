@@ -17,7 +17,7 @@ export function DiceRollList({ rolls }: { rolls: DiceRoll[] }) {
         className="thin-scrollbar"
         data={rolls}
         itemContent={(index, roll) => (
-          <div className="pt-4 px-4">
+          <div className="px-4 pt-4">
             <DiceRollItem roll={roll} />
           </div>
         )}
@@ -66,7 +66,7 @@ function DiceRollItem({ roll }: { roll: DiceRoll }) {
       : "text-rose-400 drop-shadow-[0_0_4px_theme(colors.rose.400)]"
 
   return (
-    <div className="p-3 bg-black/25 rounded-md grid gap-2">
+    <div className="grid gap-2 rounded-md bg-black/25 p-3">
       {roll.intent && <p className="leading-snug">{roll.intent}</p>}
 
       <ul className="flex flex-wrap gap-1">
@@ -80,7 +80,7 @@ function DiceRollItem({ roll }: { roll: DiceRoll }) {
                 die.result === poolResult && poolResultColor,
               )}
             >
-              <HexagonFilled className="w-8 h-8" />
+              <HexagonFilled className="h-8 w-8" />
               <span className="absolute translate-y-[1px] font-medium text-gray-800">
                 {die.result}
               </span>
@@ -88,7 +88,7 @@ function DiceRollItem({ roll }: { roll: DiceRoll }) {
           ))}
       </ul>
 
-      <p className="text-gray-400 text-sm">
+      <p className="text-sm text-gray-400">
         Rolled by{" "}
         {roll.rolledBy?.name ?? <span className="opacity-75">(unknown)</span>}
         {roll.resultType === "LOWEST" && " (disadvantage)"}

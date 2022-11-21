@@ -46,7 +46,7 @@ export function CharacterActionLevelsEditor({
                 <h5 className={labelTextClass}>{action}</h5>
 
                 <div
-                  className="row-span-2 flex items-end relative gap-2"
+                  className="relative row-span-2 flex items-end gap-2"
                   style={{ left: "0.25rem" }}
                 >
                   {!readOnly && (

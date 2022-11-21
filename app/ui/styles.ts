@@ -5,13 +5,13 @@ export const maxWidthContainerClass = clsx(
 )
 
 export const activePressClass = clsx(
-  "transition-transform active:transition-none active:scale-95",
+  "transition-transform active:scale-95 active:transition-none",
 )
 
 export const clearButtonClass = clsx(
-  "hover:text-blue-300 ring-inset",
-  "focus:outline-none focus-visible:ring-2 ring-blue-300 [&_*:focus]:outline-none",
-  "uppercase inline-flex items-center gap-2 text-lg p-2 -m-2",
+  "ring-inset hover:text-blue-300",
+  "ring-blue-300 focus:outline-none focus-visible:ring-2 [&_*:focus]:outline-none",
+  "-m-2 inline-flex items-center gap-2 p-2 text-lg uppercase",
   "leading-none",
   activePressClass,
 )
@@ -22,11 +22,11 @@ export const solidButtonClass = clsx(
 )
 
 export const menuPanelClass = clsx(
-  "bg-slate-600 flex flex-col rounded-md max-w-[16rem] shadow-lg overflow-clip min-w-[10rem] transition duration-100 origin-top data-[enter]:scale-100 data-[enter]:opacity-100 data-[leave]:opacity-0 data-[leave]:scale-95",
+  "flex min-w-[10rem] max-w-[16rem] origin-top flex-col overflow-clip rounded-md bg-slate-600 shadow-lg transition duration-100 data-[enter]:scale-100 data-[leave]:scale-95 data-[enter]:opacity-100 data-[leave]:opacity-0",
 )
 
 export const menuItemClass = clsx(
-  "block p-3 data-[active-item]:bg-black/25 cursor-pointer",
+  "block cursor-pointer p-3 data-[active-item]:bg-black/25",
 )
 
 export const navLinkClass = ({ isActive = false } = {}) =>
@@ -47,11 +47,11 @@ export const inputBaseClass = clsx(
 export const inputClass = clsx(
   inputBaseClass,
   "inline-flex min-h-[3rem] flex-wrap items-center p-3 leading-tight",
-  "[&:not(:placeholder-shown)]:invalid:border border-red-400",
+  "border-red-400 [&:not(:placeholder-shown)]:invalid:border",
 )
 
 export const textAreaClass = clsx(inputBaseClass, "p-3")
 
 export const labelTextClass = clsx("mb-1.5 text-sm font-medium leading-none")
 
-export const errorTextClass = clsx("text-red-400 text-sm")
+export const errorTextClass = clsx("text-sm text-red-400")

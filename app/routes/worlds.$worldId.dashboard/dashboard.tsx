@@ -182,7 +182,7 @@ export function DashboardMosaic<
           path={path}
           createNode={() => cuid()}
           renderToolbar={() => (
-            <div className="flex items-center justify-between w-full px-2 gap-4">
+            <div className="flex w-full items-center justify-between gap-4 px-2">
               <DashboardModuleSelect windowId={id} modules={modules} />
               <DashboardWindowControls windowPath={path} />
             </div>
@@ -196,7 +196,7 @@ export function DashboardMosaic<
         </MosaicWindow>
       )}
       zeroStateView={
-        <p className="absolute right-0 bottom-0 p-8 text-4xl opacity-25 select-none">
+        <p className="absolute right-0 bottom-0 select-none p-8 text-4xl opacity-25">
           <a
             href="https://soundcloud.com/dylantallchief/san-holo-plant"
             target="_blank"
@@ -224,11 +224,11 @@ function DashboardWindowContent({
   const module = moduleId ? modules[moduleId] : undefined
 
   return (
-    <section className="thin-scrollbar w-full h-full bg-slate-800 overflow-y-auto">
+    <section className="thin-scrollbar h-full w-full overflow-y-auto bg-slate-800">
       {module && moduleId ? (
         <module.component {...moduleData[moduleId]} />
       ) : (
-        <p className="p-4 opacity-50 text-2xl font-light">
+        <p className="p-4 text-2xl font-light opacity-50">
           Couldn&apos;t find that module 🤔
         </p>
       )}
@@ -258,12 +258,12 @@ function DashboardModuleSelect({
       <Select
         state={select}
         className={clsx(
-          "hover:text-blue-300 p-2 -m-2 leading-none flex items-center gap-1 min-w-0 ",
+          "-m-2 flex min-w-0 items-center gap-1 p-2 leading-none hover:text-blue-300 ",
           activePressClass,
         )}
       >
         <ChevronDown />
-        <span className="text-lg font-medium flex-1 min-w-0 overflow-hidden overflow-ellipsis whitespace-nowrap">
+        <span className="min-w-0 flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-lg font-medium">
           {modules[select.value]?.name}
         </span>
       </Select>
@@ -274,7 +274,7 @@ function DashboardModuleSelect({
             <SelectItem key={id} value={id} className={menuItemClass}>
               <p>{module?.name ?? "⚠ unknown module"}</p>
               {module?.description && (
-                <p className="text-sm opacity-70 mt-1">{module.description}</p>
+                <p className="mt-1 text-sm opacity-70">{module.description}</p>
               )}
             </SelectItem>
           )

@@ -197,7 +197,7 @@ export default function SettingsPage() {
 
   return (
     <div className={maxWidthContainerClass}>
-      <div className="py-4 grid gap-4">
+      <div className="grid gap-4 py-4">
         <PageSection title="Overview">
           <Form method="post" className="grid gap-4">
             <input {...actionGroup.types.updateWorld} />
@@ -281,7 +281,7 @@ function PageSection({
   children: React.ReactNode
 }) {
   return (
-    <section className="bg-slate-800 p-4 rounded-md shadow-md grid gap-4">
+    <section className="grid gap-4 rounded-md bg-slate-800 p-4 shadow-md">
       <h2 className="text-3xl font-light">{title}</h2>
       <div>{children}</div>
     </section>
@@ -343,7 +343,7 @@ function RemovePlayerForm({
         <div className="flex-1">
           <p className={inputClass}>
             <span>{player.user.name}</span>
-            <span className="ml-1 opacity-75 block">
+            <span className="ml-1 block opacity-75">
               ({player.userDiscordId})
             </span>
           </p>

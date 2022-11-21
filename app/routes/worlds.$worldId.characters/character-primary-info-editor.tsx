@@ -22,7 +22,7 @@ export function CharacterPrimaryInfoEditor({
   isGameMaster: boolean
 }) {
   return (
-    <div className="flex gap-4 flex-wrap [&>*]:basis-48 [&>*]:flex-1">
+    <div className="flex flex-wrap gap-4 [&>*]:flex-1 [&>*]:basis-48">
       <div className="min-h-[16rem]">
         <CharacterImage src={character.imageUrl ?? undefined} />
       </div>
@@ -65,7 +65,7 @@ export function CharacterPrimaryInfoEditor({
       </div>
 
       <div className="flex flex-col gap-4">
-        <div className="flex-1 rounded-md bg-black/25 p-4 flex items-center justify-center">
+        <div className="flex flex-1 items-center justify-center rounded-md bg-black/25 p-4">
           <ClockInput
             name="Stress"
             progress={character.stress}

@@ -223,7 +223,7 @@ export function CharactersModule(props: {
 
   return (
     <div
-      className={clsx("transition-colors min-h-full", colorClasses.background)}
+      className={clsx("min-h-full transition-colors", colorClasses.background)}
     >
       <div className={maxWidthContainerClass}>
         <div className="flex flex-col gap-4 p-4">

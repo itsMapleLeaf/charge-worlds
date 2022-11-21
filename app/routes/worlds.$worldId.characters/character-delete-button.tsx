@@ -20,10 +20,10 @@ export function CharacterDeleteButton({
 
       <Dialog
         state={dialog}
-        className="pointer-events-auto m-auto flex flex-col items-center gap-4 rounded-md bg-gray-700 p-4 shadow-md transition data-[enter]:opacity-100 data-[leave]:opacity-0 data-[enter]:scale-100 data-[leave]:scale-90"
+        className="pointer-events-auto m-auto flex flex-col items-center gap-4 rounded-md bg-gray-700 p-4 shadow-md transition data-[enter]:scale-100 data-[leave]:scale-90 data-[enter]:opacity-100 data-[leave]:opacity-0"
         backdropProps={{
           className: clsx(
-            "fixed inset-0 bg-black/50 transition data-[enter]:opacity-100 data-[leave]:opacity-0 flex flex-col",
+            "fixed inset-0 flex flex-col bg-black/50 transition data-[enter]:opacity-100 data-[leave]:opacity-0",
           ),
         }}
       >

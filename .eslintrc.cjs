@@ -14,6 +14,7 @@ module.exports = {
     "**/dist/**",
     "**/.cache/**",
     "**/public/**",
+    "app/generated/**",
   ],
   parserOptions: {
     project: require.resolve("./tsconfig.json"),

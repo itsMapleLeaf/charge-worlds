@@ -21,7 +21,7 @@ export function UserMenuButton({
           <img
             src={user.avatarUrl}
             alt=""
-            className="w-6 h-6 rounded-full object-cover"
+            className="h-6 w-6 rounded-full object-cover"
           />
         ) : (
           <User />
@@ -35,7 +35,7 @@ export function UserMenuButton({
           className="contents"
         >
           <MenuItem as="button" type="submit" className={menuItemClass}>
-            <div className="flex gap-2 items-center leading-none">
+            <div className="flex items-center gap-2 leading-none">
               <LogOut /> Sign out
             </div>
           </MenuItem>

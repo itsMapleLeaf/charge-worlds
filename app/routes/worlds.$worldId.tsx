@@ -49,12 +49,12 @@ export default function WorldPage() {
     <AuthContext.Provider value={data}>
       <DashboardProvider>
         <section
-          className="h-full grid grid-cols-[auto,1fr]"
+          className="grid h-full grid-cols-[auto,1fr]"
           aria-labelledby={worldHeadingId}
         >
-          <nav className="thin-scrollbar flex flex-col py-4 gap-4 w-12 items-center md:w-64 md:px-4 md:items-start bg-black/25">
+          <nav className="thin-scrollbar flex w-12 flex-col items-center gap-4 bg-black/25 py-4 md:w-64 md:items-start md:px-4">
             <h2
-              className="text-3xl font-light sr-only md:not-sr-only"
+              className="sr-only text-3xl font-light md:not-sr-only"
               id={worldHeadingId}
             >
               {data.world.name}
