@@ -58,13 +58,22 @@ export async function loader({ request, params }: LoaderArgs) {
       ? { worldId }
       : { AND: [{ worldId }, { hidden: false }] }
 
-  const characters = await db.character.findMany({
-    where: charactersFilter,
-    orderBy: { id: "asc" },
-    include: {
-      fieldValues: { select: { fieldId: true, value: true } },
-    },
-  })
+  const characters = await db.character
+    .findMany({
+      where: charactersFilter,
+      orderBy: { id: "asc" },
+      include: {
+        fieldValues: { select: { fieldId: true, value: true } },
+      },
+    })
+    .then((result) =>
+      result.map((character) => ({
+        ...character,
+        fieldValues: Object.fromEntries(
+          character.fieldValues.map(({ fieldId, value }) => [fieldId, value]),
+        ),
+      })),
+    )
 
   return json({
     user: user && pick(user, ["name", "id"]),

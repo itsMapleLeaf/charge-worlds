@@ -149,17 +149,8 @@ export function CharactersModule(props: {
       )
       if (!character) return
 
-      const fieldValue = character.fieldValues.find(
-        (fv) => fv.fieldId === updateFieldValueSubmission.fieldId,
-      )
-      if (fieldValue) {
-        fieldValue.value = updateFieldValueSubmission.value
-      } else {
-        character.fieldValues.push({
-          fieldId: updateFieldValueSubmission.fieldId,
-          value: updateFieldValueSubmission.value,
-        })
-      }
+      character.fieldValues[updateFieldValueSubmission.fieldId] =
+        updateFieldValueSubmission.value
     })
   }
 
