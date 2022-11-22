@@ -19,6 +19,7 @@ import { assert } from "../helpers/assert"
 import { discordIdSchema } from "../helpers/discord-id"
 import { FormActions } from "../helpers/form-actions"
 import { useDebouncedCallback } from "../helpers/use-debounced-callback"
+import { useHydrated } from "../helpers/use-hydrated"
 import { Field } from "../ui/field"
 import {
   clearButtonClass,
@@ -319,8 +320,8 @@ function CharacterFieldsSection() {
           updateCharacterField.errors,
           removeCharacterField.errors,
         ]
-          .filter(Boolean)
           .flat()
+          .filter(Boolean)
           .map((error, index) => (
             <p key={index} className={errorTextClass}>
               {error}
@@ -376,6 +377,7 @@ function CharacterFieldForm({
 }) {
   const actionData = useActionData<typeof action>()
   const formRef = useRef<HTMLFormElement>(null)
+  const hydrated = useHydrated()
 
   const submit = useSubmit()
   const submitDebounced = useDebouncedCallback(
@@ -426,9 +428,11 @@ function CharacterFieldForm({
       </removeCharacterField.Form>
 
       <div role="cell" className="place-self-center leading-none">
-        <button className={clearButtonClass} type="submit" title="Save">
-          <Save />
-        </button>
+        <div className={hydrated ? "hidden" : "contents"}>
+          <button className={clearButtonClass} type="submit" title="Save">
+            <Save />
+          </button>
+        </div>
       </div>
     </updateCharacterField.Form>
   )
