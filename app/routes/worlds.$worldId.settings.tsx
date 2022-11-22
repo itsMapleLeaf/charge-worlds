@@ -17,7 +17,7 @@ import { requireSessionUser } from "../auth/session.server"
 import { db } from "../core/db.server"
 import { assert } from "../helpers/assert"
 import { discordIdSchema } from "../helpers/discord-id"
-import { FormActions } from "../helpers/form-actions"
+import { ActionRouter, useActionUi } from "../helpers/form-action-router"
 import { useDebouncedCallback } from "../helpers/use-debounced-callback"
 import { useHydrated } from "../helpers/use-hydrated"
 import { Field } from "../ui/field"
@@ -38,77 +38,83 @@ type ActionContext = {
   worldId: string
 }
 
-const SettingsActions = FormActions.create<ActionContext>()
-  .withAction("updateWorld", {
-    input: zfd.formData({ name: zfd.text() }),
-    callback: async ({ name }, { worldId }) => {
-      await db.world.update({
-        where: { id: worldId },
-        data: {
-          name,
-        },
-      })
-    },
-  })
-  .withAction("addPlayer", {
-    input: zfd.formData({ discordId: zfd.text(discordIdSchema) }),
-    callback: async ({ discordId }, { worldId }) => {
-      const data = {
-        role: "PLAYER",
-        world: { connect: { id: worldId } },
-        user: {
-          connectOrCreate: {
-            where: { discordId },
-            create: { discordId, name: "Unknown" },
-          },
-        },
-      } as const
+const router = new ActionRouter<ActionContext>()
 
-      await db.membership.upsert({
-        where: {
-          worldId_userDiscordId: { worldId, userDiscordId: discordId },
+const updateWorldAction = router.route("updateWorld", {
+  input: zfd.formData({ name: zfd.text() }),
+  callback: async ({ name }, { worldId }) => {
+    await db.world.update({
+      where: { id: worldId },
+      data: {
+        name,
+      },
+    })
+  },
+})
+
+const addPlayerAction = router.route("addPlayer", {
+  input: zfd.formData({ discordId: zfd.text(discordIdSchema) }),
+  callback: async ({ discordId }, { worldId }) => {
+    const data = {
+      role: "PLAYER",
+      world: { connect: { id: worldId } },
+      user: {
+        connectOrCreate: {
+          where: { discordId },
+          create: { discordId, name: "Unknown" },
         },
-        update: data,
-        create: data,
-      })
-    },
-  })
-  .withAction("removePlayer", {
-    input: zfd.formData({ discordId: zfd.text(discordIdSchema) }),
-    callback: async ({ discordId }, { worldId }) => {
-      await db.membership.delete({
-        where: {
-          worldId_userDiscordId: { worldId, userDiscordId: discordId },
-        },
-      })
-    },
-  })
-  .withAction("addCharacterField", {
-    callback: async (data, { worldId }) => {
-      await db.characterField.create({
-        data: { name: "New Field", isLong: false, worldId },
-      })
-    },
-  })
-  .withAction("updateCharacterField", {
-    input: zfd.formData({
-      id: zfd.text(),
-      name: zfd.text(z.string().max(256)),
-      isLong: zfd.checkbox(),
-    }),
-    callback: async ({ id, ...data }, { worldId }) => {
-      await db.characterField.update({
-        where: { id },
-        data,
-      })
-    },
-  })
-  .withAction("removeCharacterField", {
-    input: zfd.formData({ id: zfd.text() }),
-    callback: async ({ id }, { worldId }) => {
-      await db.characterField.delete({ where: { id } })
-    },
-  })
+      },
+    } as const
+
+    await db.membership.upsert({
+      where: {
+        worldId_userDiscordId: { worldId, userDiscordId: discordId },
+      },
+      update: data,
+      create: data,
+    })
+  },
+})
+
+const removePlayerAction = router.route("removePlayer", {
+  input: zfd.formData({ discordId: zfd.text(discordIdSchema) }),
+  callback: async ({ discordId }, { worldId }) => {
+    await db.membership.delete({
+      where: {
+        worldId_userDiscordId: { worldId, userDiscordId: discordId },
+      },
+    })
+  },
+})
+
+const addCharacterFieldAction = router.route("addCharacterField", {
+  callback: async (data, { worldId }) => {
+    await db.characterField.create({
+      data: { name: "New Field", isLong: false, worldId },
+    })
+  },
+})
+
+const updateCharacterFieldAction = router.route("updateCharacterField", {
+  input: zfd.formData({
+    id: zfd.text(),
+    name: zfd.text(z.string().max(256)),
+    isLong: zfd.checkbox(),
+  }),
+  callback: async ({ id, ...data }, { worldId }) => {
+    await db.characterField.update({
+      where: { id },
+      data,
+    })
+  },
+})
+
+const removeCharacterFieldAction = router.route("removeCharacterField", {
+  input: zfd.formData({ id: zfd.text() }),
+  callback: async ({ id }, { worldId }) => {
+    await db.characterField.delete({ where: { id } })
+  },
+})
 
 export async function loader({ request, params }: LoaderArgs) {
   assert(params.worldId, "worldId is required")
@@ -156,7 +162,7 @@ export async function action(args: ActionArgs) {
   ])
   await requireWorldOwner(user, world)
 
-  return SettingsActions.handleSubmit(
+  return router.handle(
     args,
     { worldId: args.params.worldId },
     thisRoute(args.params),
@@ -167,7 +173,7 @@ export default function SettingsPage() {
   const data = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
 
-  const updateWorld = SettingsActions.useUi("updateWorld", actionData)
+  const updateWorld = useActionUi(updateWorldAction, actionData)
 
   return (
     <div className={maxWidthContainerClass}>
@@ -231,7 +237,7 @@ function AddPlayerForm() {
   const transition = useTransition()
   const formRef = useRef<HTMLFormElement>(null)
 
-  const addPlayer = SettingsActions.useUi("addPlayer", actionData)
+  const addPlayer = useActionUi(addPlayerAction, actionData)
 
   useEffect(() => {
     if (transition.state === "idle" && !addPlayer.errors) {
@@ -266,7 +272,7 @@ function RemovePlayerForm({
   player: { userDiscordId: string; user: { name: string } }
 }) {
   const actionData = useActionData<typeof action>()
-  const removePlayer = SettingsActions.useUi("removePlayer", actionData)
+  const removePlayer = useActionUi(removePlayerAction, actionData)
   return (
     <removePlayer.Form>
       <removePlayer.HiddenInput name="discordId" value={player.userDiscordId} />
@@ -299,16 +305,13 @@ function RemovePlayerForm({
 function CharacterFieldsSection() {
   const actionData = useActionData<typeof action>()
 
-  const addCharacterField = SettingsActions.useUi(
-    "addCharacterField",
+  const addCharacterField = useActionUi(addCharacterFieldAction, actionData)
+  const updateCharacterField = useActionUi(
+    updateCharacterFieldAction,
     actionData,
   )
-  const updateCharacterField = SettingsActions.useUi(
-    "updateCharacterField",
-    actionData,
-  )
-  const removeCharacterField = SettingsActions.useUi(
-    "removeCharacterField",
+  const removeCharacterField = useActionUi(
+    removeCharacterFieldAction,
     actionData,
   )
 
@@ -331,11 +334,11 @@ function CharacterFieldsSection() {
 
       <div className="grid gap-2">
         <CharacterFieldsList />
-        <updateCharacterField.Form>
+        <addCharacterField.Form>
           <button className={solidButtonClass} type="submit">
             <Plus /> Add Field
           </button>
-        </updateCharacterField.Form>
+        </addCharacterField.Form>
       </div>
     </PageSection>
   )
@@ -385,12 +388,12 @@ function CharacterFieldForm({
     500,
   )
 
-  const updateCharacterField = SettingsActions.useUi(
-    "updateCharacterField",
+  const updateCharacterField = useActionUi(
+    updateCharacterFieldAction,
     actionData,
   )
-  const removeCharacterField = SettingsActions.useUi(
-    "removeCharacterField",
+  const removeCharacterField = useActionUi(
+    removeCharacterFieldAction,
     actionData,
   )
 
