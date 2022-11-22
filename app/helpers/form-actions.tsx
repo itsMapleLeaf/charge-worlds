@@ -16,6 +16,7 @@ type Merge<A, B> = Omit<A, keyof B> & B
 type FormActionConfig = {
   input?: z.ZodType<unknown, z.ZodTypeDef, StringRecord>
   callback: (input: unknown, context: unknown) => unknown
+  __fieldNames: string
 }
 
 type FormActionsData<ActionMap extends Record<string, FormActionConfig>> = {
@@ -47,11 +48,14 @@ export class FormActions<
   ) {
     const { input, callback } = args
 
-    const actions: ActionMap & {
-      [K in Name]: typeof args
-    } = {
+    const actions = {
       ...this.actionMap,
       [name]: { input, callback },
+    } as ActionMap & {
+      [K in Name]: typeof args & {
+        // calculating this ahead of time is an optimization to keep typescript from choking
+        __fieldNames: OnlyString<keyof Input>
+      }
     }
 
     return new FormActions<typeof actions, Context>(actions)
@@ -124,14 +128,9 @@ export class FormActions<
     const Input = useMemo(() => {
       return autoRef(
         (
-          props: Merge<
-            ComponentProps<"input">,
-            {
-              name: OnlyString<
-                keyof z.input<NonNullable<ActionMap[ActionName]["input"]>>
-              >
-            }
-          >,
+          props: ComponentProps<"input"> & {
+            name: ActionMap[ActionName]["__fieldNames"]
+          },
         ) => {
           const baseProps: {
             type: string
@@ -164,15 +163,10 @@ export class FormActions<
 
     const HiddenInput = useMemo(() => {
       return autoRef(function HiddenInput(
-        props: Merge<
-          ComponentProps<"input">,
-          {
-            name: OnlyString<
-              keyof z.input<NonNullable<ActionMap[ActionName]["input"]>>
-            >
-            value: string | number | readonly string[]
-          }
-        >,
+        props: ComponentProps<"input"> & {
+          name: ActionMap[ActionName]["__fieldNames"]
+          value: string | number | readonly string[]
+        },
       ) {
         return <input type="hidden" {...props} />
       })
@@ -184,7 +178,7 @@ export class FormActions<
       HiddenInput,
       errors: actionData?.actions[actionName]?.errors,
       fieldErrors: actionData?.actions[actionName]?.fieldErrors as Record<
-        keyof z.input<NonNullable<ActionMap[ActionName]["input"]>>,
+        ActionMap[ActionName]["__fieldNames"],
         string[]
       >,
     }
