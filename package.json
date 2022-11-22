@@ -46,7 +46,8 @@
     "reconnecting-eventsource": "^1.6.2",
     "routes-gen": "^0.5.2",
     "use-sync-external-store": "^1.2.0",
-    "zod": "^3.19.1"
+    "zod": "^3.19.1",
+    "zod-form-data": "^1.2.4"
   },
   "devDependencies": {
     "@itsmapleleaf/configs": "^1.1.5",

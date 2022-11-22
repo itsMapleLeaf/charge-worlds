@@ -47,6 +47,7 @@ specifiers:
   typescript: 4.9.3
   use-sync-external-store: ^1.2.0
   zod: ^3.19.1
+  zod-form-data: ^1.2.4
 
 dependencies:
   '@fontsource/rubik': 4.5.11
@@ -73,6 +74,7 @@ dependencies:
   routes-gen: 0.5.2
   use-sync-external-store: 1.2.0_react@18.2.0
   zod: 3.19.1
+  zod-form-data: 1.2.4_zod@3.19.1
 
 devDependencies:
   '@itsmapleleaf/configs': 1.1.5_hsf322ms6xhhd4b5ne6lb74y4a
@@ -9118,6 +9120,14 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  /zod-form-data/1.2.4_zod@3.19.1:
+    resolution: {integrity: sha512-mI/rgItfvYQpvzEqGuBda/nuTHrMNoFZJ5cpiGLC5O3ZaVwI0XVo3/yTY2RreVMu57wGcDrfQcTRe5aMq2ijYA==}
+    peerDependencies:
+      zod: ^3.11.x
+    dependencies:
+      zod: 3.19.1
+    dev: false
 
   /zod/3.19.1:
     resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
