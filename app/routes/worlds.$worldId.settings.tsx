@@ -431,7 +431,7 @@ function CharacterFieldForm({
           className="contents"
         >
           <removeCharacterField.HiddenInput name="id" value={field.id} />
-          <button className={clearButtonClass} title="Remove">
+          <button className={clearButtonClass} title={`Remove ${field.name}`}>
             <X />
           </button>
         </removeCharacterField.Form>
