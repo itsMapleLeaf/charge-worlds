@@ -19,7 +19,6 @@ import { assert } from "../helpers/assert"
 import { discordIdSchema } from "../helpers/discord-id"
 import { ActionRouter, useActionUi } from "../helpers/form-action-router"
 import { useDebouncedCallback } from "../helpers/use-debounced-callback"
-import { useHydrated } from "../helpers/use-hydrated"
 import { Field } from "../ui/field"
 import {
   clearButtonClass,
@@ -303,6 +302,7 @@ function RemovePlayerForm({
 }
 
 function CharacterFieldsSection() {
+  const data = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
 
   const addCharacterField = useActionUi(addCharacterFieldAction, actionData)
@@ -332,8 +332,13 @@ function CharacterFieldsSection() {
           ))}
       </div>
 
-      <div className="grid gap-2">
-        <CharacterFieldsList />
+      <div className="grid gap-4">
+        {data.characterFields.map((field) => (
+          <div key={field.id} className="border-b border-slate-900 pb-2">
+            <CharacterFieldForm field={field} />
+          </div>
+        ))}
+
         <addCharacterField.Form>
           <button className={solidButtonClass} type="submit">
             <Plus /> Add Field
@@ -344,35 +349,6 @@ function CharacterFieldsSection() {
   )
 }
 
-function CharacterFieldsList() {
-  const data = useLoaderData<typeof loader>()
-
-  return (
-    <div
-      className="grid grid-cols-[1fr,auto,auto,auto] gap-2"
-      role="table"
-      aria-label="Character Fields Table"
-    >
-      <div role="row" className="contents">
-        <div role="columnheader" className={labelTextClass}>
-          Name
-        </div>
-        <div role="columnheader" className={labelTextClass}>
-          Long?
-        </div>
-        <div></div>
-        <div></div>
-      </div>
-
-      {data.characterFields.map((field) => (
-        <div key={field.id} role="row" className="contents">
-          <CharacterFieldForm field={field} />
-        </div>
-      ))}
-    </div>
-  )
-}
-
 function CharacterFieldForm({
   field,
 }: {
@@ -380,7 +356,6 @@ function CharacterFieldForm({
 }) {
   const actionData = useActionData<typeof action>()
   const formRef = useRef<HTMLFormElement>(null)
-  const hydrated = useHydrated()
 
   const submit = useSubmit()
   const submitDebounced = useDebouncedCallback(
@@ -398,9 +373,9 @@ function CharacterFieldForm({
   )
 
   return (
-    <updateCharacterField.Form className="contents" ref={formRef}>
+    <div className="grid gap-2">
       <updateCharacterField.HiddenInput name="id" value={field.id} />
-      <div role="cell">
+      <Field label="Name">
         <updateCharacterField.Input
           name="name"
           defaultValue={field.name}
@@ -408,35 +383,35 @@ function CharacterFieldForm({
           placeholder="Field name"
           onChange={submitDebounced}
         />
-      </div>
-      <div role="cell" className="place-self-center">
-        <updateCharacterField.Input
-          name="isLong"
-          required={false}
-          type="checkbox"
-          defaultChecked={field.isLong}
-          onChange={submitDebounced}
-        />
-      </div>
+      </Field>
 
-      <removeCharacterField.Form
-        role="cell"
-        method="post"
-        className="place-self-center leading-none"
-      >
-        <removeCharacterField.HiddenInput name="id" value={field.id} />
-        <button className={clearButtonClass} title="Remove">
-          <X />
-        </button>
-      </removeCharacterField.Form>
-
-      <div role="cell" className="place-self-center leading-none">
-        <div className={hydrated ? "hidden" : "contents"}>
-          <button className={clearButtonClass} type="submit" title="Save">
-            <Save />
+      <div className="flex gap-2">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label className="flex items-center gap-2">
+          <div className={labelTextClass}>Multiline</div>
+          <updateCharacterField.Input
+            name="isLong"
+            required={false}
+            type="checkbox"
+            defaultChecked={field.isLong}
+            onChange={submitDebounced}
+          />
+        </label>
+        <div className="flex-1" />
+        <removeCharacterField.Form
+          role="cell"
+          method="post"
+          className="contents"
+        >
+          <removeCharacterField.HiddenInput name="id" value={field.id} />
+          <button className={clearButtonClass} title="Remove">
+            <X />
           </button>
-        </div>
+        </removeCharacterField.Form>
+        <button className={clearButtonClass} type="submit" title="Save">
+          <Save />
+        </button>
       </div>
-    </updateCharacterField.Form>
+    </div>
   )
 }
