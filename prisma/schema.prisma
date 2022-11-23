@@ -58,6 +58,7 @@ model CharacterField {
   name        String
   description String                @default("")
   isLong      Boolean
+  order       Int                   @default(0)
   fieldValues CharacterFieldValue[]
 
   world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)

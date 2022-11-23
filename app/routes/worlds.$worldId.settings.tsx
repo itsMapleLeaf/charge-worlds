@@ -3,7 +3,15 @@ import { json } from "@remix-run/node"
 import type { Params } from "@remix-run/react"
 import { useActionData, useLoaderData, useTransition } from "@remix-run/react"
 import clsx from "clsx"
-import { CheckCircle, ListPlus, Minus, Plus, X } from "lucide-react"
+import {
+  CheckCircle,
+  ChevronDown,
+  ChevronUp,
+  ListPlus,
+  Minus,
+  Plus,
+  X,
+} from "lucide-react"
 import { useEffect, useId, useRef } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
@@ -13,6 +21,7 @@ import { requireSessionUser } from "../auth/session.server"
 import { db } from "../core/db.server"
 import { assert } from "../helpers/assert"
 import { discordIdSchema } from "../helpers/discord-id"
+import { raise } from "../helpers/errors"
 import { ActionRouter, useActionUi } from "../helpers/form-action-router"
 import { Field } from "../ui/field"
 import {
@@ -112,6 +121,43 @@ const updateCharacterFieldsAction = router.route("updateCharacterFields", {
   },
 })
 
+const reorderCharacterFieldAction = router.route("reorderCharacterField", {
+  input: zfd.formData({
+    fieldId: zfd.text(),
+    direction: zfd.text(z.union([z.literal("up"), z.literal("down")])),
+  }),
+  callback: async ({ fieldId, direction }, { worldId }) => {
+    const currentFields = await db.characterField.findMany({
+      where: { worldId },
+      orderBy: { order: "asc" },
+      select: { id: true },
+    })
+
+    const currentFieldIndex = currentFields.findIndex((f) => f.id === fieldId)
+    if (currentFieldIndex === -1) raise(`Field ${fieldId} not found`)
+
+    if (direction === "up") {
+      const removed = currentFields.splice(currentFieldIndex, 1)
+      currentFields.splice(currentFieldIndex - 1, 0, ...removed)
+    } else {
+      const removed = currentFields.splice(currentFieldIndex, 1)
+      currentFields.splice(currentFieldIndex + 1, 0, ...removed)
+    }
+
+    await db.world.update({
+      where: { id: worldId },
+      data: {
+        characterFields: {
+          update: currentFields.map(({ id }, order) => ({
+            where: { id },
+            data: { order },
+          })),
+        },
+      },
+    })
+  },
+})
+
 const removeCharacterFieldAction = router.route("removeCharacterField", {
   input: zfd.formData({ id: zfd.text() }),
   callback: async ({ id }, { worldId }) => {
@@ -145,7 +191,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
   const characterFields = await db.characterField.findMany({
     where: { worldId: world.id },
-    orderBy: { id: "desc" },
+    orderBy: { order: "asc" },
     select: { id: true, name: true, description: true, isLong: true },
   })
 
@@ -346,6 +392,8 @@ function CharacterFieldsSection() {
             <CharacterFieldForm
               field={field}
               index={index}
+              canMoveUp={index > 0}
+              canMoveDown={index < data.characterFields.length - 1}
               formId={updateFormId}
             />
           </div>
@@ -377,10 +425,14 @@ function CharacterFieldForm({
   formId,
   field,
   index,
+  canMoveUp,
+  canMoveDown,
 }: {
   formId: string
   field: { id: string; description: string; name: string; isLong: boolean }
   index: number
+  canMoveUp: boolean
+  canMoveDown: boolean
 }) {
   const actionData = useActionData<typeof action>()
 
@@ -390,6 +442,11 @@ function CharacterFieldForm({
 
   const removeCharacterField = useActionUi(
     removeCharacterFieldAction,
+    actionData,
+  )
+
+  const reorderCharacterFields = useActionUi(
+    reorderCharacterFieldAction,
     actionData,
   )
 
@@ -432,7 +489,7 @@ function CharacterFieldForm({
       <label className={labelClass} htmlFor={isLongId}>
         Multiline
       </label>
-      <div className="flex pt-3 leading-tight">
+      <div className="flex items-start gap-2 pt-3 leading-tight">
         <input
           id={isLongId}
           name={`fields[${index}].isLong`}
@@ -442,12 +499,36 @@ function CharacterFieldForm({
           form={formId}
           className={checkboxClass}
         />
+
         <div className="flex-1" />
-        <removeCharacterField.Form
-          role="cell"
-          method="post"
-          className="contents"
-        >
+
+        <reorderCharacterFields.Form className="contents">
+          <reorderCharacterFields.HiddenInput name="fieldId" value={field.id} />
+          {canMoveUp && (
+            <button
+              className={clearButtonClass}
+              type="submit"
+              name="direction"
+              value="up"
+              title="Move field up"
+            >
+              <ChevronUp />
+            </button>
+          )}
+          {canMoveDown && (
+            <button
+              className={clearButtonClass}
+              type="submit"
+              name="direction"
+              value="down"
+              title="Move field down"
+            >
+              <ChevronDown />
+            </button>
+          )}
+        </reorderCharacterFields.Form>
+
+        <removeCharacterField.Form method="post" className="contents">
           <removeCharacterField.HiddenInput name="id" value={field.id} />
           <button className={clearButtonClass} title={`Remove ${field.name}`}>
             <X />

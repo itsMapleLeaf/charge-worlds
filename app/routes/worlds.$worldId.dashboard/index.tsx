@@ -17,6 +17,7 @@ export async function loader({ request, params }: LoaderArgs) {
     getSessionUser(request),
     db.characterField.findMany({
       where: { worldId },
+      orderBy: { order: "asc" },
       select: { id: true, name: true, description: true, isLong: true },
     }),
   ])
