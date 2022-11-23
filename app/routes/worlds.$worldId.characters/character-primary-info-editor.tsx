@@ -49,7 +49,7 @@ export function CharacterPrimaryInfoEditor({
             readOnly={isSpectator}
           />
         </Field>
-        <section>
+        <section className="grid gap-2">
           <h2 className={labelTextClass}>Momentum</h2>
           <div className={clsx(inputClass, "grid place-items-center")}>
             {isGameMaster ? (

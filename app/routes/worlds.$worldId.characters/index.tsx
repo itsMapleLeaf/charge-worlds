@@ -256,7 +256,7 @@ export function CharactersModule(props: {
 
                 <hr className={dividerClass} />
 
-                <section>
+                <section className="grid gap-2">
                   <h3 className={labelTextClass}>Actions</h3>
                   <CharacterActionLevelsEditor
                     character={currentCharacter}

@@ -41,7 +41,7 @@ export function CharacterActionLevelsEditor({
             {actions.map((action) => (
               <section
                 key={action}
-                className="grid grid-flow-row grid-cols-[1fr,auto] grid-rows-[auto,auto]"
+                className="grid grid-flow-row grid-cols-[1fr,auto] grid-rows-[auto,auto] gap-y-2"
               >
                 <h5 className={labelTextClass}>{action}</h5>
 
