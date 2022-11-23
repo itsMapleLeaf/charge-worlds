@@ -13,7 +13,7 @@ type Merge<A, B> = Omit<A, keyof B> & B
 export class ActionRouter<Context> {
   private readonly routes: Array<ActionRoute<Context>> = []
 
-  route<FormInput extends Record<string, string>, FormParsed, Output>(
+  route<FormInput extends object, FormParsed, Output>(
     name: string,
     config: {
       input?: z.ZodType<FormParsed, z.ZodTypeDef, FormInput>
@@ -40,7 +40,7 @@ export class ActionRouter<Context> {
 
 export class ActionRoute<
   Context = unknown,
-  FormInput extends Record<string, string> = Record<string, string>,
+  FormInput extends object = object,
   FormParsed = unknown,
   Output = unknown,
 > {
@@ -61,12 +61,11 @@ export class ActionRoute<
   ): Promise<TypedResponse<ActionRouteData<Output>> | undefined> {
     const { json, redirect } = await import("@remix-run/node")
 
-    const { actionName, ...body } = Object.fromEntries(
-      await args.request.clone().formData(),
-    )
+    const formData = await args.request.clone().formData()
+    const actionName = formData.get("actionName")
     if (actionName !== this.name) return
 
-    const inputResult = this.config.input?.safeParse(body)
+    const inputResult = this.config.input?.safeParse(formData)
     if (inputResult && !inputResult.success) {
       const { formErrors, fieldErrors } = inputResult.error.formErrors
       return json(
@@ -91,7 +90,7 @@ type ActionRouteData<Data> = {
   data?: Data
 }
 
-export function useActionUi<FormInput extends Record<string, string>, Data>(
+export function useActionUi<FormInput extends object, Data>(
   route: ActionRoute<any, FormInput, any, Data>,
   actionData: ActionRouteData<unknown> | undefined,
 ) {
