@@ -52,6 +52,6 @@ export const inputClass = clsx(
 
 export const textAreaClass = clsx(inputBaseClass, "p-3")
 
-export const labelTextClass = clsx("mb-1.5 text-sm font-medium leading-none")
+export const labelTextClass = clsx("text-sm font-medium leading-none")
 
 export const errorTextClass = clsx("text-sm text-red-400")
