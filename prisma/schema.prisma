@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  output          = "../app/generated/prisma"
+  output          = "../generated/prisma"
   previewFeatures = ["extendedWhereUnique"]
 }
 

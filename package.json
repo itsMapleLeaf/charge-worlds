@@ -17,7 +17,7 @@
     "lint-fix": "pnpm lint --fix",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "tailwind": "tailwindcss -i styles/styles.css -o app/generated/styles.css -c tailwind.config.cjs",
+    "tailwind": "tailwindcss -i styles/styles.css -o generated/styles.css -c tailwind.config.cjs",
     "routes": "routes-gen --driver @routes-gen/remix",
     "env-check": "tsx app/core/env.server.ts",
     "unused-deps": "depcheck"

@@ -10,7 +10,7 @@ build
 dist
 .cache
 .vscode
-/app/generated
+/generated
 /app/routes.d.ts
 .vercel
 /data

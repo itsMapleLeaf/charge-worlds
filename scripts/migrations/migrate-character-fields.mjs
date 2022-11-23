@@ -1,8 +1,8 @@
 /* eslint-disable unicorn/no-process-exit */
 import "dotenv/config"
 
-import { PrismaClient } from "../../app/generated/prisma/index.js"
 import { defaultCharacterFields } from "../../app/world/default-character-fields.mjs"
+import { PrismaClient } from "../../generated/prisma/index.js"
 
 const db = new PrismaClient()
 

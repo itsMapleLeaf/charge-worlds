@@ -1,5 +1,5 @@
+import type { User, World } from "../../generated/prisma"
 import { db } from "../core/db.server"
-import type { User, World } from "../generated/prisma"
 import { raise } from "../helpers/errors"
 
 export async function getMembership(user: User, world: World) {
