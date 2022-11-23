@@ -1,12 +1,7 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import type { Params } from "@remix-run/react"
-import {
-  useActionData,
-  useLoaderData,
-  useSubmit,
-  useTransition,
-} from "@remix-run/react"
+import { useActionData, useLoaderData, useTransition } from "@remix-run/react"
 import { Minus, Plus, Save, X } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
 import { route } from "routes-gen"
@@ -18,7 +13,6 @@ import { db } from "../core/db.server"
 import { assert } from "../helpers/assert"
 import { discordIdSchema } from "../helpers/discord-id"
 import { ActionRouter, useActionUi } from "../helpers/form-action-router"
-import { useDebouncedCallback } from "../helpers/use-debounced-callback"
 import { Field } from "../ui/field"
 import {
   clearButtonClass,
@@ -94,16 +88,24 @@ const addCharacterFieldAction = router.route("addCharacterField", {
   },
 })
 
-const updateCharacterFieldAction = router.route("updateCharacterField", {
+const updateCharacterFieldsAction = router.route("updateCharacterFields", {
   input: zfd.formData({
-    id: zfd.text(),
-    name: zfd.text(z.string().max(256)),
-    isLong: zfd.checkbox(),
+    fields: zfd.repeatableOfType(
+      zfd.formData({
+        id: zfd.text(),
+        name: zfd.text(z.string().max(256)),
+        isLong: zfd.checkbox(),
+      }),
+    ),
   }),
-  callback: async ({ id, ...data }, { worldId }) => {
-    await db.characterField.update({
-      where: { id },
-      data,
+  callback: async ({ fields }, { worldId }) => {
+    await db.world.update({
+      where: { id: worldId },
+      data: {
+        characterFields: {
+          update: fields.map(({ id, ...data }) => ({ where: { id }, data })),
+        },
+      },
     })
   },
 })
@@ -306,8 +308,8 @@ function CharacterFieldsSection() {
   const actionData = useActionData<typeof action>()
 
   const addCharacterField = useActionUi(addCharacterFieldAction, actionData)
-  const updateCharacterField = useActionUi(
-    updateCharacterFieldAction,
+  const updateCharacterFields = useActionUi(
+    updateCharacterFieldsAction,
     actionData,
   )
   const removeCharacterField = useActionUi(
@@ -315,12 +317,14 @@ function CharacterFieldsSection() {
     actionData,
   )
 
+  const updateFormId = useId()
+
   return (
     <PageSection title="Character Fields">
       <div className="grid gap-2">
         {[
           addCharacterField.errors,
-          updateCharacterField.errors,
+          updateCharacterFields.errors,
           removeCharacterField.errors,
         ]
           .flat()
@@ -333,85 +337,74 @@ function CharacterFieldsSection() {
       </div>
 
       <div className="grid gap-4">
-        {data.characterFields.map((field) => (
-          <div key={field.id} className="border-b border-slate-900 pb-2">
-            <CharacterFieldForm field={field} />
+        <updateCharacterFields.Form className="contents" id={updateFormId} />
+
+        {data.characterFields.map((field, index) => (
+          <div key={field.id} className="grid gap-2">
+            <input
+              type="hidden"
+              name={`fields[${index}].id`}
+              value={field.id}
+              form={updateFormId}
+            />
+
+            <Field label="Name">
+              <input
+                name={`fields[${index}].name`}
+                defaultValue={field.name}
+                className={inputClass}
+                placeholder="Field name"
+                form={updateFormId}
+              />
+            </Field>
+
+            <div className="flex gap-2">
+              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+              <label className="flex items-center gap-2">
+                <div className={labelTextClass}>Multiline</div>
+                <input
+                  name={`fields[${index}].isLong`}
+                  required={false}
+                  type="checkbox"
+                  defaultChecked={field.isLong}
+                  form={updateFormId}
+                />
+              </label>
+
+              <div className="flex-1" />
+
+              <removeCharacterField.Form
+                role="cell"
+                method="post"
+                className="contents"
+              >
+                <removeCharacterField.HiddenInput name="id" value={field.id} />
+                <button className={clearButtonClass} title="Remove">
+                  <X />
+                </button>
+              </removeCharacterField.Form>
+            </div>
           </div>
         ))}
 
-        <addCharacterField.Form>
-          <button className={solidButtonClass} type="submit">
-            <Plus /> Add Field
+        <div className="flex">
+          <addCharacterField.Form>
+            <button className={solidButtonClass} type="submit">
+              <Plus /> Add field
+            </button>
+          </addCharacterField.Form>
+
+          <div className="flex-1" />
+
+          <button
+            className={solidButtonClass}
+            type="submit"
+            form={updateFormId}
+          >
+            <Save /> Save
           </button>
-        </addCharacterField.Form>
+        </div>
       </div>
     </PageSection>
-  )
-}
-
-function CharacterFieldForm({
-  field,
-}: {
-  field: { id: string; name: string; isLong: boolean }
-}) {
-  const actionData = useActionData<typeof action>()
-  const formRef = useRef<HTMLFormElement>(null)
-
-  const submit = useSubmit()
-  const submitDebounced = useDebouncedCallback(
-    () => submit(formRef.current!),
-    500,
-  )
-
-  const updateCharacterField = useActionUi(
-    updateCharacterFieldAction,
-    actionData,
-  )
-  const removeCharacterField = useActionUi(
-    removeCharacterFieldAction,
-    actionData,
-  )
-
-  return (
-    <div className="grid gap-2">
-      <updateCharacterField.HiddenInput name="id" value={field.id} />
-      <Field label="Name">
-        <updateCharacterField.Input
-          name="name"
-          defaultValue={field.name}
-          className={inputClass}
-          placeholder="Field name"
-          onChange={submitDebounced}
-        />
-      </Field>
-
-      <div className="flex gap-2">
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label className="flex items-center gap-2">
-          <div className={labelTextClass}>Multiline</div>
-          <updateCharacterField.Input
-            name="isLong"
-            required={false}
-            type="checkbox"
-            defaultChecked={field.isLong}
-            onChange={submitDebounced}
-          />
-        </label>
-        <div className="flex-1" />
-        <removeCharacterField.Form
-          role="cell"
-          method="post"
-          className="contents"
-        >
-          <removeCharacterField.HiddenInput name="id" value={field.id} />
-          <button className={clearButtonClass} title="Remove">
-            <X />
-          </button>
-        </removeCharacterField.Form>
-        <button className={clearButtonClass} type="submit" title="Save">
-          <Save />
-        </button>
-      </div>
-    </div>
   )
 }
