@@ -2,7 +2,7 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import type { Params } from "@remix-run/react"
 import { useActionData, useLoaderData, useTransition } from "@remix-run/react"
-import { Minus, Plus, Save, X } from "lucide-react"
+import { CheckCircle, ListPlus, Minus, Plus, X } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
@@ -15,10 +15,10 @@ import { discordIdSchema } from "../helpers/discord-id"
 import { ActionRouter, useActionUi } from "../helpers/form-action-router"
 import { Field } from "../ui/field"
 import {
+  checkboxClass,
   clearButtonClass,
   errorTextClass,
   inputClass,
-  labelTextClass,
   maxWidthContainerClass,
   solidButtonClass,
 } from "../ui/styles"
@@ -191,7 +191,7 @@ export default function SettingsPage() {
             </Field>
             <div>
               <button className={solidButtonClass} type="submit">
-                <Save /> Save
+                <CheckCircle size={20} /> Save
               </button>
             </div>
             {updateWorld?.errors?.map((error, index) => (
@@ -340,57 +340,19 @@ function CharacterFieldsSection() {
         <updateCharacterFields.Form className="contents" id={updateFormId} />
 
         {data.characterFields.map((field, index) => (
-          <div key={field.id} className="grid gap-2">
-            <input
-              type="hidden"
-              name={`fields[${index}].id`}
-              value={field.id}
-              form={updateFormId}
+          <div key={field.id} className="border-b-2 border-black/25 pb-4">
+            <CharacterFieldForm
+              field={field}
+              index={index}
+              formId={updateFormId}
             />
-
-            <Field label="Name">
-              <input
-                name={`fields[${index}].name`}
-                defaultValue={field.name}
-                className={inputClass}
-                placeholder="Field name"
-                form={updateFormId}
-              />
-            </Field>
-
-            <div className="flex gap-2">
-              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label className="flex items-center gap-2">
-                <div className={labelTextClass}>Multiline</div>
-                <input
-                  name={`fields[${index}].isLong`}
-                  required={false}
-                  type="checkbox"
-                  defaultChecked={field.isLong}
-                  form={updateFormId}
-                />
-              </label>
-
-              <div className="flex-1" />
-
-              <removeCharacterField.Form
-                role="cell"
-                method="post"
-                className="contents"
-              >
-                <removeCharacterField.HiddenInput name="id" value={field.id} />
-                <button className={clearButtonClass} title="Remove">
-                  <X />
-                </button>
-              </removeCharacterField.Form>
-            </div>
           </div>
         ))}
 
         <div className="flex">
           <addCharacterField.Form>
             <button className={solidButtonClass} type="submit">
-              <Plus /> Add field
+              <ListPlus /> Add field
             </button>
           </addCharacterField.Form>
 
@@ -401,10 +363,79 @@ function CharacterFieldsSection() {
             type="submit"
             form={updateFormId}
           >
-            <Save /> Save
+            <CheckCircle size={20} /> Save
           </button>
         </div>
       </div>
     </PageSection>
+  )
+}
+
+function CharacterFieldForm({
+  formId,
+  field,
+  index,
+}: {
+  formId: string
+  field: { id: string; name: string; isLong: boolean }
+  index: number
+}) {
+  const actionData = useActionData<typeof action>()
+
+  const nameId = useId()
+  const isLongId = useId()
+
+  const removeCharacterField = useActionUi(
+    removeCharacterFieldAction,
+    actionData,
+  )
+
+  return (
+    <div className="grid grid-cols-[auto,1fr] items-center gap-x-4 gap-y-2">
+      <input
+        type="hidden"
+        name={`fields[${index}].id`}
+        value={field.id}
+        form={formId}
+      />
+
+      <label className="select-none font-medium" htmlFor={nameId}>
+        Label
+      </label>
+      <input
+        id={nameId}
+        name={`fields[${index}].name`}
+        defaultValue={field.name}
+        className={inputClass}
+        placeholder="Field name"
+        form={formId}
+      />
+
+      <label className="select-none font-medium" htmlFor={isLongId}>
+        Multiline
+      </label>
+      <div className="flex items-center">
+        <input
+          id={isLongId}
+          name={`fields[${index}].isLong`}
+          required={false}
+          type="checkbox"
+          defaultChecked={field.isLong}
+          form={formId}
+          className={checkboxClass}
+        />
+        <div className="flex-1" />
+        <removeCharacterField.Form
+          role="cell"
+          method="post"
+          className="contents"
+        >
+          <removeCharacterField.HiddenInput name="id" value={field.id} />
+          <button className={clearButtonClass} title="Remove">
+            <X />
+          </button>
+        </removeCharacterField.Form>
+      </div>
+    </div>
   )
 }

@@ -10,7 +10,7 @@ export const activePressClass = clsx(
 
 export const clearButtonClass = clsx(
   "ring-inset hover:text-blue-300",
-  "ring-blue-300 focus:outline-none focus-visible:ring-2 [&_*:focus]:outline-none",
+  "rounded-md ring-blue-500 focus:outline-none focus-visible:ring-2 [&_*:focus]:outline-none",
   "-m-2 inline-flex items-center gap-2 p-2 text-lg uppercase",
   "leading-none",
   activePressClass,
@@ -48,6 +48,10 @@ export const inputClass = clsx(
   inputBaseClass,
   "inline-flex min-h-[3rem] flex-wrap items-center p-3 leading-tight",
   "border-red-400 [&:not(:placeholder-shown)]:invalid:border",
+)
+
+export const checkboxClass = clsx(
+  "relative h-5 w-5 appearance-none rounded bg-black/40 ring-blue-500 after:absolute after:inset-[3px] after:rounded-sm checked:after:bg-blue-400 hover:bg-black/70 focus:outline-none focus-visible:ring-2",
 )
 
 export const textAreaClass = clsx(inputBaseClass, "p-3")
