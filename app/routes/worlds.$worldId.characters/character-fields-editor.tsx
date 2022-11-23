@@ -1,12 +1,18 @@
+import type { ReactNode } from "react"
+import { useId } from "react"
 import {
   DebouncedExpandingTextArea,
   DebouncedInput,
 } from "../../ui/debounced-input"
-import { Field } from "../../ui/field"
 import { inputClass, textAreaClass } from "../../ui/styles"
 
 export type CharacterFieldsEditorProps = {
-  fields: Array<{ id: string; name: string; isLong: boolean }>
+  fields: Array<{
+    id: string
+    name: string
+    description: string
+    isLong: boolean
+  }>
   fieldValues: Record<string, string>
   readOnly: boolean
   onChange: (fieldId: string, value: string) => void
@@ -19,19 +25,37 @@ export function CharacterFieldsEditor(props: CharacterFieldsEditorProps) {
         const InputComponent = field.isLong
           ? DebouncedExpandingTextArea
           : DebouncedInput
+
         return (
-          <Field key={field.id} label={field.name}>
-            <InputComponent
-              placeholder={`Enter your ${field.name.toLowerCase()}.`}
-              value={props.fieldValues[field.id] ?? ""}
-              onChangeText={(value) => props.onChange(field.id, value)}
-              debouncePeriod={500}
-              className={field.isLong ? textAreaClass : inputClass}
-              readOnly={props.readOnly}
-            />
-          </Field>
+          <Id key={field.id}>
+            {(id) => (
+              <div className="grid gap-1">
+                <label className="font-medium leading-tight" htmlFor={id}>
+                  {field.name}
+                </label>
+                {field.description ? (
+                  <p className="text-sm opacity-75">{field.description}</p>
+                ) : (
+                  <></>
+                )}
+                <InputComponent
+                  id={id}
+                  placeholder={`Enter your ${field.name.toLowerCase()}.`}
+                  value={props.fieldValues[field.id] ?? ""}
+                  onChangeText={(value) => props.onChange(field.id, value)}
+                  debouncePeriod={500}
+                  className={field.isLong ? textAreaClass : inputClass}
+                  readOnly={props.readOnly}
+                />
+              </div>
+            )}
+          </Id>
         )
       })}
     </div>
   )
+}
+
+function Id({ children }: { children: (id: string) => ReactNode }) {
+  return <>{children(useId())}</>
 }

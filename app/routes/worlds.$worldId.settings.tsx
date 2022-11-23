@@ -2,6 +2,7 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import type { Params } from "@remix-run/react"
 import { useActionData, useLoaderData, useTransition } from "@remix-run/react"
+import clsx from "clsx"
 import { CheckCircle, ListPlus, Minus, Plus, X } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
 import { route } from "routes-gen"
@@ -94,6 +95,7 @@ const updateCharacterFieldsAction = router.route("updateCharacterFields", {
       zfd.formData({
         id: zfd.text(),
         name: zfd.text(z.string().max(256)),
+        description: zfd.text(z.string().max(1024).optional()),
         isLong: zfd.checkbox(),
       }),
     ),
@@ -144,7 +146,7 @@ export async function loader({ request, params }: LoaderArgs) {
   const characterFields = await db.characterField.findMany({
     where: { worldId: world.id },
     orderBy: { id: "desc" },
-    select: { id: true, name: true, isLong: true },
+    select: { id: true, name: true, description: true, isLong: true },
   })
 
   return json({
@@ -340,7 +342,7 @@ function CharacterFieldsSection() {
         <updateCharacterFields.Form className="contents" id={updateFormId} />
 
         {data.characterFields.map((field, index) => (
-          <div key={field.id} className="border-b-2 border-black/25 pb-4">
+          <div key={field.id} className="border-b-2 border-black/25">
             <CharacterFieldForm
               field={field}
               index={index}
@@ -377,12 +379,13 @@ function CharacterFieldForm({
   index,
 }: {
   formId: string
-  field: { id: string; name: string; isLong: boolean }
+  field: { id: string; description: string; name: string; isLong: boolean }
   index: number
 }) {
   const actionData = useActionData<typeof action>()
 
   const nameId = useId()
+  const descriptionId = useId()
   const isLongId = useId()
 
   const removeCharacterField = useActionUi(
@@ -390,8 +393,10 @@ function CharacterFieldForm({
     actionData,
   )
 
+  const labelClass = clsx("select-none pt-3 font-medium leading-tight")
+
   return (
-    <div className="grid grid-cols-[auto,1fr] items-center gap-x-4 gap-y-2">
+    <div className="grid auto-rows-[minmax(3rem,auto)] grid-cols-[auto,1fr] gap-x-4 gap-y-1">
       <input
         type="hidden"
         name={`fields[${index}].id`}
@@ -399,7 +404,7 @@ function CharacterFieldForm({
         form={formId}
       />
 
-      <label className="select-none font-medium" htmlFor={nameId}>
+      <label className={labelClass} htmlFor={nameId}>
         Label
       </label>
       <input
@@ -411,10 +416,23 @@ function CharacterFieldForm({
         form={formId}
       />
 
-      <label className="select-none font-medium" htmlFor={isLongId}>
+      <label className={labelClass} htmlFor={descriptionId}>
+        Description
+      </label>
+      <textarea
+        id={descriptionId}
+        name={`fields[${index}].description`}
+        defaultValue={field.description}
+        className={inputClass}
+        placeholder="Tell players what to put here."
+        form={formId}
+        rows={2}
+      />
+
+      <label className={labelClass} htmlFor={isLongId}>
         Multiline
       </label>
-      <div className="flex items-center">
+      <div className="flex pt-3 leading-tight">
         <input
           id={isLongId}
           name={`fields[${index}].isLong`}

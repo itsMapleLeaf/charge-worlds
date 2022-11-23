@@ -54,14 +54,14 @@ enum Role {
 }
 
 model CharacterField {
-  id     String  @id @default(cuid())
-  name   String
-  isLong Boolean
+  id          String                @id @default(cuid())
+  name        String
+  description String                @default("")
+  isLong      Boolean
+  fieldValues CharacterFieldValue[]
 
   world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
   worldId String
-
-  fieldValues CharacterFieldValue[]
 }
 
 model Character {
