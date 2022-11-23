@@ -34,7 +34,9 @@ export function CharacterFieldsEditor(props: CharacterFieldsEditorProps) {
                   {field.name}
                 </label>
                 {field.description ? (
-                  <p className="text-sm opacity-75">{field.description}</p>
+                  <p className="whitespace-pre-line text-sm opacity-75">
+                    {field.description}
+                  </p>
                 ) : (
                   <></>
                 )}
