@@ -32,6 +32,7 @@ model World {
   clocks          Clock[]
   diceLogs        DiceLog[]
   characterFields CharacterField[]
+  galleryItems    GalleryItem[]
 }
 
 model Membership {
@@ -131,4 +132,16 @@ model DiceLog {
 enum DiceResultType {
   HIGHEST
   LOWEST
+}
+
+model GalleryItem {
+  id         String  @id @default(cuid())
+  caption    String  @default("")
+  imageUrl   String?
+  websiteUrl String?
+  order      Int
+  hidden     Boolean @default(true)
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId String
 }
