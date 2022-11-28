@@ -1,6 +1,8 @@
 import { Form, useSubmit, useTransition } from "@remix-run/react"
+import { Dialog, DialogDismiss, useDialogState } from "ariakit"
 import clsx from "clsx"
 import { Eye, EyeOff, Image, ImagePlus, Trash, X } from "lucide-react"
+import type { ReactNode } from "react"
 import { Fragment, useState } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
@@ -147,10 +149,15 @@ export const galleryModule = new DashboardModule({
     }
 
     const [currentId, setCurrentId] = useState<Item["id"]>()
+    const [overlayVisible, setOverlayVisible] = useState(false)
     const current = items.find((item) => item.id === currentId)
 
-    const submit = useSubmit()
+    const showOverlay = (id: Item["id"]) => {
+      setCurrentId(id)
+      setOverlayVisible(true)
+    }
 
+    const submit = useSubmit()
     const updateItem = (id: string, item: Partial<Item>) => {
       const body = new FormData()
       body.set("id", id)
@@ -170,7 +177,7 @@ export const galleryModule = new DashboardModule({
                   <div className="relative aspect-square w-full overflow-clip rounded bg-black/25">
                     <button
                       type="button"
-                      onClick={() => setCurrentId(item.id)}
+                      onClick={() => showOverlay(item.id)}
                       className="block h-full w-full ring-blue-500 hover:bg-black/50 focus:outline-none focus-visible:ring-2"
                     >
                       <img
@@ -210,86 +217,67 @@ export const galleryModule = new DashboardModule({
           </div>
         </div>
 
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className={clsx(
-              "absolute inset-0 isolate z-10 flex flex-col gap-4 bg-black/75 p-4 backdrop-blur transition-all",
-              current === item ? "visible opacity-100" : "invisible opacity-0",
-            )}
-            role="presentation"
-            onClick={(event) => {
-              if (event.target === event.currentTarget) {
-                setCurrentId(undefined)
-              }
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "Escape") {
-                setCurrentId(undefined)
-              }
-            }}
-          >
-            <div className="flex justify-end">
-              <button
-                type="button"
-                title="Close"
-                className={clearButtonClass}
-                onClick={() => setCurrentId(undefined)}
-              >
-                <X size={24} />
-              </button>
-            </div>
-            <div className="min-h-0 flex-1">
-              <img
-                src={item.imageUrl}
-                alt=""
-                className={clsx(
-                  "h-full w-full object-contain transition",
-                  current === item ? "scale-100" : "scale-90",
-                )}
-                role="presentation"
-                onClick={() => setCurrentId(undefined)}
-              />
-            </div>
+        <LightboxOverlay
+          visible={overlayVisible}
+          onVisibleChange={setOverlayVisible}
+        >
+          {current && (
+            <div className="flex h-full flex-col gap-6">
+              <div className="min-h-0 flex-1">
+                <img
+                  src={current.imageUrl}
+                  alt=""
+                  className={clsx(
+                    "h-full w-full object-contain transition",
+                    overlayVisible ? "scale-100" : "scale-90",
+                  )}
+                  role="presentation"
+                  onClick={() => setOverlayVisible(false)}
+                />
+              </div>
 
-            {canEdit ? (
-              <div className="mx-auto grid w-full max-w-screen-sm gap-4">
-                <div className="flex items-end gap-2">
-                  <Field label="Image URL" className="flex-1">
-                    <DebouncedInput
-                      className={inputClass}
-                      type="url"
-                      value={item.imageUrl}
-                      onChangeText={(imageUrl) => {
-                        updateItem(item.id, { imageUrl })
-                      }}
+              {canEdit ? (
+                <div className="mx-auto grid w-full max-w-screen-sm gap-4">
+                  <div className="flex items-end gap-2">
+                    <Field label="Image URL" className="flex-1">
+                      <DebouncedInput
+                        className={inputClass}
+                        type="url"
+                        value={current.imageUrl}
+                        onChangeText={(imageUrl) => {
+                          updateItem(current.id, { imageUrl })
+                        }}
+                        debouncePeriod={500}
+                      />
+                    </Field>
+                    <ToggleHiddenButton
+                      {...current}
+                      formAction={props.formAction}
+                    />
+                    <DeleteButton
+                      itemId={current.id}
+                      formAction={props.formAction}
+                    />
+                  </div>
+
+                  <Field label="Caption">
+                    <DebouncedExpandingTextArea
+                      className={textAreaClass}
+                      value={current.caption}
+                      placeholder="Describe the image"
                       debouncePeriod={500}
+                      onChangeText={(caption) => {
+                        updateItem(current.id, { caption })
+                      }}
                     />
                   </Field>
-                  <ToggleHiddenButton {...item} formAction={props.formAction} />
-                  <DeleteButton
-                    itemId={item.id}
-                    formAction={props.formAction}
-                  />
                 </div>
-
-                <Field label="Caption">
-                  <DebouncedExpandingTextArea
-                    className={textAreaClass}
-                    value={item.caption}
-                    placeholder="Describe the image"
-                    debouncePeriod={500}
-                    onChangeText={(caption) => {
-                      updateItem(item.id, { caption })
-                    }}
-                  />
-                </Field>
-              </div>
-            ) : (
-              <p className="text-center text-lg">{item.caption}</p>
-            )}
-          </div>
-        ))}
+              ) : (
+                <p className="text-center text-lg">{current.caption}</p>
+              )}
+            </div>
+          )}
+        </LightboxOverlay>
       </div>
     )
   },
@@ -334,5 +322,42 @@ function ToggleHiddenButton({
         {hidden ? <EyeOff /> : <Eye />}
       </button>
     </Form>
+  )
+}
+
+function LightboxOverlay({
+  visible,
+  children,
+  onVisibleChange,
+}: {
+  visible: boolean
+  children: ReactNode
+  onVisibleChange: (visible: boolean) => void
+}) {
+  const dialog = useDialogState({
+    open: visible,
+    setOpen: onVisibleChange,
+    animated: true,
+  })
+  return (
+    <Dialog
+      state={dialog}
+      className="group fixed inset-0 flex flex-col gap-4 p-4 transition-opacity data-[enter]:opacity-100 data-[leave]:opacity-0"
+      backdropProps={{
+        className: clsx(
+          "bg-black/75 backdrop-blur",
+          "transition-opacity data-[enter]:opacity-100 data-[leave]:opacity-0",
+        ),
+      }}
+    >
+      <div className="flex justify-end">
+        <DialogDismiss className={clearButtonClass}>
+          <X size={24} />
+        </DialogDismiss>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto transition-transform group-data-[enter]:scale-100 group-data-[leave]:scale-90">
+        {children}
+      </div>
+    </Dialog>
   )
 }
