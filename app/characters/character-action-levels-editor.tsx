@@ -1,8 +1,8 @@
 import { ChevronsRight, Dices } from "lucide-react"
-import type { Character } from "../../../generated/prisma"
-import { entriesTyped } from "../../helpers/entries-typed"
-import { DotCounter } from "../../ui/counter"
-import { labelTextClass } from "../../ui/styles"
+import type { Character } from "../../generated/prisma"
+import { entriesTyped } from "../helpers/entries-typed"
+import { DotCounter } from "../ui/counter"
+import { labelTextClass } from "../ui/styles"
 import { CharacterActionRollButton } from "./character-action-roll-button"
 import { characterActionLibrary } from "./character-actions"
 

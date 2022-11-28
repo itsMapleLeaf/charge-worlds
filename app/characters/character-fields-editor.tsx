@@ -3,8 +3,8 @@ import { useId } from "react"
 import {
   DebouncedExpandingTextArea,
   DebouncedInput,
-} from "../../ui/debounced-input"
-import { inputClass, textAreaClass } from "../../ui/styles"
+} from "../ui/debounced-input"
+import { inputClass, textAreaClass } from "../ui/styles"
 
 export type CharacterFieldsEditorProps = {
   fields: Array<{

@@ -1,7 +1,7 @@
 import { Dialog, DialogDismiss, DialogHeading, useDialogState } from "ariakit"
 import clsx from "clsx"
 import { Trash, X } from "lucide-react"
-import { solidButtonClass } from "../../ui/styles"
+import { solidButtonClass } from "../ui/styles"
 
 export function CharacterDeleteButton({
   character,

@@ -1,5 +1,5 @@
 import { Eye, EyeOff } from "lucide-react"
-import { solidButtonClass } from "../../ui/styles"
+import { solidButtonClass } from "../ui/styles"
 
 export function CharacterHideButton({
   hidden,

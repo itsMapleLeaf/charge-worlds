@@ -2,7 +2,10 @@ import type { User, World } from "../../generated/prisma"
 import { db } from "../core/db.server"
 import { raise } from "../helpers/errors"
 
-export async function getMembership(user: User, world: World) {
+export async function getMembership(
+  user: { discordId: string },
+  world: { id: string },
+) {
   const membership = await db.membership.findUnique({
     where: {
       worldId_userDiscordId: {

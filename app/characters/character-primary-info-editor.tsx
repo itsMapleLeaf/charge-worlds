@@ -1,13 +1,13 @@
 import clsx from "clsx"
-import type { Character } from "../../../generated/prisma"
-import { ClockInput } from "../../ui/clock-input"
-import { Counter } from "../../ui/counter"
+import type { Character } from "../../generated/prisma"
+import { ClockInput } from "../ui/clock-input"
+import { Counter } from "../ui/counter"
 import {
   DebouncedExpandingTextArea,
   DebouncedInput,
-} from "../../ui/debounced-input"
-import { Field } from "../../ui/field"
-import { inputClass, labelTextClass, textAreaClass } from "../../ui/styles"
+} from "../ui/debounced-input"
+import { Field } from "../ui/field"
+import { inputClass, labelTextClass, textAreaClass } from "../ui/styles"
 import { CharacterImage } from "./character-image"
 
 export function CharacterPrimaryInfoEditor({

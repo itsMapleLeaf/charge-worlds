@@ -7,7 +7,7 @@ import {
 } from "ariakit/popover"
 import clsx from "clsx"
 import { Palette } from "lucide-react"
-import { activePressClass, solidButtonClass } from "../../ui/styles"
+import { activePressClass, solidButtonClass } from "../ui/styles"
 import { characterColors } from "./character-colors"
 
 export function CharacterColorButton({

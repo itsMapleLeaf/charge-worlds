@@ -1,19 +1,21 @@
 import type { ActionArgs } from "@remix-run/node"
-import { useFetcher, useParams } from "@remix-run/react"
+import { useFetcher } from "@remix-run/react"
 import { Dices } from "lucide-react"
 import { useRef } from "react"
-import { route } from "routes-gen"
 import { z } from "zod"
-import type { DiceResultType } from "../../../generated/prisma"
-import { requireSessionUser } from "../../auth/session.server"
-import { db } from "../../core/db.server"
-import { Emitter, useEmitterCallback } from "../../helpers/emitter"
-import { FormAction, FormActionGroup } from "../../helpers/form"
-import { parseKeys } from "../../helpers/parse-keys"
-import { Store, useStore } from "../../helpers/store"
-import { Counter } from "../../ui/counter"
-import { clearButtonClass, inputClass } from "../../ui/styles"
-import { emitWorldUpdate } from "../worlds.$worldId.events/emitter"
+import type { DiceResultType } from "../../generated/prisma"
+import { getMembership } from "../auth/membership.server"
+import { getSessionUser, requireSessionUser } from "../auth/session.server"
+import { db } from "../core/db.server"
+import { DashboardModule } from "../dashboard/dashboard-module"
+import { Emitter, useEmitterCallback } from "../helpers/emitter"
+import { FormAction, FormActionGroup } from "../helpers/form"
+import { parseKeys } from "../helpers/parse-keys"
+import { Store, useStore } from "../helpers/store"
+import { emitWorldUpdate } from "../routes/worlds.$worldId.events/emitter"
+import { Counter } from "../ui/counter"
+import { clearButtonClass, inputClass } from "../ui/styles"
+import { DiceRollList } from "./dice-roll-list"
 
 const addDiceLog = new FormAction({
   fields: {
@@ -68,8 +70,59 @@ export function setRoll(intent: string, poolSize: number) {
   focusEmitter.emit()
 }
 
-export function DiceRollForm() {
-  const { worldId } = parseKeys(useParams(), ["worldId"])
+export const diceModule = new DashboardModule({
+  name: "Dice",
+  description: "Roll some dice!",
+  icon: <Dices />,
+  action,
+
+  async loader({ request, params }) {
+    const { worldId } = parseKeys(params, ["worldId"])
+
+    const user = getSessionUser(request)
+
+    const membership = user.then(
+      (user) => user && getMembership(user, { id: worldId }),
+    )
+
+    const diceLogs = db.diceLog
+      .findMany({
+        where: { worldId },
+        orderBy: { id: "desc" },
+        take: 20,
+        select: {
+          id: true,
+          intent: true,
+          dice: true,
+          resultType: true,
+          rolledBy: { select: { name: true } },
+        },
+      })
+      .then((logs) => logs.reverse())
+
+    return {
+      rolls: await diceLogs,
+      rollFormVisible: await membership.then((membership) => !!membership),
+    }
+  },
+
+  component: function DiceModule(props) {
+    return (
+      <div className="flex h-full flex-col">
+        <section className="min-h-0 flex-1">
+          <DiceRollList rolls={props.loaderData.rolls} />
+        </section>
+        {props.loaderData.rollFormVisible && (
+          <div className="p-4">
+            <DiceRollForm formAction={props.formAction} />
+          </div>
+        )}
+      </div>
+    )
+  },
+})
+
+export function DiceRollForm(props: { formAction: string }) {
   const fetcher = useFetcher()
   const intent = useStore(intentStore)
   const poolSize = useStore(poolSizeStore)
@@ -81,7 +134,7 @@ export function DiceRollForm() {
 
   return (
     <fetcher.Form
-      action={route("/worlds/:worldId/dice", { worldId })}
+      action={props.formAction}
       method="post"
       className="flex flex-col gap-3"
     >
