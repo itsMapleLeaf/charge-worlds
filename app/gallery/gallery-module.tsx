@@ -161,93 +161,26 @@ export const galleryModule = new DashboardModule({
     }
 
     return (
-      <div className="relative flex h-full w-full">
-        <div className="m-auto flex flex-col items-center gap-4 p-4">
-          <div className="isolate m-auto grid w-full grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] place-content-center gap-4">
-            {items.map((item, index) => (
-              <Fragment key={item.id}>
-                <div className="relative aspect-square w-full overflow-clip rounded bg-black/25">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentId(item.id)}
-                    className="block h-full w-full ring-blue-500 hover:bg-black/50 focus:outline-none focus-visible:ring-2"
-                  >
-                    <img
-                      src={item.imageUrl}
-                      alt={`Gallery item ${index + 1}`}
-                      className="h-full w-full object-contain"
-                    />
-                  </button>
-                  {canEdit && (
-                    <div className="absolute bottom-0 left-0 flex gap-2 p-2">
-                      <ToggleHiddenButton
-                        {...item}
-                        formAction={props.formAction}
-                      />
-                      <DeleteButton
-                        itemId={item.id}
-                        formAction={props.formAction}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div
-                  className={clsx(
-                    "absolute inset-0 isolate z-10 flex flex-col gap-4 bg-black/75 p-4 backdrop-blur transition-all",
-                    current === item
-                      ? "visible opacity-100"
-                      : "invisible opacity-0",
-                  )}
-                  role="presentation"
-                  onClick={(event) => {
-                    if (event.target === event.currentTarget) {
-                      setCurrentId(undefined)
-                    }
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Escape") {
-                      setCurrentId(undefined)
-                    }
-                  }}
-                >
-                  <div className="flex justify-end">
+      <div className="relative h-full">
+        <div className="thin-scrollbar flex h-full min-h-0 w-full flex-col overflow-x-hidden overflow-y-scroll">
+          <div className="m-auto flex flex-col items-center gap-4 p-4">
+            <div className="isolate m-auto grid w-full grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] place-content-center gap-4">
+              {items.map((item, index) => (
+                <Fragment key={item.id}>
+                  <div className="relative aspect-square w-full overflow-clip rounded bg-black/25">
                     <button
                       type="button"
-                      title="Close"
-                      className={clearButtonClass}
-                      onClick={() => setCurrentId(undefined)}
+                      onClick={() => setCurrentId(item.id)}
+                      className="block h-full w-full ring-blue-500 hover:bg-black/50 focus:outline-none focus-visible:ring-2"
                     >
-                      <X size={24} />
+                      <img
+                        src={item.imageUrl}
+                        alt={`Gallery item ${index + 1}`}
+                        className="h-full w-full object-contain"
+                      />
                     </button>
-                  </div>
-                  <div className="min-h-0 flex-1">
-                    <img
-                      src={item.imageUrl}
-                      alt={`Gallery item ${index + 1}`}
-                      className={clsx(
-                        "h-full w-full object-contain transition",
-                        current === item ? "scale-100" : "scale-90",
-                      )}
-                      role="presentation"
-                      onClick={() => setCurrentId(undefined)}
-                    />
-                  </div>
-
-                  {canEdit ? (
-                    <div className="mx-auto grid w-full max-w-screen-sm gap-4">
-                      <div className="flex items-end gap-2">
-                        <Field label="Image URL" className="flex-1">
-                          <DebouncedInput
-                            className={inputClass}
-                            type="url"
-                            value={item.imageUrl}
-                            onChangeText={(imageUrl) => {
-                              updateItem(item.id, { imageUrl })
-                            }}
-                            debouncePeriod={500}
-                          />
-                        </Field>
+                    {canEdit && (
+                      <div className="absolute bottom-0 left-0 flex gap-2 p-2">
                         <ToggleHiddenButton
                           {...item}
                           formAction={props.formAction}
@@ -257,40 +190,106 @@ export const galleryModule = new DashboardModule({
                           formAction={props.formAction}
                         />
                       </div>
-
-                      <Field label="Caption">
-                        <DebouncedExpandingTextArea
-                          className={textAreaClass}
-                          value={item.caption}
-                          placeholder="Describe the image"
-                          debouncePeriod={500}
-                          onChangeText={(caption) => {
-                            updateItem(item.id, { caption })
-                          }}
-                        />
-                      </Field>
-                    </div>
-                  ) : (
-                    <p className="text-center text-lg">{item.caption}</p>
-                  )}
-                </div>
-              </Fragment>
-            ))}
-            {items.length === 0 && (
-              <p className="text-center text-xl font-light italic opacity-75">
-                Nothing here!
-              </p>
+                    )}
+                  </div>
+                </Fragment>
+              ))}
+              {items.length === 0 && (
+                <p className="text-center text-xl font-light italic opacity-75">
+                  Nothing here!
+                </p>
+              )}
+            </div>
+            {canEdit && (
+              <Form method="post" action={props.formAction}>
+                <button className={solidButtonClass}>
+                  <ImagePlus /> Add item
+                </button>
+              </Form>
             )}
           </div>
-
-          {canEdit && (
-            <Form method="post" action={props.formAction}>
-              <button className={solidButtonClass}>
-                <ImagePlus /> Add item
-              </button>
-            </Form>
-          )}
         </div>
+
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className={clsx(
+              "absolute inset-0 isolate z-10 flex flex-col gap-4 bg-black/75 p-4 backdrop-blur transition-all",
+              current === item ? "visible opacity-100" : "invisible opacity-0",
+            )}
+            role="presentation"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) {
+                setCurrentId(undefined)
+              }
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                setCurrentId(undefined)
+              }
+            }}
+          >
+            <div className="flex justify-end">
+              <button
+                type="button"
+                title="Close"
+                className={clearButtonClass}
+                onClick={() => setCurrentId(undefined)}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="min-h-0 flex-1">
+              <img
+                src={item.imageUrl}
+                alt=""
+                className={clsx(
+                  "h-full w-full object-contain transition",
+                  current === item ? "scale-100" : "scale-90",
+                )}
+                role="presentation"
+                onClick={() => setCurrentId(undefined)}
+              />
+            </div>
+
+            {canEdit ? (
+              <div className="mx-auto grid w-full max-w-screen-sm gap-4">
+                <div className="flex items-end gap-2">
+                  <Field label="Image URL" className="flex-1">
+                    <DebouncedInput
+                      className={inputClass}
+                      type="url"
+                      value={item.imageUrl}
+                      onChangeText={(imageUrl) => {
+                        updateItem(item.id, { imageUrl })
+                      }}
+                      debouncePeriod={500}
+                    />
+                  </Field>
+                  <ToggleHiddenButton {...item} formAction={props.formAction} />
+                  <DeleteButton
+                    itemId={item.id}
+                    formAction={props.formAction}
+                  />
+                </div>
+
+                <Field label="Caption">
+                  <DebouncedExpandingTextArea
+                    className={textAreaClass}
+                    value={item.caption}
+                    placeholder="Describe the image"
+                    debouncePeriod={500}
+                    onChangeText={(caption) => {
+                      updateItem(item.id, { caption })
+                    }}
+                  />
+                </Field>
+              </div>
+            ) : (
+              <p className="text-center text-lg">{item.caption}</p>
+            )}
+          </div>
+        ))}
       </div>
     )
   },

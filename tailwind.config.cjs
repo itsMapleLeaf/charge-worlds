@@ -22,7 +22,7 @@ module.exports = {
             backgroundColor: "rgba(255, 255, 255, 0.25)",
             borderRadius: theme("borderRadius.full"),
           },
-          "&::-webkit-scrollbar-track-piece:start, &::-webkit-scrollbar-track-piece:start":
+          "&::-webkit-scrollbar-track-piece:start, &::-webkit-scrollbar-track-piece:end, &::-webkit-scrollbar-corner":
             {
               backgroundColor: theme("colors.transparent"),
             },
