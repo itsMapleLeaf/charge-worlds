@@ -39,9 +39,9 @@ export const galleryModule = new DashboardModule({
   },
 
   component: function GalleryModuleView(data) {
-    type Item = typeof data.items[0]
+    type Item = typeof data.loaderData.items[0]
 
-    const [items, setItems] = useState(data.items)
+    const [items, setItems] = useState(data.loaderData.items)
     const [currentId, setCurrentId] = useState<Item["id"]>()
     const current = items.find((item) => item.id === currentId)
 
