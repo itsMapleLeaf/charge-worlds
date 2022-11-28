@@ -1,4 +1,4 @@
-import { Clock, Dices, Image, Users } from "lucide-react"
+import { Clock, Dices, Users } from "lucide-react"
 import { satisfies } from "../../helpers/satisfies"
 import { CharactersModule } from "../worlds.$worldId.characters"
 import { ClocksManager } from "../worlds.$worldId.clocks"
@@ -41,14 +41,6 @@ export const dashboardModules = satisfies<Record<string, DashboardModule>>()({
           )}
         </div>
       )
-    },
-  },
-  gallery: {
-    name: "Gallery",
-    description: "Visual references",
-    icon: <Image />,
-    component: function GalleryModule() {
-      return <div>Gallery</div>
     },
   },
 })

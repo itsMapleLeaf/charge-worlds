@@ -8,15 +8,14 @@ import { AuthContext } from "../auth/auth-context"
 import { getMembership } from "../auth/membership"
 import { getSessionUser } from "../auth/session.server"
 import { getAppMeta } from "../core/meta"
+import {
+  DashboardProvider,
+  DashboardWindowButtons,
+} from "../dashboard/dashboard-ui"
 import { assert } from "../helpers/assert"
 import { pick } from "../helpers/pick"
 import { clearButtonClass } from "../ui/styles"
 import { getWorld } from "../world/world-db.server"
-import {
-  DashboardProvider,
-  DashboardWindowButtons,
-} from "./worlds.$worldId.dashboard/dashboard"
-import { dashboardModules } from "./worlds.$worldId.dashboard/dashboard-modules"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) =>
   getAppMeta({ title: data.world.name })
@@ -60,7 +59,7 @@ export default function WorldPage() {
               {data.world.name}
             </h2>
 
-            <DashboardWindowButtons modules={dashboardModules} />
+            <DashboardWindowButtons />
 
             <div className="flex-1" />
 

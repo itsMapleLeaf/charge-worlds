@@ -1,116 +1,28 @@
 import type { LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { useLoaderData, useParams } from "@remix-run/react"
-import { getSessionUser } from "../../auth/session.server"
-import { db } from "../../core/db.server"
+import { useLoaderData } from "@remix-run/react"
+import { dashboardModules } from "../../dashboard/dashboard-modules"
+import { DashboardMosaic } from "../../dashboard/dashboard-ui"
 import { parseKeys } from "../../helpers/parse-keys"
-import { pick } from "../../helpers/pick"
-import { useInvalidate } from "../invalidate"
-import { useWorldEvents } from "../worlds.$worldId.events"
-import { DashboardMosaic } from "./dashboard"
-import { dashboardModules } from "./dashboard-modules"
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params, context }: LoaderArgs) {
   const { worldId } = parseKeys(params, ["worldId"])
 
-  const [user, characterFields] = await Promise.all([
-    getSessionUser(request),
-    db.characterField.findMany({
-      where: { worldId },
-      orderBy: { order: "asc" },
-      select: { id: true, name: true, description: true, isLong: true },
+  const moduleData: Record<string, any> = {}
+  await Promise.all(
+    Object.entries(dashboardModules).map(async ([moduleName, module]) => {
+      moduleData[moduleName] = await module.config.loader({
+        request,
+        params,
+        context,
+      })
     }),
-  ])
+  )
 
-  const membership =
-    user &&
-    (await db.membership.findUnique({
-      where: {
-        worldId_userDiscordId: { worldId, userDiscordId: user.discordId },
-      },
-    }))
-
-  const clocks = await db.clock.findMany({
-    where: { worldId },
-    orderBy: { createdAt: "asc" },
-    select: {
-      id: true,
-      name: true,
-      progress: true,
-      maxProgress: true,
-    },
-  })
-
-  const diceLogs = await db.diceLog.findMany({
-    where: { worldId },
-    orderBy: { id: "desc" },
-    take: 20,
-    select: {
-      id: true,
-      intent: true,
-      dice: true,
-      resultType: true,
-      rolledBy: { select: { name: true } },
-    },
-  })
-
-  const charactersFilter =
-    membership?.role === "OWNER"
-      ? { worldId }
-      : { AND: [{ worldId }, { hidden: false }] }
-
-  const characters = await db.character
-    .findMany({
-      where: charactersFilter,
-      orderBy: { id: "asc" },
-      include: {
-        fieldValues: { select: { fieldId: true, value: true } },
-      },
-    })
-    .then((result) =>
-      result.map((character) => ({
-        ...character,
-        fieldValues: Object.fromEntries(
-          character.fieldValues.map(({ fieldId, value }) => [fieldId, value]),
-        ),
-      })),
-    )
-
-  return json({
-    user: user && pick(user, ["name", "id"]),
-    membership: membership && pick(membership, ["role"]),
-    characters,
-    characterFields,
-    clocks,
-    diceLogs: diceLogs.reverse(),
-  })
+  return json({ moduleData })
 }
 
 export default function DashboardPage() {
-  const { worldId } = parseKeys(useParams(), ["worldId"])
   const data = useLoaderData<typeof loader>()
-  const invalidate = useInvalidate()
-
-  useWorldEvents(worldId, (event) => {
-    if (event.sourceUserId !== data.user?.id) {
-      invalidate()
-    }
-  })
-
-  return (
-    <DashboardMosaic
-      modules={dashboardModules}
-      moduleData={{
-        characters: {
-          characters: data.characters,
-          characterFields: data.characterFields,
-        },
-        clocks: { clocks: data.clocks },
-        dice: {
-          rolls: data.diceLogs,
-          rollFormVisible: !!data.membership,
-        },
-      }}
-    />
-  )
+  return <DashboardMosaic moduleData={data.moduleData} />
 }
