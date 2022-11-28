@@ -5,7 +5,7 @@ import { LayoutDashboard, Wrench } from "lucide-react"
 import { useId } from "react"
 import { route } from "routes-gen"
 import { AuthContext } from "../auth/auth-context"
-import { getMembership } from "../auth/membership"
+import { getMembership } from "../auth/membership.server"
 import { getSessionUser } from "../auth/session.server"
 import { getAppMeta } from "../core/meta"
 import {
