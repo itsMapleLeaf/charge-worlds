@@ -273,7 +273,9 @@ export const galleryModule = new DashboardModule({
                   </Field>
                 </div>
               ) : (
-                <p className="text-center text-lg">{current.caption}</p>
+                <p className="whitespace-pre-line text-center text-lg">
+                  {current.caption}
+                </p>
               )}
             </div>
           )}
