@@ -5,8 +5,8 @@ import { Fragment, useState } from "react"
 import { route } from "routes-gen"
 import { z } from "zod"
 import { zfd } from "zod-form-data"
-import { getMembership } from "../auth/membership.server"
-import { requireSessionUser } from "../auth/session.server"
+import { getMembership, requireWorldOwner } from "../auth/membership.server"
+import { getSessionUser, requireSessionUser } from "../auth/session.server"
 import { db } from "../core/db.server"
 import { DashboardModule } from "../dashboard/dashboard-module"
 import { parseKeys } from "../helpers/parse-keys"
@@ -32,8 +32,18 @@ export const galleryModule = new DashboardModule({
   async loader({ request, params }) {
     const { worldId } = parseKeys(params, ["worldId"])
 
+    const [user, world] = await Promise.all([
+      getSessionUser(request),
+      getWorld(worldId),
+    ])
+
+    const membership = user && (await getMembership(user, world))
+    const canEdit = membership?.role === "OWNER"
+
+    const where = canEdit ? { worldId } : { worldId, hidden: false }
+
     const items = await db.galleryItem.findMany({
-      where: { worldId },
+      where,
       orderBy: { order: "asc" },
       select: {
         id: true,
@@ -43,7 +53,7 @@ export const galleryModule = new DashboardModule({
       },
     })
 
-    return { items }
+    return { items, canEdit }
   },
 
   async action({ request, params }) {
@@ -56,7 +66,7 @@ export const galleryModule = new DashboardModule({
       getWorld(worldId),
     ])
 
-    const membership = await getMembership(user, world)
+    const membership = await requireWorldOwner(user, world)
 
     if (request.method === "POST") {
       const count = await db.galleryItem.count({
@@ -103,7 +113,8 @@ export const galleryModule = new DashboardModule({
   component: function GalleryModuleView(props) {
     type Item = typeof props.loaderData.items[0]
 
-    let items = props.loaderData.items
+    const { canEdit } = props.loaderData
+    let { items } = props.loaderData
 
     const { submission } = useTransition()
     if (submission?.action === props.formAction) {
@@ -155,11 +166,11 @@ export const galleryModule = new DashboardModule({
           <div className="isolate m-auto grid w-full grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] place-content-center gap-4">
             {items.map((item, index) => (
               <Fragment key={item.id}>
-                <div className="relative aspect-square ">
+                <div className="relative aspect-square w-full overflow-clip rounded bg-black/25">
                   <button
                     type="button"
                     onClick={() => setCurrentId(item.id)}
-                    className="block h-full w-full overflow-clip rounded bg-black/25 ring-blue-500 hover:bg-black/50 focus:outline-none focus-visible:ring-2"
+                    className="block h-full w-full ring-blue-500 hover:bg-black/50 focus:outline-none focus-visible:ring-2"
                   >
                     <img
                       src={item.imageUrl}
@@ -167,17 +178,18 @@ export const galleryModule = new DashboardModule({
                       className="h-full w-full object-contain"
                     />
                   </button>
-
-                  <div className="absolute bottom-0 left-0 flex gap-2 p-2">
-                    <ToggleHiddenButton
-                      {...item}
-                      formAction={props.formAction}
-                    />
-                    <DeleteButton
-                      itemId={item.id}
-                      formAction={props.formAction}
-                    />
-                  </div>
+                  {canEdit && (
+                    <div className="absolute bottom-0 left-0 flex gap-2 p-2">
+                      <ToggleHiddenButton
+                        {...item}
+                        formAction={props.formAction}
+                      />
+                      <DeleteButton
+                        itemId={item.id}
+                        formAction={props.formAction}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div
@@ -194,7 +206,9 @@ export const galleryModule = new DashboardModule({
                     }
                   }}
                   onKeyDown={(event) => {
-                    if (event.key === "Escape") setCurrentId(undefined)
+                    if (event.key === "Escape") {
+                      setCurrentId(undefined)
+                    }
                   }}
                 >
                   <div className="flex justify-end">
@@ -220,50 +234,62 @@ export const galleryModule = new DashboardModule({
                     />
                   </div>
 
-                  <div className="mx-auto grid w-full max-w-screen-sm gap-4">
-                    <div className="flex items-end gap-2">
-                      <Field label="Image URL" className="flex-1">
-                        <DebouncedInput
-                          className={inputClass}
-                          type="url"
-                          value={item.imageUrl}
-                          onChangeText={(imageUrl) => {
-                            updateItem(item.id, { imageUrl })
-                          }}
+                  {canEdit ? (
+                    <div className="mx-auto grid w-full max-w-screen-sm gap-4">
+                      <div className="flex items-end gap-2">
+                        <Field label="Image URL" className="flex-1">
+                          <DebouncedInput
+                            className={inputClass}
+                            type="url"
+                            value={item.imageUrl}
+                            onChangeText={(imageUrl) => {
+                              updateItem(item.id, { imageUrl })
+                            }}
+                            debouncePeriod={500}
+                          />
+                        </Field>
+                        <ToggleHiddenButton
+                          {...item}
+                          formAction={props.formAction}
+                        />
+                        <DeleteButton
+                          itemId={item.id}
+                          formAction={props.formAction}
+                        />
+                      </div>
+
+                      <Field label="Caption">
+                        <DebouncedExpandingTextArea
+                          className={textAreaClass}
+                          value={item.caption}
+                          placeholder="Describe the image"
                           debouncePeriod={500}
+                          onChangeText={(caption) => {
+                            updateItem(item.id, { caption })
+                          }}
                         />
                       </Field>
-                      <ToggleHiddenButton
-                        {...item}
-                        formAction={props.formAction}
-                      />
-                      <DeleteButton
-                        itemId={item.id}
-                        formAction={props.formAction}
-                      />
                     </div>
-
-                    <Field label="Caption">
-                      <DebouncedExpandingTextArea
-                        className={textAreaClass}
-                        value={item.caption}
-                        placeholder="Describe the image"
-                        debouncePeriod={500}
-                        onChangeText={(caption) => {
-                          updateItem(item.id, { caption })
-                        }}
-                      />
-                    </Field>
-                  </div>
+                  ) : (
+                    <p className="text-center text-lg">{item.caption}</p>
+                  )}
                 </div>
               </Fragment>
             ))}
+            {items.length === 0 && (
+              <p className="text-center text-xl font-light italic opacity-75">
+                Nothing here!
+              </p>
+            )}
           </div>
-          <Form method="post" action={props.formAction}>
-            <button className={solidButtonClass}>
-              <ImagePlus /> Add item
-            </button>
-          </Form>
+
+          {canEdit && (
+            <Form method="post" action={props.formAction}>
+              <button className={solidButtonClass}>
+                <ImagePlus /> Add item
+              </button>
+            </Form>
+          )}
         </div>
       </div>
     )
