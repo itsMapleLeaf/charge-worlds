@@ -1,4 +1,4 @@
-import { Form, useSubmit, useTransition } from "@remix-run/react"
+import { Form, useFetcher } from "@remix-run/react"
 import { Dialog, DialogDismiss, useDialogState } from "ariakit"
 import clsx from "clsx"
 import { Eye, EyeOff, Image, ImagePlus, Trash, X } from "lucide-react"
@@ -118,7 +118,8 @@ export const galleryModule = new DashboardModule({
     const { canEdit } = props.loaderData
     let { items } = props.loaderData
 
-    const { submission } = useTransition()
+    const { submit, submission } = useFetcher()
+
     if (submission?.action === props.formAction) {
       if (submission.method === "POST") {
         items = [
@@ -157,7 +158,6 @@ export const galleryModule = new DashboardModule({
       setOverlayVisible(true)
     }
 
-    const submit = useSubmit()
     const updateItem = (id: string, item: Partial<Item>) => {
       const body = new FormData()
       body.set("id", id)
