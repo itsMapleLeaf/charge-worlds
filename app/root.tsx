@@ -13,9 +13,7 @@ import {
   Outlet,
   Scripts,
   useLoaderData,
-  useTransition,
 } from "@remix-run/react"
-import clsx from "clsx"
 import { LogIn, Zap } from "lucide-react"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import reactMosaicCss from "react-mosaic-component/react-mosaic-component.css"
@@ -27,7 +25,7 @@ import { UserMenuButton } from "./auth/user-menu-button"
 import { getAppMeta } from "./core/meta"
 import { pick } from "./helpers/pick"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
-import { LoadingSpinner } from "./ui/loading"
+import { PendingIndicator } from "./ui/pending-indivator"
 import { clearButtonClass, maxWidthContainerClass } from "./ui/styles"
 
 export const meta = (): HtmlMetaDescriptor => getAppMeta()
@@ -57,6 +55,7 @@ export default function App() {
           <Zap />
           <h1 className="text-2xl font-light">Charge Worlds</h1>
         </Link>
+        <PendingIndicator />
         <div className="flex-1" />
         <nav className="flex items-center gap-4">
           {data.user ? (
@@ -136,23 +135,7 @@ function Document({
         {process.env.NODE_ENV !== "production" && (
           <script src="/live-reload.js" />
         )}
-        <PendingIndicator />
       </body>
     </html>
-  )
-}
-
-function PendingIndicator() {
-  const transition = useTransition()
-  const pending = transition.state !== "idle"
-  return (
-    <div
-      className={clsx(
-        "pointer-events-none fixed right-0 bottom-0 p-4 transition",
-        pending ? "opacity-100" : "opacity-0",
-      )}
-    >
-      <LoadingSpinner />
-    </div>
   )
 }
