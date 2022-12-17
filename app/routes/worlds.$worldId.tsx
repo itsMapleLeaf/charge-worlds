@@ -51,15 +51,19 @@ export default function WorldPage() {
           className="grid h-full grid-cols-[auto,1fr]"
           aria-labelledby={worldHeadingId}
         >
-          <nav className="thin-scrollbar flex w-12 flex-col items-center gap-4 bg-black/25 py-4 md:w-64 md:items-start md:px-4">
+          <nav className="thin-scrollbar flex w-12 flex-col items-center gap-4 bg-black/25 py-4 xl:w-64 xl:items-start xl:px-4">
             <h2
-              className="sr-only text-3xl font-light md:not-sr-only"
+              className="sr-only text-3xl font-light xl:not-sr-only"
               id={worldHeadingId}
             >
               {data.world.name}
             </h2>
 
-            <DashboardWindowButtons />
+            <DashboardWindowButtons
+              renderLabel={(label) => (
+                <span className="sr-only xl:not-sr-only">{label}</span>
+              )}
+            />
 
             <div className="flex-1" />
 
@@ -70,14 +74,14 @@ export default function WorldPage() {
                   className={clearButtonClass}
                 >
                   <LayoutDashboard />
-                  <span className="sr-only md:not-sr-only">Dashboard</span>
+                  <span className="sr-only xl:not-sr-only">Dashboard</span>
                 </Link>
                 <Link
                   to={route("/worlds/:worldId/settings", { worldId })}
                   className={clearButtonClass}
                 >
                   <Wrench />
-                  <span className="sr-only md:not-sr-only">Settings</span>
+                  <span className="sr-only xl:not-sr-only">Settings</span>
                 </Link>
               </>
             )}

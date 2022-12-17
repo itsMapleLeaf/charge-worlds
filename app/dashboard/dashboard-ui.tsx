@@ -132,7 +132,9 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function DashboardWindowButtons() {
+export function DashboardWindowButtons(props: {
+  renderLabel: (label: string) => React.ReactNode
+}) {
   const { addWindow } = useContext(DashboardContext)
   return (
     <div className="grid gap-4">
@@ -143,7 +145,7 @@ export function DashboardWindowButtons() {
           onClick={() => addWindow(moduleId)}
         >
           {module.config.icon}
-          <span className="sr-only md:not-sr-only">{module.config.name}</span>
+          {props.renderLabel(module.config.name)}
         </button>
       ))}
     </div>
