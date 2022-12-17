@@ -121,6 +121,7 @@ export class FormActionGroup<Actions extends Record<string, FormAction<any>>> {
     })
 
     if (Object.values(errors).some((e) => e.length > 0)) {
+      // @ts-expect-error: i don't know how to fix this
       return json(
         { [body.actionType]: { hasErrors: true, fieldErrors: errors } },
         { status: 400 },
@@ -140,11 +141,13 @@ export class FormActionGroup<Actions extends Record<string, FormAction<any>>> {
         return redirect(redirectTo)
       }
 
+      // @ts-expect-error: i don't know how to fix this
       return json({
         [body.actionType]: { hasErrors: false, data },
       })
     } catch (error) {
       console.error(error)
+      // @ts-expect-error: i don't know how to fix this
       return json(
         {
           [body.actionType]: {

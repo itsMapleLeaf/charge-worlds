@@ -21,7 +21,7 @@ export class ActionRouter<Context> {
     },
   ) {
     const route = new ActionRoute(name, config)
-    this.routes.push(route as any)
+    this.routes.push(route as unknown as ActionRoute<Context>)
     return route
   }
 
@@ -67,7 +67,7 @@ export class ActionRoute<
 
     const inputResult = this.config.input?.safeParse(formData)
     if (inputResult && !inputResult.success) {
-      const { formErrors, fieldErrors } = inputResult.error.formErrors
+      const { formErrors, fieldErrors = {} } = inputResult.error.formErrors
       return json(
         { __actionName: this.name, errors: formErrors, fieldErrors },
         400,
