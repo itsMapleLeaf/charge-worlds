@@ -143,8 +143,9 @@ export function DashboardWindowButtons(props: {
           key={moduleId}
           className={clearButtonClass}
           onClick={() => addWindow(moduleId)}
+          title={module.config.name}
         >
-          {module.config.icon}
+          <span className="pointer-events-none">{module.config.icon}</span>
           {props.renderLabel(module.config.name)}
         </button>
       ))}

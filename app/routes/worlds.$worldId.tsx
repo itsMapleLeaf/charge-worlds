@@ -72,15 +72,17 @@ export default function WorldPage() {
                 <Link
                   to={route("/worlds/:worldId/dashboard", { worldId })}
                   className={clearButtonClass}
+                  title="Dashboard"
                 >
-                  <LayoutDashboard />
+                  <LayoutDashboard className="pointer-events-none" />
                   <span className="sr-only xl:not-sr-only">Dashboard</span>
                 </Link>
                 <Link
                   to={route("/worlds/:worldId/settings", { worldId })}
                   className={clearButtonClass}
+                  title="Settings"
                 >
-                  <Wrench />
+                  <Wrench className="pointer-events-none" />
                   <span className="sr-only xl:not-sr-only">Settings</span>
                 </Link>
               </>
