@@ -2,9 +2,12 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "build": "remix build",
-    "dev": "remix dev",
-    "typecheck": "tsc -b"
+    "dev": "run-p --print-label --race dev:*",
+    "dev:remix": "remix dev",
+    "dev:tailwind": "pnpm tailwind --watch",
+    "build": "pnpm tailwind --minify && remix build",
+    "typecheck": "tsc -b",
+    "tailwind": "tailwindcss -i ./styles/app.css -o app/styles/app.css"
   },
   "dependencies": {
     "@remix-run/node": "^1.9.0",
@@ -20,8 +23,12 @@
     "@remix-run/serve": "^1.9.0",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
+    "autoprefixer": "^10.4.13",
     "eslint": "^8.30.0",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.20",
     "prettier": "^2.8.1",
+    "tailwindcss": "^3.2.4",
     "typescript": "^4.9.4"
   }
 }
