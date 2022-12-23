@@ -5,8 +5,6 @@ node_modules
 .output
 /build/
 /public/build
-/api/index.js
-/api/index.js.map
-/app/styles
 /public/fonts/rubik
+/api
 /generated

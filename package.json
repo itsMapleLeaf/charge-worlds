@@ -8,7 +8,7 @@
     "dev:tailwind": "pnpm tailwind --watch",
     "build": "pnpm copy-fonts && pnpm tailwind --minify && remix build",
     "typecheck": "tsc -b",
-    "tailwind": "tailwindcss -i ./styles/app.css -o app/styles/app.css",
+    "tailwind": "tailwindcss -o ./generated/tailwind.css",
     "copy-fonts": "cpy \"node_modules/@fontsource/rubik/**/{variable.css,*-variable-wghtOnly-normal.woff2}\" \"public/fonts/rubik\"",
     "prisma-generate": "prisma generate"
   },
