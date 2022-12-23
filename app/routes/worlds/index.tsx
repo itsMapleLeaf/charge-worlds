@@ -15,7 +15,7 @@ export async function loader() {
 
 export async function action() {
   const world = await createWorld()
-  return redirect(`/worlds/${world.id}`, 303)
+  return redirect(world.id, 303)
 }
 
 export const meta = () => getAppMeta({ title: "Your Worlds" })
@@ -26,17 +26,14 @@ export default function WorldListPage() {
 
   return (
     <>
-      <PageHeader
-        title="Your Worlds"
-        breadcrumbs={[{ title: "Home", href: "/" }]}
-      />
+      <PageHeader title="Your Worlds" />
       <main>
-        <div className="mt-8 max-w-screen-xl w-full flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:[&>*]:basis-64 justify-start">
+        <div className="mt-8 flex w-full max-w-screen-xl flex-col justify-start gap-4 sm:flex-row sm:flex-wrap sm:[&>*]:basis-64">
           {worlds.map((world) => (
             <WorldCard key={world.id} world={world} />
           ))}
         </div>
-        <Form className="mt-4" method="post">
+        <Form method="post" className="mt-4">
           <button
             className={buttonStyle()}
             disabled={transition.state !== "idle"}
@@ -53,9 +50,9 @@ export default function WorldListPage() {
 function WorldCard(props: { world: { id: string; name: string } }) {
   return (
     <Link to={props.world.id} className={interactiveCardStyle()}>
-      <div className="flex flex-col h-full gap-3 p-4">
+      <div className="flex h-full flex-col gap-3 p-4">
         <h2 className="text-3xl font-light leading-none">{props.world.name}</h2>
-        <p className="opacity-75 leading-tight text-sm mt-auto">
+        <p className="mt-auto text-sm leading-tight opacity-75">
           {Math.floor(Math.random() * 8) + 2} Players
           <br />
           Created{" "}

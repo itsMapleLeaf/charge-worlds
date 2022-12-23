@@ -30,16 +30,16 @@ export default function App() {
   return (
     <html
       lang="en"
-      className="bg-black text-gray-50 break-words"
+      className="break-words bg-black text-gray-50"
       style={{ wordBreak: "break-word" }}
     >
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="flex flex-col gap-8 w-full min-h-screen p-4 md:p-8">
+      <body className="flex min-h-screen w-full flex-col gap-8 p-4 md:p-8">
         <div
-          className="fixed -z-10 inset-0 opacity-40 -scale-x-100 bg-left-top bg-cover"
+          className="fixed inset-0 -z-10 -scale-x-100 bg-cover bg-left-top opacity-40"
           style={{ backgroundImage: `url(${backgroundImage})` }}
         />
 
@@ -47,9 +47,9 @@ export default function App() {
           <Outlet />
         </div>
 
-        <footer className="text-sm opacity-75 flex justify-between items-end">
+        <footer className="flex items-end justify-between text-sm opacity-75">
           <p>
-            Created with <Heart className="inline s-5 text-accent-300" /> by{" "}
+            Created with <Heart className="inline text-accent-300 s-5" /> by{" "}
             <ExternalLink
               href="https://github.com/itsMapleLeaf"
               className={linkStyle()}
