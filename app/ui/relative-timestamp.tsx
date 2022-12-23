@@ -1,4 +1,5 @@
 import { formatDistanceToNow } from "date-fns"
+import { Tooltip } from "./tooltip"
 
 export function RelativeTimestamp({
   date,
@@ -9,8 +10,10 @@ export function RelativeTimestamp({
   addSuffix?: boolean
 }) {
   return (
-    <time dateTime={new Date(date).toISOString()}>
-      {formatDistanceToNow(date, options)}
-    </time>
+    <Tooltip text={new Date(date).toLocaleString()} inline>
+      <time dateTime={new Date(date).toISOString()}>
+        {formatDistanceToNow(date, options)}
+      </time>
+    </Tooltip>
   )
 }
