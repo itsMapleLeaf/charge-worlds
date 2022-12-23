@@ -58,7 +58,7 @@ export default function WorldListPage() {
             className={buttonStyle()}
             disabled={transition.state !== "idle"}
           >
-            <Plus class="s-6" />
+            <Plus className="s-6" />
             New world
           </button>
         </Form>
