@@ -1,25 +1,44 @@
-import { redirect } from "@remix-run/node"
-import { Form, Link, useLoaderData, useTransition } from "@remix-run/react"
+import { redirect, type LoaderArgs } from "@remix-run/node"
+import {
+  Form,
+  Link,
+  useLoaderData,
+  useTransition,
+  type CatchBoundaryComponent,
+} from "@remix-run/react"
 import { Plus } from "lucide-react"
+import { findSessionUser } from "~/auth.server"
 import { db } from "~/db.server"
 import { plural } from "~/helpers/plural"
 import { getAppMeta } from "~/meta"
+import { CatchBoundaryMessage } from "~/ui/catch-boundary-message"
 import { PageHeader } from "~/ui/page-header"
 import { RelativeTimestamp } from "~/ui/relative-timestamp"
 import { buttonStyle, interactiveCardStyle } from "~/ui/styles"
 
-export async function loader() {
+export async function loader({ request }: LoaderArgs) {
+  const user = await findSessionUser(request)
+  if (!user) {
+    throw new Response(undefined, { status: 401 })
+  }
+
   const worlds = await db.world.findMany({
+    where: {
+      memberships: {
+        some: {
+          userDiscordId: user.discordId,
+        },
+      },
+    },
     include: {
       memberships: {
-        select: {
-          id: true,
-        },
+        select: { id: true },
       },
     },
   })
 
   return {
+    user: user && { ...user, avatarUrl: user.avatarUrl ?? undefined },
     worlds: worlds.map((world) => ({
       ...world,
       createdAt: world.createdAt.valueOf(),
@@ -37,12 +56,12 @@ export async function action() {
 export const meta = () => getAppMeta({ title: "Your Worlds" })
 
 export default function WorldListPage() {
-  const { worlds } = useLoaderData<typeof loader>()
+  const { user, worlds } = useLoaderData<typeof loader>()
   const transition = useTransition()
 
   return (
     <>
-      <PageHeader title="Your Worlds" />
+      <PageHeader title="Your Worlds" user={user} />
       <main>
         <div className="mt-8 flex w-full max-w-screen-xl flex-col justify-start gap-4 sm:flex-row sm:flex-wrap sm:[&>*]:basis-64">
           {worlds.map((world) => (
@@ -85,5 +104,14 @@ function WorldCard(props: {
         </p>
       </div>
     </Link>
+  )
+}
+
+export const CatchBoundary: CatchBoundaryComponent = () => {
+  return (
+    <>
+      <PageHeader title="Your Worlds" user={undefined} />
+      <CatchBoundaryMessage />
+    </>
   )
 }

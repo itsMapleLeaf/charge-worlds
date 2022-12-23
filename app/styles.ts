@@ -22,11 +22,11 @@ export function linkStyle({ underline = true } = {}) {
 
 export function buttonStyle({
   variant = "solid",
-  rounded = true,
+  shape = "rounded",
   active = false,
 }: {
   variant?: "solid" | "clear"
-  rounded?: boolean
+  shape?: "square" | "rounded" | "circle"
   active?: boolean
 } = {}) {
   return clsx(
@@ -35,10 +35,10 @@ export function buttonStyle({
     "uppercase leading-none tracking-wide",
     "disabled:cursor-not-allowed disabled:opacity-50",
     "hover:text-accent-400",
-    rounded && "rounded-sm",
+    shape === "rounded" && "rounded-sm",
+    shape === "circle" && "rounded-full s-14",
     variant === "solid" && "bg-black/75 hover:bg-black",
     variant === "clear" && "hover:bg-white/10 hover:text-accent-400",
-
     "border-x-2 border-transparent",
     active && "border-l-accent-400 text-accent-400",
   )

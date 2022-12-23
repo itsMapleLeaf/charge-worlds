@@ -1,4 +1,4 @@
-import { type MetaFunction } from "@remix-run/node"
+import { type ErrorBoundaryComponent, type MetaFunction } from "@remix-run/node"
 import {
   Links,
   LiveReload,
@@ -6,12 +6,16 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  type CatchBoundaryComponent,
 } from "@remix-run/react"
 import { Heart } from "lucide-react"
 import tailwind from "../generated/tailwind.css"
 import backgroundImage from "./assets/bg.png"
 import favicon from "./assets/favicon.svg"
+import { toError } from "./helpers/errors"
 import { linkStyle } from "./styles"
+import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
+import { EmptyState } from "./ui/empty-state"
 import { ExternalLink } from "./ui/external-link"
 
 export const meta: MetaFunction = () => ({
@@ -26,7 +30,7 @@ export const links = () => [
   { rel: "icon", href: favicon },
 ]
 
-export default function App() {
+function Document({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
@@ -44,9 +48,7 @@ export default function App() {
         />
 
         <div className="flex min-h-screen flex-col gap-8 p-4 md:p-8">
-          <div className="mb-auto">
-            <Outlet />
-          </div>
+          <div className="mb-auto">{children}</div>
 
           <footer className="flex items-end justify-between text-sm opacity-75">
             <p>
@@ -83,5 +85,38 @@ export default function App() {
         <LiveReload />
       </body>
     </html>
+  )
+}
+
+export default function App() {
+  return (
+    <Document>
+      <Outlet />
+    </Document>
+  )
+}
+
+export const ErrorBoundary: ErrorBoundaryComponent = ({
+  error,
+}: {
+  error: Error
+}) => {
+  const { stack, message } = toError(error)
+  return (
+    <Document>
+      <EmptyState title="oops, something went wrong">
+        <pre className="mt-8 block overflow-x-auto rounded bg-black/75 p-4 text-left">
+          {stack || message}
+        </pre>
+      </EmptyState>
+    </Document>
+  )
+}
+
+export const CatchBoundary: CatchBoundaryComponent = () => {
+  return (
+    <Document>
+      <CatchBoundaryMessage />
+    </Document>
   )
 }

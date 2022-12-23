@@ -1,18 +1,42 @@
-import { Link } from "@remix-run/react"
-import { Zap } from "lucide-react"
+import { Form, Link } from "@remix-run/react"
+import { LogIn, Zap } from "lucide-react"
 import { type ReactNode } from "react"
+import { buttonStyle } from "~/styles"
 import { linkStyle } from "./styles"
+import { UserButton } from "./user-button"
 
 type Breadcrumb = { title: string; href: string }
 
 export function PageHeader(props: {
   title: ReactNode
+  user: { name: string; avatarUrl?: string } | undefined
   breadcrumbs?: Breadcrumb[]
 }) {
   return (
     <header>
-      <nav className="flex items-center opacity-75">
-        <div className="flex flex-1 flex-wrap items-center gap-x-2 text-lg font-light">
+      <div className="float-right">
+        {props.user ? (
+          <UserButton user={props.user} />
+        ) : (
+          <Form method="post" action="/auth/discord/login">
+            <div className="sm:hidden">
+              <button
+                title="Sign in with Discord"
+                className={buttonStyle({ shape: "circle" })}
+              >
+                <LogIn />
+              </button>
+            </div>
+            <div className="hidden sm:block">
+              <button className={buttonStyle()}>
+                <LogIn /> Sign in with Discord
+              </button>
+            </div>
+          </Form>
+        )}
+      </div>
+      <nav className="flex items-center">
+        <div className="flex flex-1 flex-wrap items-center gap-x-2 text-lg font-light opacity-75">
           <Link to="/" className={linkStyle({ underline: false })}>
             <AppLogo />
           </Link>
@@ -20,7 +44,6 @@ export function PageHeader(props: {
             <BreadcrumbLink key={index} breadcrumb={breadcrumb} />
           ))}
         </div>
-        <UserButton />
       </nav>
       {typeof props.title === "string" ? (
         <h1 className="text-4xl font-light">{props.title}</h1>
@@ -35,7 +58,7 @@ function AppLogo() {
   return (
     <div className="flex items-center gap-1">
       <Zap className="inline s-5" />
-      <div className="text-lg font-light">Charge Worlds</div>
+      <div className="flex-1 text-lg font-light">Charge Worlds</div>
     </div>
   )
 }
@@ -50,20 +73,5 @@ function BreadcrumbLink(props: { breadcrumb: Breadcrumb }) {
         {props.breadcrumb.title}
       </Link>
     </div>
-  )
-}
-
-function UserButton() {
-  return (
-    <button
-      className="opacity-70 transition-opacity hover:opacity-100"
-      title="Account actions"
-    >
-      <img
-        src="https://cdn.discordapp.com/avatars/781416346793279529/9dfb8017d2fcf4ef584d57179f42dec9.webp?size=128"
-        className="rounded-full s-8"
-        alt=""
-      />
-    </button>
   )
 }
