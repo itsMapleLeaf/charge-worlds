@@ -1,15 +1,32 @@
-import { redirect } from "@remix-run/node"
-import { route } from "routes-gen"
-import { db } from "../core/db.server"
-import { createWorld } from "../world/world-db.server"
-
-export async function loader() {
-  const defaultWorld =
-    (await db.world.findFirst({
-      orderBy: { createdAt: "desc" },
-    })) ?? (await createWorld())
-
-  return redirect(
-    route("/worlds/:worldId/dashboard", { worldId: defaultWorld.id }),
-  )
+export default function Index() {
+  return (
+    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
+      <h1>Welcome to Remix</h1>
+      <ul>
+        <li>
+          <a
+            target="_blank"
+            href="https://remix.run/tutorials/blog"
+            rel="noreferrer"
+          >
+            15m Quickstart Blog Tutorial
+          </a>
+        </li>
+        <li>
+          <a
+            target="_blank"
+            href="https://remix.run/tutorials/jokes"
+            rel="noreferrer"
+          >
+            Deep Dive Jokes App Tutorial
+          </a>
+        </li>
+        <li>
+          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
+            Remix Docs
+          </a>
+        </li>
+      </ul>
+    </div>
+  );
 }

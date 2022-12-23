@@ -1,19 +1,11 @@
 node_modules
 
-/.cache
-/build
-/public/build
-/api
-.env
-.env.*
-build
-dist
 .cache
-.vscode
-/generated
-/app/routes.d.ts
+.env
 .vercel
-/data
+.output
 
-# Local Netlify folder
-.netlify
+/build/
+/public/build
+/api/index.js
+/api/index.js.map

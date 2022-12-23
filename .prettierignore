@@ -1,8 +1,0 @@
-node_modules
-build
-dist
-.cache
-pnpm-lock.yaml
-.vercel
-/api
-/generated
