@@ -21,7 +21,7 @@ export const meta: MetaFunction = () => ({
 
 export const links = () => [
   { rel: "stylesheet", href: styles },
-  { rel: "stylesheet", href: "/resources/rubik/variable.css" },
+  { rel: "stylesheet", href: "/fonts/rubik/variable.css" },
 ]
 
 export default function App() {
