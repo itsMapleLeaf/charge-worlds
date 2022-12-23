@@ -11,8 +11,8 @@ import { Heart } from "lucide-react"
 import tailwind from "../generated/tailwind.css"
 import backgroundImage from "./assets/bg.png"
 import favicon from "./assets/favicon.svg"
-import { ExternalLink } from "./dom/external-link"
 import { linkStyle } from "./styles"
+import { ExternalLink } from "./ui/external-link"
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
