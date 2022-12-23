@@ -1,8 +1,7 @@
 import { Form, Link } from "@remix-run/react"
 import { LogIn, Zap } from "lucide-react"
 import { type ReactNode } from "react"
-import { buttonStyle } from "~/styles"
-import { linkStyle } from "./styles"
+import { buttonStyle, linkStyle } from "./styles"
 import { UserButton } from "./user-button"
 
 type Breadcrumb = { title: string; href: string }

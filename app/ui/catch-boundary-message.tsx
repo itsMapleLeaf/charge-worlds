@@ -1,6 +1,6 @@
 import { Link, useCatch } from "@remix-run/react"
-import { linkStyle } from "~/styles"
 import { EmptyState } from "~/ui/empty-state"
+import { linkStyle } from "~/ui/styles"
 
 export function CatchBoundaryMessage() {
   const caught = useCatch()

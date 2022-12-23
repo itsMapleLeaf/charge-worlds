@@ -13,10 +13,10 @@ import tailwind from "../generated/tailwind.css"
 import backgroundImage from "./assets/bg.png"
 import favicon from "./assets/favicon.svg"
 import { toError } from "./helpers/errors"
-import { linkStyle } from "./styles"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { EmptyState } from "./ui/empty-state"
 import { ExternalLink } from "./ui/external-link"
+import { linkStyle } from "./ui/styles"
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
