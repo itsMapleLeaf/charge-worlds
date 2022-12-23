@@ -37,44 +37,46 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="flex min-h-screen w-full flex-col gap-8 p-4 md:p-8">
+      <body>
         <div
           className="fixed inset-0 -z-10 -scale-x-100 bg-cover bg-left-top opacity-40"
           style={{ backgroundImage: `url(${backgroundImage})` }}
         />
 
-        <div className="mb-auto">
-          <Outlet />
-        </div>
+        <div className="flex min-h-screen flex-col gap-8 p-4 md:p-8">
+          <div className="mb-auto">
+            <Outlet />
+          </div>
 
-        <footer className="flex items-end justify-between text-sm opacity-75">
-          <p>
-            Created with <Heart className="inline text-accent-300 s-5" /> by{" "}
-            <ExternalLink
-              href="https://github.com/itsMapleLeaf"
-              className={linkStyle()}
-            >
-              itsMapleLeaf
-            </ExternalLink>
-            <br />
-            Background by{" "}
-            <ExternalLink
-              href="https://twitter.com/alc3vol"
-              className={linkStyle()}
-            >
-              @alc3vol
-            </ExternalLink>
-          </p>
-          <p>
-            <ExternalLink
-              href="https://soundcloud.com/dylantallchief/san-holo-plant"
-              className="text-lg opacity-50 transition-opacity hover:opacity-100"
-              title="plant"
-            >
-              🪴
-            </ExternalLink>
-          </p>
-        </footer>
+          <footer className="flex items-end justify-between text-sm opacity-75">
+            <p>
+              Created with <Heart className="inline text-accent-300 s-5" /> by{" "}
+              <ExternalLink
+                href="https://github.com/itsMapleLeaf"
+                className={linkStyle()}
+              >
+                itsMapleLeaf
+              </ExternalLink>
+              <br />
+              Background by{" "}
+              <ExternalLink
+                href="https://twitter.com/alc3vol"
+                className={linkStyle()}
+              >
+                @alc3vol
+              </ExternalLink>
+            </p>
+            <p>
+              <ExternalLink
+                href="https://soundcloud.com/dylantallchief/san-holo-plant"
+                className="text-lg opacity-50 transition-opacity hover:opacity-100"
+                title="plant"
+              >
+                🪴
+              </ExternalLink>
+            </p>
+          </footer>
+        </div>
 
         <ScrollRestoration />
         <Scripts />
