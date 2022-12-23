@@ -1,0 +1,4 @@
+/.cache
+/public/build
+/pnpm-lock.yaml
+/api
