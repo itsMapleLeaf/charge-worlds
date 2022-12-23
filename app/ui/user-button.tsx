@@ -17,7 +17,7 @@ export function UserButton({
     <>
       <MenuButton
         state={menu}
-        className="bg-black/75 opacity-70 transition-opacity hover:opacity-100"
+        className="rounded-full bg-black/75 p-0.5 opacity-70 transition-opacity hover:opacity-100"
         title="Account actions"
       >
         <img src={user.avatarUrl} className="rounded-full s-8" alt="" />
