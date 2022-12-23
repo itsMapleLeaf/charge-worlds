@@ -34,7 +34,7 @@ export function PageHeader(props: {
 function AppLogo() {
   return (
     <div className="flex items-center gap-1">
-      <Zap class="inline s-5" />
+      <Zap className="inline s-5" />
       <div className="text-lg font-light">Charge Worlds</div>
     </div>
   )
