@@ -9,3 +9,4 @@ node_modules
 /api/index.js.map
 /app/styles
 /public/fonts/rubik
+/generated
