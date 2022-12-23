@@ -9,6 +9,7 @@ import {
 } from "@remix-run/react"
 import { Heart } from "lucide-react"
 import backgroundImage from "./assets/bg.png"
+import favicon from "./assets/favicon.svg"
 import { ExternalLink } from "./dom/external-link"
 import { linkStyle } from "./styles"
 import styles from "./styles/app.css"
@@ -22,6 +23,7 @@ export const meta: MetaFunction = () => ({
 export const links = () => [
   { rel: "stylesheet", href: styles },
   { rel: "stylesheet", href: "/fonts/rubik/variable.css" },
+  { rel: "icon", href: favicon },
 ]
 
 export default function App() {
