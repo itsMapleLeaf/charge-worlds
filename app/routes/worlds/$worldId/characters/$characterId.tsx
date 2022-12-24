@@ -1,23 +1,21 @@
-import { type LoaderArgs } from "@remix-run/node"
-import { useLoaderData } from "@remix-run/react"
-import { db } from "~/db.server"
-import { notFound } from "~/helpers/responses"
-
-export async function loader({ params }: LoaderArgs) {
-  const character = await db.character
-    .findUnique({
-      where: { id: params.characterId },
-      select: { id: true, name: true },
-    })
-    .then((character) => character ?? Promise.reject(notFound()))
-  return { character }
-}
+import { useParams } from "@remix-run/react"
+import { NotFoundMessage } from "~/ui/not-found-message"
+import { useWorldState } from "~/world-state"
 
 export default function CharacterPage() {
-  const data = useLoaderData<typeof loader>()
+  const world = useWorldState()
+  const params = useParams()
+  const character = world.characters.find(
+    (character) => character.id === params.characterId,
+  )
+
+  if (!character) {
+    return <NotFoundMessage />
+  }
+
   return (
     <div>
-      <h1>{data.character.name}</h1>
+      <h1>{character.name}</h1>
     </div>
   )
 }
