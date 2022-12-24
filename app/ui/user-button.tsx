@@ -5,7 +5,7 @@ import {
   MenuSeparator,
   useMenuState,
 } from "ariakit"
-import { LogOut } from "lucide-react"
+import { LogOut, User } from "lucide-react"
 import { type Nullish } from "~/helpers/types"
 
 export function UserButton({
@@ -18,10 +18,14 @@ export function UserButton({
     <>
       <MenuButton
         state={menu}
-        className="rounded-full bg-black/75 p-0.5 opacity-70 transition-opacity hover:opacity-100"
+        className="grid place-items-center rounded-full bg-black/75 p-0.5 opacity-70 transition-opacity s-9 hover:opacity-100"
         title="Account actions"
       >
-        <img src={user.avatarUrl} className="rounded-full s-8" alt="" />
+        {user.avatarUrl ? (
+          <img src={user.avatarUrl} className="rounded-full s-8" alt="" />
+        ) : (
+          <User aria-hidden />
+        )}
       </MenuButton>
       <Menu
         state={menu}
