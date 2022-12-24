@@ -9,9 +9,9 @@ import {
   type CatchBoundaryComponent,
 } from "@remix-run/react"
 import { Heart } from "lucide-react"
-import tailwind from "../generated/tailwind.css"
 import backgroundImage from "./assets/bg.png"
 import favicon from "./assets/favicon.svg"
+import tailwind from "./generated/tailwind.css"
 import { toError } from "./helpers/errors"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { EmptyState } from "./ui/empty-state"

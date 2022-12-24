@@ -7,4 +7,4 @@ node_modules
 /public/build
 /public/fonts/rubik
 /api
-/generated
+/app/generated
