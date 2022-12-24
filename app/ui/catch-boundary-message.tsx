@@ -4,10 +4,23 @@ import { linkStyle } from "~/ui/styles"
 
 export function CatchBoundaryMessage() {
   const caught = useCatch()
+
+  const homeLink = (
+    <>
+      <br />
+      <Link to="/" className={linkStyle()}>
+        Return to home
+      </Link>
+    </>
+  )
+
   return (
     <EmptyState title="oops">
       {caught.status === 404 ? (
-        <p>Couldn't find what you were looking for.</p>
+        <p>
+          Couldn't find what you were looking for.
+          {homeLink}
+        </p>
       ) : caught.status === 401 ? (
         <p>
           You need to{" "}
@@ -15,15 +28,18 @@ export function CatchBoundaryMessage() {
             log in
           </Link>{" "}
           to see this.
-          <br />
-          <Link to="/" className={linkStyle()}>
-            Return to safety
-          </Link>
+          {homeLink}
         </p>
       ) : caught.status === 403 ? (
-        <p>You're not allowed to see this.</p>
+        <p>
+          You're not allowed to see this.
+          {homeLink}
+        </p>
       ) : (
-        <p>It's probably on our end. Try again?</p>
+        <p>
+          It's probably on our end. Try again?
+          {homeLink}
+        </p>
       )}
     </EmptyState>
   )
