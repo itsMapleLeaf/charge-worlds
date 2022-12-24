@@ -1,6 +1,7 @@
 import { Form, Link } from "@remix-run/react"
 import { LogIn, Zap } from "lucide-react"
 import { type ReactNode } from "react"
+import { type Nullish } from "~/helpers/types"
 import { buttonStyle, linkStyle } from "./styles"
 import { UserButton } from "./user-button"
 
@@ -8,7 +9,7 @@ type Breadcrumb = { title: string; href: string }
 
 export function PageHeader(props: {
   title: ReactNode
-  user: { name: string; avatarUrl?: string } | undefined
+  user: { name: string; avatarUrl?: Nullish<string> } | undefined
   breadcrumbs?: Breadcrumb[]
 }) {
   return (

@@ -6,11 +6,12 @@ import {
   useMenuState,
 } from "ariakit"
 import { LogOut } from "lucide-react"
+import { type Nullish } from "~/helpers/types"
 
 export function UserButton({
   user,
 }: {
-  user: { name: string; avatarUrl?: string }
+  user: { name: string; avatarUrl?: Nullish<string> }
 }) {
   const menu = useMenuState({ gutter: 4, animated: true })
   return (
