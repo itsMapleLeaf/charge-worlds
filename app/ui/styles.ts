@@ -27,11 +27,11 @@ export function buttonStyle({
   active?: boolean
 } = {}) {
   return clsx(
-    "inline-flex items-center gap-1.5 border-x-2 border-transparent p-3 uppercase leading-none tracking-wide transition hover:text-accent-400 disabled:cursor-not-allowed disabled:opacity-50",
+    "inline-flex h-10 items-center gap-1.5 border-x-2 border-transparent p-3 uppercase leading-none tracking-wide transition hover:text-accent-400 disabled:cursor-not-allowed disabled:opacity-50",
     variant === "solid" && "bg-black/75 hover:bg-black",
     variant === "clear" && "hover:bg-white/10 hover:text-accent-400",
     shape === "rounded" && "rounded-sm",
-    shape === "circle" && "rounded-full s-14",
+    shape === "circle" && "aspect-square rounded-full",
     active && "border-l-accent-400 text-accent-400",
   )
 }

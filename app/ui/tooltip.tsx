@@ -4,12 +4,14 @@ import { type ReactNode } from "react"
 export function Tooltip(props: {
   children: ReactNode
   text: ReactNode
+  placement?: ariakit.PopoverState["placement"]
   inline?: boolean
 }) {
   const tooltip = ariakit.useTooltipState({
     animated: true,
     gutter: 4,
     timeout: 300,
+    placement: props.placement ?? "bottom",
   })
   return (
     <>
