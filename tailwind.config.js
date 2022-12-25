@@ -17,15 +17,15 @@ module.exports = {
   plugins: [
     // adds `s-` utilities to define width and height,
     // based on the widths defined in the theme
-    plugin(function sizePlugin({ addUtilities, theme, e }) {
-      const sizes = theme("width")
-      const utilities = Object.entries(sizes).map(([key, value]) => ({
-        [`.s-${e(key)}`]: {
-          width: value,
-          height: value,
+    plugin(function sizePlugin({ matchUtilities, addUtilities, theme, e }) {
+      matchUtilities(
+        {
+          s: (value) => ({ width: value, height: value }),
         },
-      }))
-      addUtilities(utilities)
+        {
+          values: theme("width"),
+        },
+      )
     }),
   ],
 }
