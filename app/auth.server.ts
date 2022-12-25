@@ -16,7 +16,11 @@ const sessionStorage = createCookieSessionStorage({
   },
 })
 
-const authenticator = new Authenticator<{ sessionId: string }>(sessionStorage)
+type Session = {
+  sessionId: string
+}
+
+const authenticator = new Authenticator<Session>(sessionStorage)
 
 const discordStrategy = "discord"
 
@@ -60,16 +64,21 @@ export function authenticateWithDiscord(
   return authenticator.authenticate(discordStrategy, request, options)
 }
 
-export async function findSessionUser(request: Request) {
+export async function getSession(request: Request) {
   const session = await authenticator.isAuthenticated(request)
+  return session ?? undefined
+}
+
+export function logout(request: Request) {
+  return authenticator.logout(request, { redirectTo: "/" })
+}
+
+export async function findSessionUser(request: Request) {
+  const session = await getSession(request)
 
   const user =
     session &&
     (await db.user.findUnique({ where: { sessionId: session.sessionId } }))
 
   return user ?? undefined
-}
-
-export function logout(request: Request) {
-  return authenticator.logout(request, { redirectTo: "/" })
 }
