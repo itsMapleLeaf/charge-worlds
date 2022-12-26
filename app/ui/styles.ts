@@ -18,16 +18,22 @@ export function linkStyle({ underline = true } = {}) {
 }
 
 export function buttonStyle({
+  size = 10,
   variant = "solid",
   shape = "rounded",
   active = false,
 }: {
+  size?: 10 | 12 | 14 | 16
   variant?: "solid" | "clear"
   shape?: "rounded" | "square" | "circle"
   active?: boolean
 } = {}) {
   return clsx(
-    "inline-flex h-10 items-center gap-1.5 border-x-2 border-transparent p-3 uppercase leading-none tracking-wide transition hover:text-accent-400 disabled:cursor-not-allowed disabled:opacity-50",
+    "inline-flex items-center gap-1.5 border-x-2 border-transparent p-3 uppercase leading-none tracking-wide transition hover:text-accent-400 disabled:cursor-not-allowed disabled:opacity-50",
+    size === 10 && "h-10",
+    size === 12 && "h-12",
+    size === 14 && "h-14",
+    size === 16 && "h-16",
     variant === "solid" && "bg-black/75 hover:bg-black",
     variant === "clear" && "hover:bg-white/10 hover:text-accent-400",
     shape === "rounded" && "rounded-sm",
