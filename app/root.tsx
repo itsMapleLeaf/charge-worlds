@@ -34,7 +34,7 @@ function Document({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className="break-words bg-black text-gray-50"
+      className="break-words bg-black text-gray-50 [scrollbar-gutter:stable]"
       style={{ wordBreak: "break-word" }}
     >
       <head>
@@ -48,7 +48,7 @@ function Document({ children }: { children: React.ReactNode }) {
         />
 
         <div className="flex min-h-screen flex-col gap-8 p-4 md:p-8">
-          <div className="mb-auto">{children}</div>
+          <div className="min-h-0 flex-1">{children}</div>
 
           <footer className="flex items-end justify-between text-sm opacity-75">
             <p>
