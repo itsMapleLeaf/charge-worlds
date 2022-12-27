@@ -3,6 +3,6 @@ export function toError(error: unknown) {
   return new Error(String(error))
 }
 
-export function raise(error: unknown): never {
-  throw toError(error)
+export function raise(value: unknown): never {
+  throw typeof value === "string" ? new Error(value) : value
 }
