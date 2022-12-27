@@ -19,10 +19,7 @@ import { RelativeTimestamp } from "~/ui/relative-timestamp"
 import { buttonStyle, interactivePanelStyle } from "~/ui/styles"
 
 export async function loader({ request }: LoaderArgs) {
-  const user = await findSessionUser(request)
-  if (!user) {
-    throw new Response(undefined, { status: 401 })
-  }
+  const user = (await findSessionUser(request)) ?? raise(unauthorized())
 
   const worlds = await db.world.findMany({
     where: {
@@ -82,7 +79,7 @@ export default function WorldListPage() {
           ))}
         </div>
         <div className="mt-4">
-        <CreateWorldButton />
+          <CreateWorldButton />
         </div>
       </main>
     </>
