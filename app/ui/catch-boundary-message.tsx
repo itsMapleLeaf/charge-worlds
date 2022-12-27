@@ -25,7 +25,7 @@ export function CatchBoundaryMessage() {
         <p>
           You need to{" "}
           <Link to="/auth/discord/login" className={linkStyle()}>
-            log in
+            sign in with discord
           </Link>{" "}
           to see this.
           {homeLink}
@@ -37,7 +37,7 @@ export function CatchBoundaryMessage() {
         </p>
       ) : (
         <p>
-          It's probably on our end. Try again?
+          Something went wrong. It's probably on my end. Try again?
           {homeLink}
         </p>
       )}
