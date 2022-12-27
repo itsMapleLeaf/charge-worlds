@@ -14,6 +14,7 @@ import tailwind from "./generated/tailwind.css"
 import { toError } from "./helpers/errors"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { EmptyState } from "./ui/empty-state"
+import { linkStyle } from "./ui/styles"
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -68,6 +69,11 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({
         <pre className="mt-8 block overflow-x-auto rounded bg-black/75 p-4 text-left">
           {stack || message}
         </pre>
+        <p className="mt-8">
+          <a href="/" className={linkStyle()}>
+            Go back home
+          </a>
+        </p>
       </EmptyState>
     </Document>
   )
