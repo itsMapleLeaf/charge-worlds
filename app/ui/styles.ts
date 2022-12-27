@@ -14,7 +14,7 @@ export const panelStyle = ({
   background = "translucent",
 }: PanelOptions = {}) =>
   clsx(
-    background === "translucent" && "bg-black/50 backdrop-blur",
+    background === "translucent" && "bg-black/50 backdrop-blur-md",
 
     rounding === "lg" && "overflow-clip rounded-lg",
     rounding === "full" && "overflow-clip rounded-full",

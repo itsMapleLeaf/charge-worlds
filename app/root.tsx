@@ -32,7 +32,7 @@ function Document({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className="break-words bg-black bg-cover bg-fixed bg-right-top text-gray-50 [word-break:break-word] [scrollbar-gutter:stable]"
+      className="break-words bg-black bg-cover bg-fixed bg-right-top bg-no-repeat text-gray-50 [word-break:break-word] [scrollbar-gutter:stable]"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <head>
