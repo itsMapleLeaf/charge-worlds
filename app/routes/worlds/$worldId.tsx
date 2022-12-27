@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/node"
+import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { NavLink, Outlet, useFetcher, useLoaderData } from "@remix-run/react"
 import {
   Dialog,
@@ -23,6 +23,7 @@ import {
   Users,
 } from "lucide-react"
 import { findSessionUser } from "~/auth.server"
+import { getAppMeta } from "~/meta"
 import { LoadingSpinner } from "~/ui/loading"
 import { PageHeader } from "~/ui/page-header"
 import { buttonStyle, panelStyle } from "~/ui/styles"
@@ -38,6 +39,9 @@ export async function loader({ request, params }: LoaderArgs) {
   const world = await loadWorldState(params.worldId!, user)
   return { user, world }
 }
+
+export const meta: MetaFunction<typeof loader> = ({ data }) =>
+  getAppMeta({ title: data.world.name })
 
 export default function WorldPage() {
   const data = useLoaderData<typeof loader>()
