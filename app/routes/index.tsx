@@ -81,7 +81,9 @@ export default function WorldListPage() {
             />
           ))}
         </div>
+        <div className="mt-4">
         <CreateWorldButton />
+        </div>
       </main>
     </>
   )
