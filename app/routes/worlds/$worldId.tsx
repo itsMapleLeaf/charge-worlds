@@ -217,6 +217,7 @@ function WorldCharacterList(props: { onItemClick?: () => void }) {
             })
           }
           onClick={props.onItemClick}
+          prefetch="intent"
         >
           {character.name}
         </NavLink>

@@ -94,7 +94,11 @@ function WorldCard(props: {
   playerCount: number
 }) {
   return (
-    <Link to={`worlds/${props.id}`} className={interactivePanelStyle()}>
+    <Link
+      to={`worlds/${props.id}`}
+      className={interactivePanelStyle()}
+      prefetch="intent"
+    >
       <div className="flex h-full flex-col gap-3 p-4">
         <h2 className="text-3xl font-light leading-none">{props.name}</h2>
         <p className="mt-auto text-sm leading-tight opacity-75">
