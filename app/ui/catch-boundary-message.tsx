@@ -1,4 +1,4 @@
-import { Link, useCatch } from "@remix-run/react"
+import { Form, Link, useCatch } from "@remix-run/react"
 import { EmptyState } from "~/ui/empty-state"
 import { linkStyle } from "~/ui/styles"
 
@@ -24,9 +24,9 @@ export function CatchBoundaryMessage() {
       ) : caught.status === 401 ? (
         <p>
           You need to{" "}
-          <Link to="/auth/discord/login" className={linkStyle()}>
-            sign in with discord
-          </Link>{" "}
+          <Form method="post" action="/auth/discord/login" className="contents">
+            <button className={linkStyle()}>sign in with discord</button>
+          </Form>{" "}
           to see this.
           {homeLink}
         </p>
