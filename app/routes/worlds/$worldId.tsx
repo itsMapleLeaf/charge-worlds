@@ -75,13 +75,14 @@ function WorldMenuDialogButton() {
   const dialog = useDialogState({ animated: true })
   return (
     <>
-      <button
-        title="Open World Menu"
-        className={buttonStyle({ rounding: "full", size: 14, square: true })}
-        onClick={dialog.toggle}
-      >
-        <SidebarOpen className="s-6" />
-      </button>
+      <Tooltip text="Open World Menu" placement="right">
+        <button
+          className={buttonStyle({ rounding: "full", size: 14, square: true })}
+          onClick={dialog.toggle}
+        >
+          <SidebarOpen className="s-6" />
+        </button>
+      </Tooltip>
       <Dialog
         state={dialog}
         aria-label="World Menu"
@@ -149,34 +150,35 @@ function WorldMenu(props: { dialogState?: DisclosureState }) {
       <nav className="flex flex-col bg-black">
         <TabList state={tabState} className="flex flex-col ">
           {tabs.map((tab) => (
-            <Tab
-              key={tab.title}
-              title={tab.title}
-              id={tab.title}
-              className={buttonStyle({
-                active: tab.title === tabState.activeId,
-                borders: "left",
-                rounding: "none",
-                inactiveBorderColor: "transparent",
-                background: "none",
-              })}
-            >
-              {tab.tabContent}
-            </Tab>
+            <Tooltip key={tab.title} text={tab.title} placement="right">
+              <Tab
+                id={tab.title}
+                className={buttonStyle({
+                  active: tab.title === tabState.activeId,
+                  borders: "left",
+                  rounding: "none",
+                  inactiveBorderColor: "transparent",
+                  background: "none",
+                })}
+              >
+                {tab.tabContent}
+              </Tab>
+            </Tooltip>
           ))}
         </TabList>
         <div className="flex-1" />
         {props.dialogState && (
-          <DialogDismiss
-            state={props.dialogState}
-            className={buttonStyle({
-              inactiveBorderColor: "transparent",
-              background: "none",
-            })}
-            title="Close World Menu"
-          >
-            <SidebarClose className="s-6" />
-          </DialogDismiss>
+          <Tooltip text="Close World Menu" placement="right">
+            <DialogDismiss
+              state={props.dialogState}
+              className={buttonStyle({
+                inactiveBorderColor: "transparent",
+                background: "none",
+              })}
+            >
+              <SidebarClose className="s-6" />
+            </DialogDismiss>
+          </Tooltip>
         )}
       </nav>
       <main className="flex-1">
