@@ -1,5 +1,11 @@
 import type { LoaderArgs, MetaFunction } from "@remix-run/node"
-import { NavLink, Outlet, useFetcher, useLoaderData } from "@remix-run/react"
+import {
+  NavLink,
+  Outlet,
+  useFetcher,
+  useLoaderData,
+  useParams,
+} from "@remix-run/react"
 import {
   Dialog,
   DialogDismiss,
@@ -203,23 +209,27 @@ function WorldMenu(props: { dialogState?: DisclosureState }) {
 
 function WorldCharacterList(props: { onItemClick?: () => void }) {
   const world = useWorldState()
+  const params = useParams()
+
+  const currentCharacter =
+    world.characters.find((character) => character.id === params.characterId) ??
+    world.characters[0]
+
   return (
     <nav aria-label="Characters" className="flex flex-col">
       {world.characters.map((character) => (
         <NavLink
           key={character.id}
           to={`characters/${character.id}`}
-          className={({ isActive }) =>
-            buttonStyle({
-              borders: "left",
-              rounding: "none",
-              active: isActive,
-              justify: "start",
-              size: 10,
-              inactiveBorderColor: "transparent",
-              background: "none",
-            })
-          }
+          className={buttonStyle({
+            borders: "left",
+            rounding: "none",
+            active: character.id === currentCharacter.id,
+            justify: "start",
+            size: 10,
+            inactiveBorderColor: "transparent",
+            background: "none",
+          })}
           onClick={props.onItemClick}
           prefetch="intent"
         >
