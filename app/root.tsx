@@ -14,7 +14,7 @@ import tailwind from "./generated/tailwind.css"
 import { toError } from "./helpers/errors"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { EmptyState } from "./ui/empty-state"
-import { linkStyle } from "./ui/styles"
+import { linkStyle, pageContainerStyle } from "./ui/styles"
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -65,16 +65,18 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({
   const { stack, message } = toError(error)
   return (
     <Document>
-      <EmptyState title="oops, something went wrong">
-        <pre className="mt-8 block overflow-x-auto rounded bg-black/75 p-4 text-left">
-          {stack || message}
-        </pre>
-        <p className="mt-8">
-          <a href="/" className={linkStyle()}>
-            Go back home
-          </a>
-        </p>
-      </EmptyState>
+      <div className={pageContainerStyle()}>
+        <EmptyState title="oops, something went wrong">
+          <pre className="mt-8 block overflow-x-auto rounded bg-black/75 p-4 text-left">
+            {stack || message}
+          </pre>
+          <p className="mt-8">
+            <a href="/" className={linkStyle()}>
+              Go back home
+            </a>
+          </p>
+        </EmptyState>
+      </div>
     </Document>
   )
 }
@@ -82,7 +84,9 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({
 export const CatchBoundary: CatchBoundaryComponent = () => {
   return (
     <Document>
-      <CatchBoundaryMessage />
+      <div className={pageContainerStyle()}>
+        <CatchBoundaryMessage />
+      </div>
     </Document>
   )
 }

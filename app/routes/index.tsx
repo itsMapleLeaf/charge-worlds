@@ -148,9 +148,9 @@ function CreateWorldButton() {
 
 export const CatchBoundary: CatchBoundaryComponent = () => {
   return (
-    <>
+    <div className={pageContainerStyle()}>
       <PageHeader title="Your Worlds" user={undefined} />
       <CatchBoundaryMessage />
-    </>
+    </div>
   )
 }
