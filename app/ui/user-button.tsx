@@ -8,7 +8,6 @@ import {
 import { LogOut, User } from "lucide-react"
 import { type Nullish } from "~/helpers/types"
 import { interactivePanelStyle } from "./styles"
-import { Tooltip } from "./tooltip"
 
 export function UserButton({
   user,
@@ -18,18 +17,17 @@ export function UserButton({
   const menu = useMenuState({ gutter: 4, animated: true })
   return (
     <>
-      <Tooltip text="Account actions" placement="bottom">
-        <MenuButton
-          state={menu}
-          className={interactivePanelStyle({ rounding: "full" })}
-        >
-          {user.avatarUrl ? (
-            <img src={user.avatarUrl} className="rounded-full s-8" alt="" />
-          ) : (
-            <User aria-hidden />
-          )}
-        </MenuButton>
-      </Tooltip>
+      <MenuButton
+        state={menu}
+        className={interactivePanelStyle({ rounding: "full" })}
+        title="Account actions"
+      >
+        {user.avatarUrl ? (
+          <img src={user.avatarUrl} className="rounded-full s-8" alt="" />
+        ) : (
+          <User aria-hidden />
+        )}
+      </MenuButton>
       <Menu
         state={menu}
         className="flex w-36 flex-col rounded bg-white text-gray-900 shadow-md transition data-[enter]:scale-100 data-[leave]:scale-95 data-[enter]:opacity-100 data-[leave]:opacity-0"
