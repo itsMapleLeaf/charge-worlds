@@ -3,8 +3,10 @@ import {
   Link,
   useFetcher,
   useLoaderData,
+  useTransition,
   type CatchBoundaryComponent,
 } from "@remix-run/react"
+import clsx from "clsx"
 import { Wand2 } from "lucide-react"
 import { findSessionUser } from "~/auth.server"
 import { db } from "~/db.server"
@@ -92,13 +94,19 @@ function WorldCard(props: {
   createdAt: number
   playerCount: number
 }) {
+  const transition = useTransition()
+
+  const pending =
+    transition.state === "loading" &&
+    transition.location.pathname.endsWith(props.id)
+
   return (
     <Link
       to={`worlds/${props.id}`}
       className={interactivePanelStyle()}
       prefetch="intent"
     >
-      <div className="flex h-full flex-col gap-3 p-4">
+      <div className="relative flex h-full flex-col gap-3 p-4">
         <h2 className="text-3xl font-light leading-none">{props.name}</h2>
         <p className="mt-auto text-sm leading-tight opacity-75">
           {plural(props.playerCount, "Player")}
@@ -106,6 +114,15 @@ function WorldCard(props: {
           Created{" "}
           <RelativeTimestamp date={new Date(props.createdAt)} addSuffix />
         </p>
+      </div>
+      <div
+        aria-hidden
+        className={clsx(
+          "absolute right-0 bottom-0 p-4",
+          pending ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <LoadingSpinner size={6} />
       </div>
     </Link>
   )
