@@ -23,9 +23,9 @@ import {
   Globe,
   Image,
   List,
+  Plus,
   SidebarClose,
   SidebarOpen,
-  UserPlus,
   Users,
 } from "lucide-react"
 import { findSessionUser } from "~/auth.server"
@@ -33,7 +33,6 @@ import { getAppMeta } from "~/meta"
 import { LoadingSpinner } from "~/ui/loading"
 import { PageHeader } from "~/ui/page-header"
 import { buttonStyle, panelStyle } from "~/ui/styles"
-import { Tooltip } from "~/ui/tooltip"
 import {
   loadWorldState,
   useWorldState,
@@ -106,12 +105,14 @@ function WorldMenu(props: { dialogState?: DisclosureState }) {
     title: string
     tabContent: React.ReactNode
     panelContent: React.ReactNode
+    headerAction?: React.ReactNode
   }
 
   const tabs: TabInfo[] = [
     {
       title: "Characters",
       tabContent: <Users />,
+      headerAction: <AddCharacterButton />,
       panelContent: (
         <WorldCharacterList onItemClick={props.dialogState?.hide} />
       ),
@@ -194,9 +195,12 @@ function WorldMenu(props: { dialogState?: DisclosureState }) {
             id={tab.title}
             className="flex h-full min-h-0 flex-col"
           >
-            <h2 className="p-2 text-2xl font-light leading-tight">
-              {tab.title}
-            </h2>
+            <div className="flex items-center">
+              <h2 className="flex-1 p-3 text-2xl font-light leading-tight">
+                {tab.title}
+              </h2>
+              {tab.headerAction}
+            </div>
             <div className="min-h-0 flex-1 overflow-y-auto">
               {tab.panelContent}
             </div>
@@ -244,20 +248,16 @@ function AddCharacterButton() {
   const fetcher = useFetcher()
   return (
     <fetcher.Form method="post" action="add-character">
-      <Tooltip text="Add character">
-        <button
-          title="Add character"
-          className={buttonStyle()}
-          disabled={fetcher.state !== "idle"}
-        >
-          {fetcher.state === "idle" ? (
-            // it looks off-center lol
-            <UserPlus className="translate-x-[2px]" />
-          ) : (
-            <LoadingSpinner size={6} />
-          )}
-        </button>
-      </Tooltip>
+      <button
+        title="Add character"
+        className={buttonStyle({
+          background: "none",
+          inactiveBorderColor: "transparent",
+        })}
+        disabled={fetcher.state !== "idle"}
+      >
+        {fetcher.state === "idle" ? <Plus /> : <LoadingSpinner size={6} />}
+      </button>
     </fetcher.Form>
   )
 }
