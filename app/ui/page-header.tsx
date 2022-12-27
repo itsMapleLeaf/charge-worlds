@@ -1,4 +1,4 @@
-import { Form, Link } from "@remix-run/react"
+import { Link } from "@remix-run/react"
 import { LogIn, Zap } from "lucide-react"
 import { type ReactNode } from "react"
 import { type Nullish } from "~/helpers/types"
@@ -18,18 +18,22 @@ export function PageHeader(props: {
         {props.user ? (
           <UserButton user={props.user} />
         ) : (
-          <Form method="post" action="/auth/discord/login">
+          <>
             <div className="sm:hidden">
-              <button title="Sign in with Discord" className={buttonStyle()}>
+              <a
+                href="/auth/discord/login"
+                title="Sign in with Discord"
+                className={buttonStyle()}
+              >
                 <LogIn />
-              </button>
+              </a>
             </div>
             <div className="hidden sm:block">
-              <button className={buttonStyle()}>
+              <a href="/auth/discord/login" className={buttonStyle()}>
                 <LogIn /> Sign in with Discord
-              </button>
+              </a>
             </div>
-          </Form>
+          </>
         )}
       </div>
       <nav className="flex items-center">
