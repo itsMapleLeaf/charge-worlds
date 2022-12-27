@@ -3,18 +3,12 @@ import { db } from "./db.server"
 import { raise } from "./helpers/errors"
 import { notFound } from "./helpers/responses"
 
-export type WorldState = {
-  name: string
-  characters: Array<{
-    id: string
-    name: string
-  }>
-}
+export type WorldState = Awaited<ReturnType<typeof loadWorldState>>
 
 export async function loadWorldState(
   worldId: string,
   user: { discordId: string } | undefined,
-): Promise<WorldState> {
+) {
   let membership
   if (user) {
     membership = await db.membership.findUnique({
