@@ -111,14 +111,14 @@ function WorldMenu(props: { dialogState?: DisclosureState }) {
       ),
     },
     {
-      title: "Clocks",
-      tabContent: <Clock />,
-      panelContent: "clocks",
-    },
-    {
       title: "Dice Rolls",
       tabContent: <Dices />,
       panelContent: "dice rolls",
+    },
+    {
+      title: "Clocks",
+      tabContent: <Clock />,
+      panelContent: "clocks",
     },
     {
       title: "Gallery",
