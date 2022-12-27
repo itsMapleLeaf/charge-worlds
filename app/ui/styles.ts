@@ -76,3 +76,6 @@ export const inputStyle = ({ interactive = true } = {}) =>
   )
 
 export const labelStyle = () => clsx("text-sm font-medium leading-none")
+
+export const pageContainerStyle = () =>
+  clsx("flex min-h-screen flex-col gap-4 p-4 lg:p-8")

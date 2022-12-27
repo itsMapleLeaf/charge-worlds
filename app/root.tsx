@@ -40,7 +40,7 @@ function Document({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="bg-black/70">
-        <div className="min-h-screen p-4 lg:p-8">{children}</div>
+        {children}
         <ScrollRestoration />
         <Scripts />
         <LiveReload />

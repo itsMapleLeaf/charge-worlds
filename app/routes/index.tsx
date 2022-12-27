@@ -18,7 +18,11 @@ import { CatchBoundaryMessage } from "~/ui/catch-boundary-message"
 import { LoadingSpinner } from "~/ui/loading"
 import { PageHeader } from "~/ui/page-header"
 import { RelativeTimestamp } from "~/ui/relative-timestamp"
-import { buttonStyle, interactivePanelStyle } from "~/ui/styles"
+import {
+  buttonStyle,
+  interactivePanelStyle,
+  pageContainerStyle,
+} from "~/ui/styles"
 
 export async function loader({ request }: LoaderArgs) {
   const user = (await findSessionUser(request)) ?? raise(unauthorized())
@@ -68,7 +72,7 @@ export const meta = () => getAppMeta({ title: "Your Worlds" })
 export default function WorldListPage() {
   const { user, worlds } = useLoaderData<typeof loader>()
   return (
-    <>
+    <div className={pageContainerStyle()}>
       <PageHeader title="Your Worlds" user={user} />
       <main>
         <div className="mt-8 flex w-full max-w-screen-xl flex-col justify-start gap-4 sm:flex-row sm:flex-wrap sm:[&>*]:basis-64">
@@ -84,7 +88,7 @@ export default function WorldListPage() {
           <CreateWorldButton />
         </div>
       </main>
-    </>
+    </div>
   )
 }
 

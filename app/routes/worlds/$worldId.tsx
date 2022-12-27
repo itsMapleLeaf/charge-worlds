@@ -32,7 +32,7 @@ import { findSessionUser } from "~/auth.server"
 import { getAppMeta } from "~/meta"
 import { LoadingSpinner } from "~/ui/loading"
 import { PageHeader } from "~/ui/page-header"
-import { buttonStyle, panelStyle } from "~/ui/styles"
+import { buttonStyle, pageContainerStyle, panelStyle } from "~/ui/styles"
 import {
   loadWorldState,
   useWorldState,
@@ -51,7 +51,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) =>
 export default function WorldPage() {
   const data = useLoaderData<typeof loader>()
   return (
-    <div className="flex h-full flex-col gap-4">
+    <div className={pageContainerStyle()}>
       <PageHeader
         title={data.world.name}
         user={data.user}
