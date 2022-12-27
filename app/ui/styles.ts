@@ -15,6 +15,7 @@ export const panelStyle = ({
 }: PanelOptions = {}) =>
   clsx(
     background === "translucent" && "bg-black/50 backdrop-blur-md",
+    background === "none" && "bg-transparent",
 
     rounding === "lg" && "overflow-clip rounded-lg",
     rounding === "full" && "overflow-clip rounded-full",
@@ -65,8 +66,13 @@ export const buttonStyle = ({
     interactivePanelStyle(options),
   )
 
-export function inputStyle() {
-  return clsx(
-    "block w-full rounded-sm border-b-2 border-white/25 bg-white/10 p-3 leading-none shadow-inner transition-colors focus:border-accent-400 focus:ring-0",
+export const inputStyle = ({ interactive = true } = {}) =>
+  clsx(
+    "inline-flex h-12 w-full items-center p-3 leading-none shadow-inner",
+
+    // for when we want to match the style of an input, but not make it interactive
+    interactive && "focus:border-accent-400 focus:outline-none",
+    interactive ? interactivePanelStyle() : panelStyle(),
   )
-}
+
+export const labelStyle = () => clsx("text-sm font-medium leading-none")

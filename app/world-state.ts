@@ -26,7 +26,7 @@ export async function loadWorldState(
       name: true,
       characters: {
         where: isAdmin ? {} : { hidden: true },
-        select: { id: true, name: true },
+        select: { id: true, name: true, condition: true, imageUrl: true },
       },
     },
   })
