@@ -20,10 +20,7 @@ export function PageHeader(props: {
         ) : (
           <Form method="post" action="/auth/discord/login">
             <div className="sm:hidden">
-              <button
-                title="Sign in with Discord"
-                className={buttonStyle({ shape: "circle" })}
-              >
+              <button title="Sign in with Discord" className={buttonStyle()}>
                 <LogIn />
               </button>
             </div>

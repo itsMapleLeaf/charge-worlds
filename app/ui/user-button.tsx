@@ -7,6 +7,7 @@ import {
 } from "ariakit"
 import { LogOut, User } from "lucide-react"
 import { type Nullish } from "~/helpers/types"
+import { interactivePanelStyle } from "./styles"
 
 export function UserButton({
   user,
@@ -18,7 +19,7 @@ export function UserButton({
     <>
       <MenuButton
         state={menu}
-        className="grid place-items-center rounded-full bg-black/75 p-0.5 opacity-70 transition-opacity s-9 hover:opacity-100"
+        className={interactivePanelStyle({ rounding: "full" })}
         title="Account actions"
       >
         {user.avatarUrl ? (
@@ -29,7 +30,7 @@ export function UserButton({
       </MenuButton>
       <Menu
         state={menu}
-        className="flex w-36 flex-col rounded bg-white text-gray-900 shadow-md transition data-[enter]:translate-y-0 data-[leave]:translate-y-1 data-[enter]:opacity-100 data-[leave]:opacity-0"
+        className="flex w-36 flex-col rounded bg-white text-gray-900 shadow-md transition data-[enter]:scale-100 data-[leave]:scale-95 data-[enter]:opacity-100 data-[leave]:opacity-0"
       >
         <MenuArrow />
         <p className="p-2 leading-tight">

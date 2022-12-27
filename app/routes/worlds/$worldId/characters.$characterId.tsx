@@ -1,6 +1,7 @@
 import { useParams } from "@remix-run/react"
 import { EmptyState } from "~/ui/empty-state"
 import { NotFoundMessage } from "~/ui/not-found-message"
+import { panelStyle } from "~/ui/styles"
 import { useWorldState } from "~/world-state"
 
 export default function CharacterPage() {
@@ -24,8 +25,11 @@ export default function CharacterPage() {
   }
 
   return (
-    <>
-      <h1>{character.name}</h1>
-    </>
+    <div className={panelStyle()}>
+      <section className="p-4">
+        <h1 className="text-3xl font-light leading-tight">{character.name}</h1>
+        <div className="h-[150vh]">content</div>
+      </section>
+    </div>
   )
 }

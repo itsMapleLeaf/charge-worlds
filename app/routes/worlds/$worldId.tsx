@@ -1,5 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node"
-import { Outlet, useLoaderData } from "@remix-run/react"
+import { NavLink, Outlet, useFetcher, useLoaderData } from "@remix-run/react"
 import {
   Dialog,
   DialogDismiss,
@@ -8,20 +8,30 @@ import {
   TabPanel,
   useDialogState,
   useTabState,
+  type DisclosureState,
 } from "ariakit"
 import {
   Clock,
+  Dices,
   Gamepad2,
+  Globe,
   Image,
   List,
   SidebarClose,
   SidebarOpen,
+  UserPlus,
   Users,
 } from "lucide-react"
 import { findSessionUser } from "~/auth.server"
+import { LoadingSpinner } from "~/ui/loading"
 import { PageHeader } from "~/ui/page-header"
-import { buttonStyle } from "~/ui/styles"
-import { loadWorldState, WorldStateProvider } from "~/world-state"
+import { buttonStyle, panelStyle } from "~/ui/styles"
+import { Tooltip } from "~/ui/tooltip"
+import {
+  loadWorldState,
+  useWorldState,
+  WorldStateProvider,
+} from "~/world-state"
 
 export async function loader({ request, params }: LoaderArgs) {
   const user = await findSessionUser(request)
@@ -32,20 +42,27 @@ export async function loader({ request, params }: LoaderArgs) {
 export default function WorldPage() {
   const data = useLoaderData<typeof loader>()
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col gap-4">
       <PageHeader
         title={data.world.name}
         user={data.user}
-        breadcrumbs={[{ title: "Worlds", href: "/worlds" }]}
+        breadcrumbs={[{ title: "Worlds", href: "/" }]}
       />
-      <div className="mt-8 mb-4">
-        <WorldStateProvider value={data.world}>
-          <Outlet />
-        </WorldStateProvider>
-      </div>
-      <div className="sticky bottom-4 mt-auto md:bottom-8">
-        <WorldMenuDialogButton />
-      </div>
+      <WorldStateProvider value={data.world}>
+        <div className="flex flex-1 gap-4">
+          <div className="sticky top-8 hidden h-[calc(100vh-12rem)] w-80 lg:block [&>*]:h-full">
+            <div className={panelStyle()}>
+              <WorldMenu />
+            </div>
+          </div>
+          <div className="max-w-screen-md flex-1">
+            <Outlet />
+          </div>
+        </div>
+        <div className="sticky bottom-4 lg:hidden">
+          <WorldMenuDialogButton />
+        </div>
+      </WorldStateProvider>
     </div>
   )
 }
@@ -56,37 +73,25 @@ function WorldMenuDialogButton() {
     <>
       <button
         title="Open World Menu"
-        className={buttonStyle({ shape: "circle", size: 14 })}
+        className={buttonStyle({ rounding: "full", size: 14, square: true })}
         onClick={dialog.toggle}
       >
         <SidebarOpen className="s-6" />
       </button>
       <Dialog
         state={dialog}
-        as="section"
-        aria-label="World Menu Dialog"
-        className="fixed inset-y-0 left-0 flex w-full max-w-sm flex-col gap-2 p-4 transition duration-200 data-[enter]:translate-x-0 data-[leave]:-translate-x-full data-[enter]:ease-out data-[leave]:ease-in md:p-8"
+        aria-label="World Menu"
+        className="fixed inset-y-0 left-0 w-full max-w-xs transition duration-200 data-[enter]:translate-x-0 data-[leave]:-translate-x-full data-[enter]:ease-out data-[leave]:ease-in [&>*]:h-full"
       >
-        <div className="flex-1">
-          <WorldMenu />
+        <div className={panelStyle({ rounding: "none", borders: "right" })}>
+          <WorldMenu dialogState={dialog} />
         </div>
-        <footer>
-          <DialogDismiss
-            title="Close Dialog"
-            state={dialog}
-            className={buttonStyle({ shape: "circle", size: 14 })}
-          >
-            <SidebarClose className="s-6" />
-          </DialogDismiss>
-        </footer>
       </Dialog>
     </>
   )
 }
 
-function WorldMenu() {
-  const tabState = useTabState()
-
+function WorldMenu(props: { dialogState?: DisclosureState }) {
   type TabInfo = {
     title: string
     tabContent: React.ReactNode
@@ -97,7 +102,9 @@ function WorldMenu() {
     {
       title: "Characters",
       tabContent: <Users />,
-      panelContent: "characters",
+      panelContent: (
+        <WorldCharacterList onItemClick={props.dialogState?.hide} />
+      ),
     },
     {
       title: "Clocks",
@@ -105,9 +112,19 @@ function WorldMenu() {
       panelContent: "clocks",
     },
     {
+      title: "Dice Rolls",
+      tabContent: <Dices />,
+      panelContent: "dice rolls",
+    },
+    {
       title: "Gallery",
       tabContent: <Image />,
       panelContent: "gallery",
+    },
+    {
+      title: "World Details",
+      tabContent: <Globe />,
+      panelContent: "world details",
     },
     {
       title: "Players",
@@ -121,37 +138,111 @@ function WorldMenu() {
     },
   ]
 
+  const tabState = useTabState({ defaultSelectedId: tabs[0].title })
+
   return (
-    <section
-      className="flex h-full overflow-clip rounded-lg bg-black/75 shadow-lg backdrop-blur"
-      aria-label="World Menu"
-    >
-      <TabList state={tabState} as="nav" className="flex flex-col bg-black">
-        {tabs.map((tab) => (
-          <Tab
-            key={tab.title}
-            title={tab.title}
-            id={tab.title}
-            className={buttonStyle({ active: tab.title === tabState.activeId })}
+    <section className="flex h-full overflow-y-hidden" aria-label="World Menu">
+      <nav className="flex flex-col bg-black">
+        <TabList state={tabState} className="flex flex-col ">
+          {tabs.map((tab) => (
+            <Tab
+              key={tab.title}
+              title={tab.title}
+              id={tab.title}
+              className={buttonStyle({
+                active: tab.title === tabState.activeId,
+                borders: "left",
+                rounding: "none",
+                inactiveBorderColor: "transparent",
+                background: "none",
+              })}
+            >
+              {tab.tabContent}
+            </Tab>
+          ))}
+        </TabList>
+        <div className="flex-1" />
+        {props.dialogState && (
+          <DialogDismiss
+            state={props.dialogState}
+            className={buttonStyle({
+              inactiveBorderColor: "transparent",
+              background: "none",
+            })}
+            title="Close World Menu"
           >
-            {tab.tabContent}
-          </Tab>
-        ))}
-      </TabList>
-      <main className="min-h-0 flex-1 overflow-auto">
+            <SidebarClose className="s-6" />
+          </DialogDismiss>
+        )}
+      </nav>
+      <main className="flex-1">
         {tabs.map((tab) => (
           <TabPanel
             as="section"
             key={tab.title}
             state={tabState}
             id={tab.title}
-            className="p-3"
+            className="flex h-full min-h-0 flex-col"
           >
-            <h2 className="text-2xl font-light leading-tight">{tab.title}</h2>
-            <p className="text-gray-400">{tab.panelContent}</p>
+            <h2 className="p-2 text-2xl font-light leading-tight">
+              {tab.title}
+            </h2>
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              {tab.panelContent}
+            </div>
           </TabPanel>
         ))}
       </main>
     </section>
+  )
+}
+
+function WorldCharacterList(props: { onItemClick?: () => void }) {
+  const world = useWorldState()
+  return (
+    <nav aria-label="Characters" className="flex flex-col">
+      {world.characters.map((character) => (
+        <NavLink
+          key={character.id}
+          to={`characters/${character.id}`}
+          className={({ isActive }) =>
+            buttonStyle({
+              borders: "left",
+              rounding: "none",
+              active: isActive,
+              justify: "start",
+              size: 10,
+              inactiveBorderColor: "transparent",
+              background: "none",
+            })
+          }
+          onClick={props.onItemClick}
+        >
+          {character.name}
+        </NavLink>
+      ))}
+    </nav>
+  )
+}
+
+function AddCharacterButton() {
+  const fetcher = useFetcher()
+  return (
+    <fetcher.Form method="post" action="add-character">
+      <Tooltip text="Add character">
+        <button
+          title="Add character"
+          className={buttonStyle()}
+          disabled={fetcher.state !== "idle"}
+        >
+          {fetcher.state === "idle" ? (
+            // it looks off-center lol
+            <UserPlus className="translate-x-[2px]" />
+          ) : (
+            <LoadingSpinner size={6} />
+          )}
+        </button>
+      </Tooltip>
+    </fetcher.Form>
   )
 }

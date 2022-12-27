@@ -27,5 +27,21 @@ module.exports = {
         },
       )
     }),
+
+    // applies a thin white scrollbar to all elements
+    plugin(function thinScrollbarPlugin({ addBase, theme }) {
+      addBase({
+        "::-webkit-scrollbar": {
+          width: theme("spacing.2"),
+          height: theme("spacing.2"),
+        },
+        "::-webkit-scrollbar-track, ::-webkit-scrollbar-corner": {
+          backgroundColor: "transparent",
+        },
+        "::-webkit-scrollbar-thumb": {
+          backgroundColor: "rgba(255, 255, 255, 0.3)",
+        },
+      })
+    }),
   ],
 }

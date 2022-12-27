@@ -4,7 +4,7 @@ import {
   Link,
   useLoaderData,
   useTransition,
-  type CatchBoundaryComponent
+  type CatchBoundaryComponent,
 } from "@remix-run/react"
 import { Plus } from "lucide-react"
 import { findSessionUser } from "~/auth.server"
@@ -14,7 +14,7 @@ import { getAppMeta } from "~/meta"
 import { CatchBoundaryMessage } from "~/ui/catch-boundary-message"
 import { PageHeader } from "~/ui/page-header"
 import { RelativeTimestamp } from "~/ui/relative-timestamp"
-import { buttonStyle, interactiveCardStyle } from "~/ui/styles"
+import { buttonStyle, interactivePanelStyle } from "~/ui/styles"
 
 export async function loader({ request }: LoaderArgs) {
   const user = await findSessionUser(request)
@@ -50,7 +50,7 @@ export async function action() {
   const world = await db.world.create({
     data: { name: "New World" },
   })
-  return redirect(world.id, 303)
+  return redirect(`worlds/${world.id}`, 303)
 }
 
 export const meta = () => getAppMeta({ title: "Your Worlds" })
@@ -93,7 +93,7 @@ function WorldCard(props: {
   playerCount: number
 }) {
   return (
-    <Link to={`worlds/${props.id}`} className={interactiveCardStyle()}>
+    <Link to={`worlds/${props.id}`} className={interactivePanelStyle()}>
       <div className="flex h-full flex-col gap-3 p-4">
         <h2 className="text-3xl font-light leading-none">{props.name}</h2>
         <p className="mt-auto text-sm leading-tight opacity-75">

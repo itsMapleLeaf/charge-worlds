@@ -25,7 +25,7 @@ export function Tooltip(props: {
       <ariakit.Tooltip
         state={tooltip}
         as="div"
-        className="pointer-events-none rounded bg-white p-1 text-xs leading-none text-gray-900 drop-shadow transition data-[enter]:translate-y-0 data-[leave]:translate-y-1 data-[leave]:opacity-0 data-[enter]:opacity-100"
+        className="pointer-events-none rounded bg-white p-1 text-xs leading-none text-gray-900 drop-shadow transition data-[enter]:scale-100 data-[leave]:scale-95 data-[leave]:opacity-0 data-[enter]:opacity-100"
       >
         <ariakit.TooltipArrow />
         {props.text}
