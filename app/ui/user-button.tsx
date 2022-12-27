@@ -30,6 +30,7 @@ export function UserButton({
       </MenuButton>
       <Menu
         state={menu}
+        portal
         className="flex w-36 flex-col rounded bg-white text-gray-900 shadow-md transition data-[enter]:scale-100 data-[leave]:scale-95 data-[enter]:opacity-100 data-[leave]:opacity-0"
       >
         <MenuArrow />
