@@ -1,0 +1,27 @@
+name: lint
+
+on:
+  push:
+    branches: [v3]
+  pull_request:
+    branches: [v3]
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        script: [lint, typecheck]
+    name: ${{ matrix.script }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm ${{ matrix.script }}
