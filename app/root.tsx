@@ -14,7 +14,7 @@ import tailwind from "./generated/tailwind.css"
 import { toError } from "./helpers/errors"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { EmptyState } from "./ui/empty-state"
-import { linkStyle, pageContainerStyle } from "./ui/styles"
+import { linkStyle } from "./ui/styles"
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -32,15 +32,16 @@ function Document({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className="break-words bg-black bg-cover bg-fixed bg-right-top bg-no-repeat text-gray-50 [word-break:break-word] [scrollbar-gutter:stable]"
+      className="break-words bg-black bg-cover bg-fixed bg-right-top bg-no-repeat text-gray-50 [word-break:break-word]"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="bg-black/70">
-        {children}
+      <body>
+        <div className="fixed inset-0 -z-10 bg-black/70" />
+        <div className="flex min-h-screen p-4 lg:p-8">{children}</div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
@@ -65,18 +66,16 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({
   const { stack, message } = toError(error)
   return (
     <Document>
-      <div className={pageContainerStyle()}>
-        <EmptyState title="oops, something went wrong">
-          <pre className="mt-8 block overflow-x-auto rounded bg-black/75 p-4 text-left">
-            {stack || message}
-          </pre>
-          <p className="mt-8">
-            <a href="/" className={linkStyle()}>
-              Go back home
-            </a>
-          </p>
-        </EmptyState>
-      </div>
+      <EmptyState title="oops, something went wrong">
+        <pre className="mt-8 block overflow-x-auto rounded bg-black/75 p-4 text-left">
+          {stack || message}
+        </pre>
+        <p className="mt-8">
+          <a href="/" className={linkStyle()}>
+            Go back home
+          </a>
+        </p>
+      </EmptyState>
     </Document>
   )
 }
@@ -84,9 +83,7 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({
 export const CatchBoundary: CatchBoundaryComponent = () => {
   return (
     <Document>
-      <div className={pageContainerStyle()}>
-        <CatchBoundaryMessage />
-      </div>
+      <CatchBoundaryMessage />
     </Document>
   )
 }

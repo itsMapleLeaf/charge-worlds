@@ -32,7 +32,7 @@ import { findSessionUser } from "~/auth.server"
 import { getAppMeta } from "~/meta"
 import { LoadingSpinner } from "~/ui/loading"
 import { PageHeader } from "~/ui/page-header"
-import { buttonStyle, pageContainerStyle, panelStyle } from "~/ui/styles"
+import { buttonStyle, panelStyle } from "~/ui/styles"
 import {
   loadWorldState,
   useWorldState,
@@ -51,13 +51,14 @@ export const meta: MetaFunction<typeof loader> = ({ data }) =>
 export default function WorldPage() {
   const data = useLoaderData<typeof loader>()
   return (
-    <div className={pageContainerStyle()}>
-      <PageHeader
-        title={data.world.name}
-        user={data.user}
-        breadcrumbs={[{ title: "Worlds", href: "/" }]}
-      />
-      <WorldStateProvider value={data.world}>
+    <WorldStateProvider value={data.world}>
+      <div className="flex flex-1 flex-col gap-4">
+        <PageHeader
+          title={data.world.name}
+          user={data.user}
+          breadcrumbs={[{ title: "Worlds", href: "/" }]}
+        />
+
         <div className="flex flex-1 gap-4">
           <div className="sticky top-8 hidden h-[calc(100vh-12rem)] w-80 lg:block [&>*]:h-full">
             <div className={panelStyle()}>
@@ -68,11 +69,12 @@ export default function WorldPage() {
             <Outlet />
           </div>
         </div>
+
         <div className="sticky bottom-4 lg:hidden">
           <WorldMenuDialogButton />
         </div>
-      </WorldStateProvider>
-    </div>
+      </div>
+    </WorldStateProvider>
   )
 }
 
