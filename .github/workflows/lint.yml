@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        script: [lint, typecheck]
+        script: [lint:eslint, lint:prettier, typecheck]
     name: ${{ matrix.script }}
     steps:
       - uses: actions/checkout@v3

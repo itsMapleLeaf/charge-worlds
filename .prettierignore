@@ -1,7 +1,8 @@
-/.cache
 /public/build
-/pnpm-lock.yaml
 /api
 /app/generated
 /build
 /public/fonts
+.vercel
+.cache
+pnpm-lock.yaml
