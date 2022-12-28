@@ -7,7 +7,9 @@
     "dev:remix": "remix dev",
     "dev:tailwind": "pnpm tailwind --watch",
     "build": "pnpm tailwind --minify && remix build",
+    "lint": "eslint .",
     "typecheck": "tsc -b",
+    "format": "eslint --fix .",
     "tailwind": "tailwindcss -o app/generated/tailwind.css",
     "copy-fonts": "cpy \"node_modules/@fontsource/rubik/**/{variable.css,*-variable-wghtOnly-normal.woff2}\" \"public/fonts/rubik\"",
     "prisma-generate": "prisma generate"
@@ -41,6 +43,7 @@
     "autoprefixer": "^10.4.13",
     "cpy-cli": "^4.2.0",
     "eslint": "^8.30.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-tailwindcss": "^3.7.1",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.20",
