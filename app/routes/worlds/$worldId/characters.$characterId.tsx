@@ -37,7 +37,7 @@ export default function CharacterPage() {
           <div
             className={clsx(
               panelStyle(),
-              "flex h-64 flex-col items-center justify-center gap-2",
+              "flex min-h-[16rem] flex-col items-center justify-center gap-2",
             )}
           >
             {character.imageUrl ? (
