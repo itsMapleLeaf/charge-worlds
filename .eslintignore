@@ -2,3 +2,6 @@
 /api
 /public
 /app/generated
+/build
+.vercel
+.cache
