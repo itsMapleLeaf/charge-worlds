@@ -35,6 +35,7 @@ specifiers:
   tailwindcss: ^3.2.4
   typescript: ^4.9.4
   zod: ^3.20.2
+  zod-form-data: ^1.2.4
 
 dependencies:
   '@fontsource/rubik': 4.5.13
@@ -53,6 +54,7 @@ dependencies:
   remix-auth: 3.4.0_@remix-run+react@1.9.0
   remix-auth-discord: 1.1.2_@remix-run+react@1.9.0
   zod: 3.20.2
+  zod-form-data: 1.2.4_zod@3.20.2
 
 devDependencies:
   '@remix-run/dev': 1.9.0_mkzy6tkjmjsmfnxs5znqfowy5i
@@ -8926,6 +8928,14 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  /zod-form-data/1.2.4_zod@3.20.2:
+    resolution: {integrity: sha512-mI/rgItfvYQpvzEqGuBda/nuTHrMNoFZJ5cpiGLC5O3ZaVwI0XVo3/yTY2RreVMu57wGcDrfQcTRe5aMq2ijYA==}
+    peerDependencies:
+      zod: ^3.11.x
+    dependencies:
+      zod: 3.20.2
+    dev: false
 
   /zod/3.20.2:
     resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}

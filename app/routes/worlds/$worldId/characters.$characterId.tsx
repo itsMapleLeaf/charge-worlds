@@ -1,12 +1,13 @@
 import { useParams } from "@remix-run/react"
 import clsx from "clsx"
-import { ImagePlus } from "lucide-react"
+import { ImagePlus, Trash } from "lucide-react"
 import { useId, type ReactNode } from "react"
 import { ClockInput } from "~/ui/clock-input"
 import { EmptyState } from "~/ui/empty-state"
 import { NotFoundMessage } from "~/ui/not-found-message"
-import { inputStyle, labelStyle, panelStyle } from "~/ui/styles"
+import { buttonStyle, inputStyle, labelStyle, panelStyle } from "~/ui/styles"
 import { useWorldState } from "~/world-state"
+import { DeleteCharacterButton } from "./delete-character"
 
 export default function CharacterPage() {
   const world = useWorldState()
@@ -111,9 +112,16 @@ export default function CharacterPage() {
         <hr className="border-white/10" />
         <section aria-label="Stats">action levels</section>
         <hr className="border-white/10" />
-        <section aria-label="Fields">fields</section>
+        <section aria-label="Details">fields</section>
         <hr className="border-white/10" />
-        <section aria-label="Actions">action buttons</section>
+        <section aria-label="Actions" className="flex">
+          <DeleteCharacterButton
+            character={character}
+            className={buttonStyle()}
+          >
+            <Trash /> Delete
+          </DeleteCharacterButton>
+        </section>
       </div>
     </div>
   )
