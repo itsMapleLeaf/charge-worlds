@@ -1,9 +1,10 @@
 const plugin = require("tailwindcss/plugin")
 const colors = require("tailwindcss/colors")
+const glob = require("fast-glob")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./app/**/*.{js,ts,jsx,tsx}"],
+  content: glob.sync(["app/**/*.{ts,tsx}", "!app/generated"]),
   theme: {
     extend: {
       fontFamily: {
