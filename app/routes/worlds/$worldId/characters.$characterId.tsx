@@ -2,6 +2,7 @@ import { useParams } from "@remix-run/react"
 import clsx from "clsx"
 import { ImagePlus } from "lucide-react"
 import { useId, type ReactNode } from "react"
+import { ClockInput } from "~/ui/clock-input"
 import { EmptyState } from "~/ui/empty-state"
 import { NotFoundMessage } from "~/ui/not-found-message"
 import { inputStyle, labelStyle, panelStyle } from "~/ui/styles"
@@ -84,7 +85,17 @@ export default function CharacterPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <div className={clsx(panelStyle(), "flex-1")}>(stress clock)</div>
+            <section
+              className={clsx(
+                panelStyle(),
+                "flex flex-1 flex-col items-center justify-center gap-2 p-2 text-center",
+              )}
+            >
+              <h3 className="text-xl font-light leading-none">Stress</h3>
+              <div className="mx-auto w-full max-w-24">
+                <ClockInput value={2} max={4} onChange={() => {}} />
+              </div>
+            </section>
             <FieldLabel labelText="Condition">
               {(props) => (
                 <input
