@@ -3,6 +3,7 @@ import { getSession } from "~/auth.server"
 import { db } from "~/db.server"
 import { raise } from "~/helpers/errors"
 import { forbidden, unauthorized } from "~/helpers/responses"
+import { sendWorldPatch } from "~/world-state"
 
 export async function action({ request, params }: ActionArgs) {
   const { sessionId } = (await getSession(request)) ?? raise(unauthorized())
@@ -31,8 +32,13 @@ export async function action({ request, params }: ActionArgs) {
         worldId: params.worldId!,
         ownerId: user.id,
       },
-      select: { id: true },
     })
+  })
+
+  sendWorldPatch(params.worldId!, {
+    characters: {
+      $append: [character],
+    },
   })
 
   return redirect(`../characters/${character.id}`)

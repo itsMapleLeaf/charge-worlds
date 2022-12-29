@@ -11,7 +11,7 @@ import { DeleteCharacterButton } from "./delete-character"
 
 export default function CharacterPage() {
   const world = useWorldState()
-  const params = useParams()
+  const { characterId } = useParams()
 
   if (!world.characters.length) {
     return (
@@ -21,9 +21,9 @@ export default function CharacterPage() {
     )
   }
 
-  const character =
-    world.characters.find((character) => character.id === params.characterId) ??
-    world.characters[0]
+  const character = characterId
+    ? world.characters.find((character) => character.id === characterId)
+    : world.characters[0]
 
   if (!character) {
     return <NotFoundMessage />

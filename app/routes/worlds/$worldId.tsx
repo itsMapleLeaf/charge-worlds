@@ -5,6 +5,7 @@ import {
   useFetcher,
   useLoaderData,
   useParams,
+  type ShouldReloadFunction,
 } from "@remix-run/react"
 import {
   Dialog,
@@ -45,13 +46,15 @@ export async function loader({ request, params }: LoaderArgs) {
   return { user, world }
 }
 
+export const unstable_shouldReload: ShouldReloadFunction = () => false
+
 export const meta: MetaFunction<typeof loader> = ({ data }) =>
   getAppMeta({ title: data.world.name })
 
 export default function WorldPage() {
   const data = useLoaderData<typeof loader>()
   return (
-    <WorldStateProvider value={data.world}>
+    <WorldStateProvider initialState={data.world}>
       <div className="flex flex-1 flex-col gap-4">
         <PageHeader
           title={data.world.name}
@@ -110,7 +113,7 @@ function WorldMenu(props: { dialogState?: DisclosureState }) {
     headerAction?: React.ReactNode
   }
 
-  const tabs: TabInfo[] = [
+  const tabs: [TabInfo, ...TabInfo[]] = [
     {
       title: "Characters",
       tabContent: <Users />,
@@ -213,13 +216,13 @@ function WorldMenu(props: { dialogState?: DisclosureState }) {
   )
 }
 
-function WorldCharacterList(props: { onItemClick?: () => void }) {
+function WorldCharacterList(props: { onItemClick?: undefined | (() => void) }) {
   const world = useWorldState()
-  const params = useParams()
+  const { characterId } = useParams()
 
-  const currentCharacter =
-    world.characters.find((character) => character.id === params.characterId) ??
-    world.characters[0]
+  const currentCharacter = characterId
+    ? world.characters.find((character) => character.id === characterId)
+    : world.characters[0]
 
   return (
     <nav aria-label="Characters" className="flex flex-col">
@@ -230,7 +233,7 @@ function WorldCharacterList(props: { onItemClick?: () => void }) {
           className={buttonStyle({
             borders: "left",
             rounding: "none",
-            active: character.id === currentCharacter.id,
+            active: character.id === currentCharacter?.id,
             justify: "start",
             size: 10,
             inactiveBorderColor: "transparent",

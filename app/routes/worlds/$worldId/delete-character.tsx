@@ -9,6 +9,7 @@ import { raise } from "~/helpers/errors"
 import { forbidden, notFound, unauthorized } from "~/helpers/responses"
 import { ConfirmModal } from "~/ui/confirm-modal"
 import { LoadingSpinner } from "~/ui/loading"
+import { sendWorldPatch } from "~/world-state"
 
 export async function action({ request, params }: ActionArgs) {
   const body = zfd
@@ -47,6 +48,12 @@ export async function action({ request, params }: ActionArgs) {
   }
 
   await db.character.delete({ where: { id: body.id } })
+
+  sendWorldPatch(params.worldId!, {
+    characters: {
+      $removeWhere: { id: body.id },
+    },
+  })
 
   return redirect(`..`)
 }
