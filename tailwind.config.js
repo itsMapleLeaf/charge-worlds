@@ -13,6 +13,7 @@ module.exports = {
       colors: {
         accent: colors.rose,
       },
+      maxWidth: ({ theme }) => theme("width"),
     },
   },
   plugins: [
