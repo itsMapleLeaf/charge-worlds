@@ -49,7 +49,7 @@ function Document({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <div className="fixed inset-0 -z-10 bg-black/70" />
-        <div className="flex min-h-screen p-4 lg:p-8">{children}</div>
+        <div className="flex min-h-screen flex-col p-4 lg:p-8">{children}</div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
