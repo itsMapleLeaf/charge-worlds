@@ -7,7 +7,7 @@
     "dev:remix": "remix dev",
     "dev:tailwind": "pnpm tailwind --watch",
     "dev:convex": "convex dev",
-    "build": "pnpm tailwind --minify && remix build && convex deploy",
+    "build": "pnpm tailwind --minify && convex deploy && remix build",
     "lint": "run-p --print-label lint:*",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --check .",
