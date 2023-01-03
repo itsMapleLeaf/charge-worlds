@@ -8,4 +8,5 @@ node_modules
 /public/fonts/rubik
 /api
 /app/generated
+_generated
 .vscode

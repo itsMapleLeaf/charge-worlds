@@ -5,6 +5,7 @@ const envSchema = z.object({
     .enum(["development", "production", "test"])
     .default("development"),
   COOKIE_SECRET: z.string(),
+  CONVEX_ADMIN_SECRET: z.string(),
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
   DISCORD_REDIRECT_URI: z.string(),

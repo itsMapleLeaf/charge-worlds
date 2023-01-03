@@ -1,8 +1,10 @@
 import { createCookieSessionStorage } from "@remix-run/node"
+import { ConvexHttpClient } from "convex/browser"
 import { randomUUID } from "crypto"
 import { Authenticator, type AuthenticateOptions } from "remix-auth"
 import { DiscordStrategy } from "remix-auth-discord"
-import { db } from "./db.server"
+import { type API } from "../convex/_generated/api"
+import clientConfig from "../convex/_generated/clientConfig"
 import { env } from "./env.server"
 
 const sessionStorage = createCookieSessionStorage({
@@ -16,6 +18,8 @@ const sessionStorage = createCookieSessionStorage({
   },
 })
 
+const convex = new ConvexHttpClient<API>(clientConfig)
+
 type Session = {
   sessionId: string
 }
@@ -23,7 +27,6 @@ type Session = {
 const authenticator = new Authenticator<Session>(sessionStorage)
 
 const discordStrategy = "discord"
-
 authenticator.use(
   new DiscordStrategy(
     {
@@ -36,19 +39,14 @@ authenticator.use(
 
       const avatarId = profile.photos?.[0].value
 
-      const data = {
+      await convex.mutation("users:upsertUser")({
         discordId: profile.id,
         name: profile.displayName,
         avatarUrl: avatarId
           ? `https://cdn.discordapp.com/avatars/${profile.id}/${avatarId}.png`
-          : undefined,
+          : null,
         sessionId,
-      }
-
-      await db.user.upsert({
-        where: { discordId: profile.id },
-        update: data,
-        create: data,
+        adminSecret: env.CONVEX_ADMIN_SECRET,
       })
 
       return { sessionId }
@@ -65,8 +63,7 @@ export function authenticateWithDiscord(
 }
 
 export async function getSession(request: Request) {
-  const session = await authenticator.isAuthenticated(request)
-  return session ?? undefined
+  return authenticator.isAuthenticated(request)
 }
 
 export function logout(request: Request) {
@@ -75,10 +72,11 @@ export function logout(request: Request) {
 
 export async function findSessionUser(request: Request) {
   const session = await getSession(request)
-
-  const user =
+  return (
     session &&
-    (await db.user.findUnique({ where: { sessionId: session.sessionId } }))
-
-  return user ?? undefined
+    (await convex.query("users:findUserBySessionId")({
+      sessionId: session.sessionId,
+      adminSecret: env.CONVEX_ADMIN_SECRET,
+    }))
+  )
 }

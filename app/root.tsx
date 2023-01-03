@@ -6,23 +6,17 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
   type CatchBoundaryComponent,
 } from "@remix-run/react"
+import { ConvexProvider } from "convex/react"
 import backgroundImage from "./assets/bg_flipped.png"
 import favicon from "./assets/favicon.svg"
-import { env } from "./env.server"
+import { convex } from "./convex"
 import tailwind from "./generated/tailwind.css"
 import { toError } from "./helpers/errors"
-import { PusherProvider } from "./pusher-context"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { EmptyState } from "./ui/empty-state"
 import { linkStyle } from "./ui/styles"
-
-export const loader = () => ({
-  pusherKey: env.PUSHER_KEY,
-  pusherCluster: env.PUSHER_CLUSTER,
-})
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -59,15 +53,11 @@ function Document({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const data = useLoaderData<typeof loader>()
   return (
     <Document>
-      <PusherProvider
-        pusherKey={data.pusherKey}
-        pusherCluster={data.pusherCluster}
-      >
+      <ConvexProvider client={convex}>
         <Outlet />
-      </PusherProvider>
+      </ConvexProvider>
     </Document>
   )
 }
