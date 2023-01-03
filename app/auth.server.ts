@@ -39,14 +39,13 @@ authenticator.use(
 
       const avatarId = profile.photos?.[0].value
 
-      await convex.mutation("users:upsertUser")({
+      await convex.mutation("users:upsertUser")(env.CONVEX_ADMIN_SECRET, {
         discordId: profile.id,
         name: profile.displayName,
         avatarUrl: avatarId
           ? `https://cdn.discordapp.com/avatars/${profile.id}/${avatarId}.png`
           : null,
         sessionId,
-        adminSecret: env.CONVEX_ADMIN_SECRET,
       })
 
       return { sessionId }
@@ -74,9 +73,8 @@ export async function findSessionUser(request: Request) {
   const session = await getSession(request)
   return (
     session &&
-    (await convex.query("users:findUserBySessionId")({
+    (await convex.query("users:findUserBySessionId")(env.CONVEX_ADMIN_SECRET, {
       sessionId: session.sessionId,
-      adminSecret: env.CONVEX_ADMIN_SECRET,
     }))
   )
 }

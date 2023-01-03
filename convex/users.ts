@@ -1,7 +1,6 @@
-import { validateAdmin } from "./admin"
-import { mutation, query } from "./_generated/server"
+import { adminMutation, adminQuery } from "./admin"
 
-export const upsertUser = mutation(
+export const upsertUser = adminMutation(
   async (
     { db },
     args: {
@@ -9,11 +8,8 @@ export const upsertUser = mutation(
       discordId: string
       avatarUrl: string | null
       sessionId: string
-      adminSecret: string
     },
   ) => {
-    await validateAdmin(db, args.adminSecret)
-
     const existing = await db
       .query("users")
       .filter((q) => q.eq(q.field("discordId"), args.discordId))
@@ -36,10 +32,9 @@ export const upsertUser = mutation(
   },
 )
 
-export const findUserBySessionId = query(
-  async ({ db }, args: { sessionId: string; adminSecret: string }) => {
-    await validateAdmin(db, args.adminSecret)
-    return await db
+export const findUserBySessionId = adminQuery(
+  ({ db }, args: { sessionId: string }) => {
+    return db
       .query("users")
       .filter((q) => q.eq(q.field("sessionId"), args.sessionId))
       .first()
