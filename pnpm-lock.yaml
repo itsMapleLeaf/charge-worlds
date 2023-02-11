@@ -7,10 +7,10 @@ specifiers:
   '@liveblocks/node': ^1.0.0
   '@liveblocks/react': ^1.0.0
   '@prisma/client': ^4.10.1
-  '@remix-run/dev': nightly
-  '@remix-run/node': nightly
-  '@remix-run/react': nightly
-  '@remix-run/serve': nightly
+  '@remix-run/dev': 0.0.0-nightly-ba4dba9-20230210
+  '@remix-run/node': 0.0.0-nightly-ba4dba9-20230210
+  '@remix-run/react': 0.0.0-nightly-ba4dba9-20230210
+  '@remix-run/serve': 0.0.0-nightly-ba4dba9-20230210
   '@routes-gen/remix': ^0.3.6
   '@rushstack/eslint-patch': ^1.2.0
   '@supabase/supabase-js': ^2.7.1
