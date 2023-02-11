@@ -6,7 +6,7 @@ import type {
   LoaderArgs,
 } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import type { ShouldReloadFunction } from "@remix-run/react"
+import type { ShouldRevalidateFunction } from "@remix-run/react"
 import {
   Link,
   Links,
@@ -46,7 +46,7 @@ export async function loader({ request, params }: LoaderArgs) {
   })
 }
 
-export const unstable_shouldReload: ShouldReloadFunction = () => false
+export const shouldRevalidate: ShouldRevalidateFunction = () => false
 
 export default function App() {
   const data = useLoaderData<typeof loader>()
