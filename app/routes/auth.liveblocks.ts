@@ -33,5 +33,10 @@ export async function action({ request }: ActionArgs) {
     groupIds: membership ? ["player"] : [],
   })
 
-  return json(result.body, result.status)
+  if (result.error) {
+    console.error("Liveblocks authentication failed:", result.error)
+    return new Response(undefined, { status: 403 })
+  }
+
+  return json(JSON.parse(result.body), result.status)
 }
