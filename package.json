@@ -10,7 +10,7 @@
     "dev": "pnpm clean && cross-env NODE_ENV=development run-p --race dev:*",
     "dev:remix": "remix dev --sourcemap",
     "dev:routes": "pnpm run routes --watch",
-    "build": "pnpm clean && tsc --noEmit --minify && pnpm run routes && remix build",
+    "build": "pnpm clean && tsc --noEmit && pnpm run routes && remix build",
     "start": "cross-env NODE_ENV=production remix-serve build",
     "lint": "eslint --ext js,ts,tsx,astro .",
     "lint-fix": "pnpm lint --fix",
