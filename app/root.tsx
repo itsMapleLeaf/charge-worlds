@@ -123,7 +123,7 @@ function Document({
   return (
     <html
       lang="en"
-      className="font-body overflow-y-auto break-words bg-gray-800 text-gray-100"
+      className="overflow-y-auto break-words bg-gray-800 font-body text-gray-100"
       style={{ wordBreak: "break-word" }}
     >
       <head>

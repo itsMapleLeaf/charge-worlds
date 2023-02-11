@@ -113,7 +113,7 @@ export const galleryModule = new DashboardModule({
   },
 
   component: function GalleryModuleView(props) {
-    type Item = typeof props.loaderData.items[0]
+    type Item = (typeof props.loaderData.items)[0]
 
     const { canEdit } = props.loaderData
     let { items } = props.loaderData

@@ -6,5 +6,5 @@ module.exports = {
     v2_routeConvention: true,
     unstable_tailwind: true,
     unstable_cssSideEffectImports: true,
-  }
+  },
 }
