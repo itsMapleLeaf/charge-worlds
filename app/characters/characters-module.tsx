@@ -4,9 +4,9 @@ import { useFetcher } from "@remix-run/react"
 import clsx from "clsx"
 import produce from "immer"
 import { EyeOff, Plus, Users } from "lucide-react"
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { z } from "zod"
-import { AuthContext } from "../auth/auth-context"
+import { useAuthContext } from "../auth/auth-context"
 import { getMembership } from "../auth/membership.server"
 import { getSessionUser, requireSessionUser } from "../auth/session.server"
 import { db } from "../core/db.server"
@@ -199,10 +199,7 @@ export const charactersModule = new DashboardModule({
       })
     }
 
-    const auth = useContext(AuthContext)
-    const isPlayer = auth.membership?.role === "PLAYER"
-    const isGameMaster = auth.membership?.role === "OWNER"
-    const isSpectator = !auth.membership
+    const { isPlayer, isOwner, isSpectator } = useAuthContext()
 
     const [currentCharacterId, setCurrentCharacterId] = useState(
       characters[0]?.id,
@@ -281,7 +278,7 @@ export const charactersModule = new DashboardModule({
                 </button>
               ))}
 
-              {auth.membership?.role === "OWNER" && (
+              {isOwner && (
                 <button className={clearButtonClass} onClick={addCharacter}>
                   <Plus />
                   Add new
@@ -299,7 +296,7 @@ export const charactersModule = new DashboardModule({
                   <CharacterPrimaryInfoEditor
                     character={currentCharacter}
                     onCharacterChange={updateCharacter}
-                    isGameMaster={isGameMaster}
+                    isGameMaster={isOwner}
                     isSpectator={isSpectator}
                   />
 
@@ -340,14 +337,14 @@ export const charactersModule = new DashboardModule({
                   <hr className={dividerClass} />
 
                   <section className="flex flex-wrap gap-4">
-                    {(isGameMaster || isPlayer) && (
+                    {(isOwner || isPlayer) && (
                       <CharacterColorButton
                         onSelectColor={(color) => {
                           updateCharacter({ color })
                         }}
                       />
                     )}
-                    {isGameMaster && (
+                    {isOwner && (
                       <CharacterHideButton
                         hidden={currentCharacter.hidden}
                         onHiddenChange={(hidden) => {
@@ -356,7 +353,7 @@ export const charactersModule = new DashboardModule({
                       />
                     )}
                     <div className="flex-1" />
-                    {isGameMaster && (
+                    {isOwner && (
                       <CharacterDeleteButton
                         character={currentCharacter}
                         onDelete={removeCharacter}

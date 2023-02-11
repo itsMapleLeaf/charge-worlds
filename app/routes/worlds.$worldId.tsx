@@ -4,7 +4,7 @@ import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react"
 import { LayoutDashboard, Wrench } from "lucide-react"
 import { useId } from "react"
 import { route } from "routes-gen"
-import { AuthContext } from "../auth/auth-context"
+import { AuthProvider } from "../auth/auth-context"
 import { getMembership } from "../auth/membership.server"
 import { getSessionUser } from "../auth/session.server"
 import { getAppMeta } from "../core/meta"
@@ -45,7 +45,7 @@ export default function WorldPage() {
   const worldHeadingId = useId()
 
   return (
-    <AuthContext.Provider value={data}>
+    <AuthProvider value={data}>
       <DashboardProvider>
         <section
           className="grid h-full grid-cols-[auto,1fr]"
@@ -93,6 +93,6 @@ export default function WorldPage() {
           </div>
         </section>
       </DashboardProvider>
-    </AuthContext.Provider>
+    </AuthProvider>
   )
 }

@@ -1,9 +1,8 @@
 import type { ActionArgs } from "@remix-run/node"
 import { useFetcher } from "@remix-run/react"
 import { Clock, Plus } from "lucide-react"
-import { useContext } from "react"
 import { z } from "zod"
-import { AuthContext } from "../auth/auth-context"
+import { useAuthContext } from "../auth/auth-context"
 import { requireMembership } from "../auth/membership.server"
 import { requireSessionUser } from "../auth/session.server"
 import { db } from "../core/db.server"
@@ -101,8 +100,7 @@ export const clocksModule = new DashboardModule({
   component: function ClocksModuleView(props) {
     const fetcher = useFetcher<typeof action>()
 
-    const auth = useContext(AuthContext)
-    const isSpectator = !auth.membership
+    const auth = useAuthContext()
 
     let clocks = props.loaderData.clocks
 
@@ -154,7 +152,7 @@ export const clocksModule = new DashboardModule({
           <div className="flex flex-wrap justify-center gap-4 ">
             {clocks.map((clock) => (
               <div key={clock.id} className="rounded-md bg-black/25 p-4">
-                {isSpectator ? (
+                {auth.isSpectator ? (
                   <ClockInput {...clock} onProgressChange={() => {}} />
                 ) : (
                   <ClockInput
@@ -178,7 +176,7 @@ export const clocksModule = new DashboardModule({
           </div>
         )}
 
-        {isSpectator ? undefined : (
+        {auth.isSpectator ? undefined : (
           <fetcher.Form
             action={props.formAction}
             method="post"
