@@ -11,7 +11,9 @@ const envSchema = z.object({
 
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
-  DISCORD_REDIRECT_URI: z.string(),
+  DISCORD_REDIRECT_URI: z
+    .string()
+    .default("http://localhost:3000/auth/discord/callback"),
 })
 
 export const env = envSchema.parse(process.env)
