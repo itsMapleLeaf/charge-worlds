@@ -1,6 +1,7 @@
 import type { JsonObject } from "@liveblocks/client"
 import { LiveMap, LiveObject } from "@liveblocks/client"
 import type { ZodSchema } from "zod"
+import type { RequiredKeys, Simplify } from "~/helpers/types"
 import { useToastActions } from "~/ui/toast"
 import { RoomContext } from "./liveblocks-client"
 
@@ -69,7 +70,7 @@ export function defineLiveblocksCollection<
     const warn = useWarn()
 
     const create = RoomContext.useMutation(
-      ({ storage }, item: Omit<T, "id">) => {
+      ({ storage }, item: Simplify<Omit<T, "id">>) => {
         let map = storage.get(name)
         if (map == null) {
           map = new LiveMap<string, LiveObject<T>>()
@@ -88,7 +89,7 @@ export function defineLiveblocksCollection<
     )
 
     const update = RoomContext.useMutation(
-      ({ storage }, item: { id: string } & Partial<T>) => {
+      ({ storage }, item: RequiredKeys<Partial<T>, "id">) => {
         let map = storage.get(name)
         if (map == null) {
           map = new LiveMap<string, LiveObject<T>>()
