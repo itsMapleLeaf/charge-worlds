@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@fontsource/rubik': ^4.5.14
+  '@formkit/auto-animate': 1.0.0-beta.6
   '@itsmapleleaf/configs': ^1.1.5
   '@liveblocks/client': ^1.0.0
   '@liveblocks/node': ^1.0.0
@@ -56,6 +57,7 @@ specifiers:
 
 dependencies:
   '@fontsource/rubik': 4.5.14
+  '@formkit/auto-animate': 1.0.0-beta.6
   '@liveblocks/client': 1.0.0
   '@liveblocks/node': 1.0.0
   '@liveblocks/react': 1.0.0_react@18.2.0
@@ -1810,6 +1812,10 @@ packages:
 
   /@fontsource/rubik/4.5.14:
     resolution: {integrity: sha512-EvMK3kkeAgKkk8qAeT4PjpyAYyu72pIlJm+SXJ5vR/xhCX2yj2xoq3+YS38rPmPcCAnrAVONoQ3ezLxVm6jhBA==}
+    dev: false
+
+  /@formkit/auto-animate/1.0.0-beta.6:
+    resolution: {integrity: sha512-PVDhLAlr+B4Xb7e+1wozBUWmXa6BFU8xUPR/W/E+TsQhPS1qkAdAsJ25keEnFrcePSnXHrOsh3tiFbEToOzV9w==}
     dev: false
 
   /@gar/promisify/1.1.3:

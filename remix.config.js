@@ -7,4 +7,5 @@ module.exports = {
     unstable_tailwind: true,
     unstable_cssSideEffectImports: true,
   },
+  serverDependenciesToBundle: ["@formkit/auto-animate/react"]
 }

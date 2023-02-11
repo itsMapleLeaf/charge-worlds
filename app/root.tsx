@@ -28,6 +28,7 @@ import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { PendingIndicator } from "./ui/pending-indivator"
 import { clearButtonClass, maxWidthContainerClass } from "./ui/styles"
 import tailwind from "./ui/tailwind.css"
+import { ToastProvider } from "./ui/toast"
 
 export const meta = (): HtmlMetaDescriptor => getAppMeta()
 
@@ -131,7 +132,7 @@ function Document({
         <Links />
       </head>
       <body className={bodyClassName}>
-        {children}
+        <ToastProvider>{children}</ToastProvider>
         <Scripts />
         {process.env.NODE_ENV !== "production" && (
           <script src="/live-reload.js" />
