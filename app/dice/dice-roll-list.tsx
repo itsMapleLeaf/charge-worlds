@@ -1,6 +1,6 @@
+import type { DiceResultType, Prisma } from "@prisma/client"
 import clsx from "clsx"
 import { Virtuoso } from "react-virtuoso"
-import type { DiceResultType, Prisma } from "../../generated/prisma"
 
 export type DiceRoll = {
   id: string

@@ -1,5 +1,5 @@
+import type { Role } from "@prisma/client"
 import { createContext } from "react"
-import type { Role } from "../../generated/prisma"
 
 export type Auth = {
   user?: { name: string; avatarUrl: string | null }

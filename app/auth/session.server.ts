@@ -1,7 +1,7 @@
+import type { User } from "@prisma/client"
 import { createCookie } from "@remix-run/node"
 import cuid from "cuid"
 import { z } from "zod"
-import type { User } from "../../generated/prisma"
 import { db } from "../core/db.server"
 import { env } from "../core/env.server"
 import { raise } from "../helpers/errors"

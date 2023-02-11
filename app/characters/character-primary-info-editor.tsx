@@ -1,5 +1,5 @@
+import type { Character } from "@prisma/client"
 import clsx from "clsx"
-import type { Character } from "../../generated/prisma"
 import { ClockInput } from "../ui/clock-input"
 import { Counter } from "../ui/counter"
 import {

@@ -1,4 +1,4 @@
-import type { User, World } from "../../generated/prisma"
+import type { User, World } from "@prisma/client"
 import { db } from "../core/db.server"
 import { raise } from "../helpers/errors"
 

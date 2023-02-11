@@ -1,5 +1,5 @@
+import type { Character } from "@prisma/client"
 import { ChevronsRight, Dices } from "lucide-react"
-import type { Character } from "../../generated/prisma"
 import { entriesTyped } from "../helpers/entries-typed"
 import { DotCounter } from "../ui/counter"
 import { labelTextClass } from "../ui/styles"
