@@ -86,7 +86,7 @@ export class ActionRoute<
 type ActionRouteData<Data> = {
   __actionName: string
   errors?: string[]
-  fieldErrors?: Record<string, string[]>
+  fieldErrors?: Record<string, string[] | undefined>
   data?: Data
 }
 
