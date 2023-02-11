@@ -2,7 +2,7 @@
   "extends": "@itsmapleleaf/configs/tsconfig.base",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "baseUrl": "."
+    "baseUrl": null
   },
   "include": [
     "**/*.ts",
