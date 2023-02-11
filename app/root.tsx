@@ -51,7 +51,7 @@ export default function App() {
   return (
     <Document bodyClassName="min-h-screen grid grid-rows-[auto,1fr]">
       <header className="flex items-center gap-x-4 gap-y-2 bg-slate-800 py-4 px-6">
-        <Link to={route("/")} className="mr-2 flex items-center gap-2">
+        <Link to="/" className="mr-2 flex items-center gap-2">
           <Zap />
           <h1 className="text-2xl font-light">Charge Worlds</h1>
         </Link>
