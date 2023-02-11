@@ -1,6 +1,5 @@
 import { authorize } from "@liveblocks/node"
 import type { ActionArgs } from "@remix-run/node"
-import { json } from "@remix-run/node"
 import { z } from "zod"
 import { getSessionUser } from "~/auth/session.server"
 import { db } from "~/core/db.server"
@@ -38,5 +37,10 @@ export async function action({ request }: ActionArgs) {
     return new Response(undefined, { status: 403 })
   }
 
-  return json(JSON.parse(result.body), result.status)
+  return new Response(result.body, {
+    status: result.status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
 }
