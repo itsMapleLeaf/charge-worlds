@@ -3,6 +3,9 @@ lockfileVersion: 5.4
 specifiers:
   '@fontsource/rubik': ^4.5.14
   '@itsmapleleaf/configs': ^1.1.5
+  '@liveblocks/client': ^1.0.0
+  '@liveblocks/node': ^1.0.0
+  '@liveblocks/react': ^1.0.0
   '@prisma/client': ^4.10.1
   '@remix-run/dev': nightly
   '@remix-run/node': nightly
@@ -53,6 +56,9 @@ specifiers:
 
 dependencies:
   '@fontsource/rubik': 4.5.14
+  '@liveblocks/client': 1.0.0
+  '@liveblocks/node': 1.0.0
+  '@liveblocks/react': 1.0.0_react@18.2.0
   '@prisma/client': 4.10.1_prisma@4.10.1
   '@remix-run/node': 0.0.0-nightly-ba4dba9-20230210
   '@remix-run/react': 0.0.0-nightly-ba4dba9-20230210_biqbaboplfbrettd7655fr4n2y
@@ -1893,6 +1899,35 @@ packages:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
+
+  /@liveblocks/client/1.0.0:
+    resolution: {integrity: sha512-nDjwNqzYdHMjSakrm8f6mk5EEt6SAt5SaaSTRZ5aKVqLZ99FTAWqrIZyAvHap4yMwNGhpfH5FeYzVCzxjvt+NA==}
+    dependencies:
+      '@liveblocks/core': 1.0.0
+    dev: false
+
+  /@liveblocks/core/1.0.0:
+    resolution: {integrity: sha512-Y7shkoOqc629/6dAjqTQkWm65GDCm72NBs1NTM3m6SieBAzK5NJ0pAAeL4Ct1HB85rO1gbl6hbAMwXtJkpWVrA==}
+    dev: false
+
+  /@liveblocks/node/1.0.0:
+    resolution: {integrity: sha512-GKvfrY02eJ+YI7Q8psz5hD80J3gIridmeTA9UYV6n+NYbCp0Jo2GS1LlUTtzw8mto6cRFAG6gVPSe8tVLej+Mw==}
+    dependencies:
+      node-fetch: 2.6.9
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@liveblocks/react/1.0.0_react@18.2.0:
+    resolution: {integrity: sha512-1zl4uVBQFQlbTnaMmfO0kbFQd0U3lfBqoOxz5Y1EXQobLEmnpDI86XGMCTeUYHjVGmdYLy7zaS7Fh2avp7OalQ==}
+    peerDependencies:
+      react: ^16.14.0 || ^17 || ^18
+    dependencies:
+      '@liveblocks/client': 1.0.0
+      '@liveblocks/core': 1.0.0
+      react: 18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
+    dev: false
 
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -4997,7 +5032,7 @@ packages:
     resolution: {integrity: sha512-O0DB1JC/sPyZl7cIo78n5dR7eUSwwpYPiXRhTzNxZVAMUuB8vlnRFyLxdrVToks6XPLVnFfbzaVd5WLjhgg+vA==}
     engines: {node: '>= 0.4'}
     dependencies:
-      get-intrinsic: 1.1.3
+      get-intrinsic: 1.2.0
       has: 1.0.3
       side-channel: 1.0.4
     dev: true
@@ -6306,7 +6341,6 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
-    dev: true
 
   /node-gyp-build/4.6.0:
     resolution: {integrity: sha512-NTZVKn9IylLwUzaKjkas1e4u2DLNcV4rdYagA4PWdPwW87Bi7z+BznyKSRwS/761tV/lzCGXplWsiaMjLqP2zQ==}

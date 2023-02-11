@@ -4,6 +4,7 @@ import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react"
 import { LayoutDashboard, Wrench } from "lucide-react"
 import { useId } from "react"
 import { route } from "routes-gen"
+import { RoomContext } from "~/liveblocks/liveblocks-client"
 import { AuthProvider } from "../auth/auth-context"
 import { getMembership } from "../auth/membership.server"
 import { getSessionUser } from "../auth/session.server"
@@ -47,51 +48,53 @@ export default function WorldPage() {
   return (
     <AuthProvider value={data}>
       <DashboardProvider>
-        <section
-          className="grid h-full grid-cols-[auto,1fr]"
-          aria-labelledby={worldHeadingId}
-        >
-          <nav className="thin-scrollbar flex w-12 flex-col items-center gap-4 bg-black/25 py-4 xl:w-64 xl:items-start xl:px-4">
-            <h2
-              className="sr-only text-3xl font-light xl:not-sr-only"
-              id={worldHeadingId}
-            >
-              {data.world.name}
-            </h2>
+        <RoomContext.RoomProvider id={`world:${worldId}`} initialPresence={{}}>
+          <section
+            className="grid h-full grid-cols-[auto,1fr]"
+            aria-labelledby={worldHeadingId}
+          >
+            <nav className="thin-scrollbar flex w-12 flex-col items-center gap-4 bg-black/25 py-4 xl:w-64 xl:items-start xl:px-4">
+              <h2
+                className="sr-only text-3xl font-light xl:not-sr-only"
+                id={worldHeadingId}
+              >
+                {data.world.name}
+              </h2>
 
-            <DashboardWindowButtons
-              renderLabel={(label) => (
-                <span className="sr-only xl:not-sr-only">{label}</span>
+              <DashboardWindowButtons
+                renderLabel={(label) => (
+                  <span className="sr-only xl:not-sr-only">{label}</span>
+                )}
+              />
+
+              <div className="flex-1" />
+
+              {data.membership?.role === "OWNER" && (
+                <>
+                  <Link
+                    to={route("/worlds/:worldId/dashboard", { worldId })}
+                    className={clearButtonClass}
+                    title="Dashboard"
+                  >
+                    <LayoutDashboard className="pointer-events-none" />
+                    <span className="sr-only xl:not-sr-only">Dashboard</span>
+                  </Link>
+                  <Link
+                    to={route("/worlds/:worldId/settings", { worldId })}
+                    className={clearButtonClass}
+                    title="Settings"
+                  >
+                    <Wrench className="pointer-events-none" />
+                    <span className="sr-only xl:not-sr-only">Settings</span>
+                  </Link>
+                </>
               )}
-            />
-
-            <div className="flex-1" />
-
-            {data.membership?.role === "OWNER" && (
-              <>
-                <Link
-                  to={route("/worlds/:worldId/dashboard", { worldId })}
-                  className={clearButtonClass}
-                  title="Dashboard"
-                >
-                  <LayoutDashboard className="pointer-events-none" />
-                  <span className="sr-only xl:not-sr-only">Dashboard</span>
-                </Link>
-                <Link
-                  to={route("/worlds/:worldId/settings", { worldId })}
-                  className={clearButtonClass}
-                  title="Settings"
-                >
-                  <Wrench className="pointer-events-none" />
-                  <span className="sr-only xl:not-sr-only">Settings</span>
-                </Link>
-              </>
-            )}
-          </nav>
-          <div>
-            <Outlet />
-          </div>
-        </section>
+            </nav>
+            <div>
+              <Outlet />
+            </div>
+          </section>
+        </RoomContext.RoomProvider>
       </DashboardProvider>
     </AuthProvider>
   )

@@ -22,6 +22,9 @@
   },
   "dependencies": {
     "@fontsource/rubik": "^4.5.14",
+    "@liveblocks/client": "^1.0.0",
+    "@liveblocks/node": "^1.0.0",
+    "@liveblocks/react": "^1.0.0",
     "@prisma/client": "^4.10.1",
     "@remix-run/node": "nightly",
     "@remix-run/react": "nightly",

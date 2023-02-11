@@ -14,6 +14,8 @@ const envSchema = z.object({
   DISCORD_REDIRECT_URI: z
     .string()
     .default("http://localhost:3000/auth/discord/callback"),
+
+  LIVEBLOCKS_SECRET_KEY: z.string(),
 })
 
 export const env = envSchema.parse(process.env)
