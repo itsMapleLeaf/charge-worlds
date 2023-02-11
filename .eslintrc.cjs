@@ -21,6 +21,7 @@ module.exports = {
   },
   settings: {
     tailwindcss: {
+      config: './tailwind.config.cjs',
       whitelist: ["font-body", "font-header"],
     },
   },
