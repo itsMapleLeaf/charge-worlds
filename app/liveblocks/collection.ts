@@ -1,18 +1,28 @@
 import type { JsonObject } from "@liveblocks/client"
 import { LiveMap, LiveObject } from "@liveblocks/client"
 import type { ZodSchema } from "zod"
+import { useToastActions } from "~/ui/toast"
 import { RoomContext } from "./liveblocks-client"
+
+function useWarn() {
+  const toast = useToastActions()
+  return (...values: unknown[]) => {
+    toast.add("error", "Oops, something went wrong")
+    console.warn(...values)
+  }
+}
 
 export function defineLiveblocksCollection<
   T extends { id: string } & JsonObject,
 >(name: string, schema: ZodSchema<T>) {
   function useItem(id: string) {
+    const warn = useWarn()
     return RoomContext.useStorage((root) => {
       const collectionMap = root[name]
       if (collectionMap == null) return undefined
 
       if (!(collectionMap instanceof Map)) {
-        console.warn(`Expected ${name} to be a Map`)
+        warn(`Expected ${name} to be a Map`)
         return undefined
       }
 
@@ -21,7 +31,7 @@ export function defineLiveblocksCollection<
 
       const result = schema.safeParse(item)
       if (!result.success) {
-        console.warn(`Invalid ${name} item: ${result.error.message}`, item)
+        warn(`Invalid ${name} item: ${result.error.message}`, item)
         return undefined
       }
 
@@ -30,12 +40,13 @@ export function defineLiveblocksCollection<
   }
 
   function useItems() {
+    const warn = useWarn()
     return RoomContext.useStorage((root) => {
       const collectionMap = root[name]
       if (collectionMap == null) return []
 
       if (!(collectionMap instanceof Map)) {
-        console.warn(`Expected ${name} to be a Map`)
+        warn(`Expected ${name} to be a Map`)
         return []
       }
 
@@ -43,7 +54,7 @@ export function defineLiveblocksCollection<
       for (const item of collectionMap.values()) {
         const result = schema.safeParse(item)
         if (!result.success) {
-          console.warn(`Invalid ${name} item: ${result.error.message}`, item)
+          warn(`Invalid ${name} item: ${result.error.message}`, item)
           continue
         }
 
@@ -55,6 +66,8 @@ export function defineLiveblocksCollection<
   }
 
   function useMutations() {
+    const warn = useWarn()
+
     const create = RoomContext.useMutation(
       ({ storage }, item: Omit<T, "id">) => {
         let map = storage.get(name)
@@ -64,7 +77,7 @@ export function defineLiveblocksCollection<
         }
 
         if (!(map instanceof LiveMap)) {
-          console.warn(`Expected ${name} to be a LiveMap`)
+          warn(`Expected ${name} to be a LiveMap`)
           return
         }
 
@@ -83,7 +96,7 @@ export function defineLiveblocksCollection<
         }
 
         if (!(map instanceof LiveMap)) {
-          console.warn(`Expected ${name} to be a LiveMap`)
+          warn(`Expected ${name} to be a LiveMap`)
           return
         }
 
@@ -91,7 +104,7 @@ export function defineLiveblocksCollection<
         if (existing == null) return
 
         if (!(existing instanceof LiveObject)) {
-          console.warn(`Expected ${name} item to be a LiveObject`)
+          warn(`Expected ${name} item to be a LiveObject`)
           return
         }
 
@@ -105,7 +118,7 @@ export function defineLiveblocksCollection<
       if (map == null) return
 
       if (!(map instanceof LiveMap)) {
-        console.warn(`Expected ${name} to be a LiveMap`)
+        warn(`Expected ${name} to be a LiveMap`)
         return
       }
 
