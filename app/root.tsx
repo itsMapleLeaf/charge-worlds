@@ -1,3 +1,4 @@
+import rubik from "@fontsource/rubik/variable.css"
 import type {
   ErrorBoundaryComponent,
   HtmlMetaDescriptor,
@@ -18,7 +19,6 @@ import { LogIn, Zap } from "lucide-react"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import reactMosaicCss from "react-mosaic-component/react-mosaic-component.css"
 import { route } from "routes-gen"
-import styles from "../generated/styles.css"
 import favicon from "./assets/favicon.svg"
 import { getSessionUser } from "./auth/session.server"
 import { UserMenuButton } from "./auth/user-menu-button"
@@ -27,13 +27,14 @@ import { pick } from "./helpers/pick"
 import { CatchBoundaryMessage } from "./ui/catch-boundary-message"
 import { PendingIndicator } from "./ui/pending-indivator"
 import { clearButtonClass, maxWidthContainerClass } from "./ui/styles"
+import tailwind from "./ui/tailwind.css"
 
 export const meta = (): HtmlMetaDescriptor => getAppMeta()
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: "/assets/rubik/variable.css" },
+  { rel: "stylesheet", href: rubik },
   { rel: "stylesheet", href: reactMosaicCss },
-  { rel: "stylesheet", href: styles },
+  { rel: "stylesheet", href: tailwind },
   { rel: "icon", href: favicon },
 ]
 
