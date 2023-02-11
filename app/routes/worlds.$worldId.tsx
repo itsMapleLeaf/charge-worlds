@@ -1,3 +1,4 @@
+import { ClientSideSuspense } from "@liveblocks/react"
 import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react"
@@ -5,6 +6,7 @@ import { LayoutDashboard, Wrench } from "lucide-react"
 import { useId } from "react"
 import { route } from "routes-gen"
 import { RoomContext } from "~/liveblocks/liveblocks-client"
+import { LoadingPlaceholder } from "~/ui/loading"
 import { AuthProvider } from "../auth/auth-context"
 import { getMembership } from "../auth/membership.server"
 import { getSessionUser } from "../auth/session.server"
@@ -91,7 +93,9 @@ export default function WorldPage() {
               )}
             </nav>
             <div>
-              <Outlet />
+              <ClientSideSuspense fallback={<LoadingPlaceholder />}>
+                {() => <Outlet />}
+              </ClientSideSuspense>
             </div>
           </section>
         </RoomContext.RoomProvider>
