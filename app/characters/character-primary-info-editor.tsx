@@ -1,14 +1,11 @@
-import type { Character } from "@prisma/client"
 import clsx from "clsx"
+import ExpandingTextArea from "react-expanding-textarea"
 import { ClockInput } from "../ui/clock-input"
 import { Counter } from "../ui/counter"
-import {
-  DebouncedExpandingTextArea,
-  DebouncedInput,
-} from "../ui/debounced-input"
 import { Field } from "../ui/field"
 import { inputClass, labelTextClass, textAreaClass } from "../ui/styles"
 import { CharacterImage } from "./character-image"
+import type { Character } from "./collections"
 
 export function CharacterPrimaryInfoEditor({
   character,
@@ -29,23 +26,25 @@ export function CharacterPrimaryInfoEditor({
 
       <div className="grid content-between gap-4">
         <Field label="Name">
-          <DebouncedInput
+          <input
             type="text"
             placeholder="What should we call you?"
             value={character.name}
-            onChangeText={(name) => onCharacterChange({ name })}
-            debouncePeriod={500}
+            onChange={(event) => {
+              onCharacterChange({ name: event.target.value })
+            }}
             className={inputClass}
             readOnly={isSpectator}
           />
         </Field>
         <Field label="Reference image">
-          <DebouncedInput
+          <input
             className={inputClass}
             placeholder="https://the/image.png"
             value={character.imageUrl ?? ""}
-            onChangeText={(imageUrl) => onCharacterChange({ imageUrl })}
-            debouncePeriod={500}
+            onChange={(event) => {
+              onCharacterChange({ imageUrl: event.target.value })
+            }}
             readOnly={isSpectator}
           />
         </Field>
@@ -76,11 +75,12 @@ export function CharacterPrimaryInfoEditor({
           />
         </div>
         <Field label="Condition">
-          <DebouncedExpandingTextArea
+          <ExpandingTextArea
             placeholder="How're you doing?"
             value={character.condition}
-            onChangeText={(condition) => onCharacterChange({ condition })}
-            debouncePeriod={500}
+            onChange={(event) => {
+              onCharacterChange({ condition: event.target.value })
+            }}
             className={textAreaClass}
             readOnly={isSpectator}
           />

@@ -5,14 +5,10 @@ import {
   DebouncedInput,
 } from "../ui/debounced-input"
 import { inputClass, textAreaClass } from "../ui/styles"
+import type { CharacterField } from "./collections"
 
 export type CharacterFieldsEditorProps = {
-  fields: Array<{
-    id: string
-    name: string
-    description: string
-    isLong: boolean
-  }>
+  fields: CharacterField[]
   fieldValues: Record<string, string>
   readOnly: boolean
   onChange: (fieldId: string, value: string) => void
