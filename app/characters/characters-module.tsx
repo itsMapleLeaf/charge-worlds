@@ -25,10 +25,15 @@ export const charactersModule = new DashboardModule({
   icon: <Users />,
 
   component: function CharactersModuleView() {
-    const characters = CharacterCollection.useItems()
+    const { isPlayer, isOwner, isSpectator } = useAuthContext()
+
+    let characters = CharacterCollection.useItems()
+    if (!isOwner) {
+      characters = characters.filter((character) => !character.hidden)
+    }
+
     const mutations = CharacterCollection.useMutations()
     const fields = CharacterFieldCollection.useItems()
-    const { isPlayer, isOwner, isSpectator } = useAuthContext()
 
     const [currentCharacterId, setCurrentCharacterId] = useState(
       characters[0]?._id,
