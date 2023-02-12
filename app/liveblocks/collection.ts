@@ -129,10 +129,10 @@ export function defineLiveblocksMapCollection<
   return { useItem, useItems, useMutations }
 }
 
-export function defineLiveblocksListCollection<T extends JsonObject>(
-  name: string,
-  schema: ZodSchema<T, ZodTypeDef, unknown>,
-) {
+export function defineLiveblocksListCollection<
+  Output extends JsonObject,
+  Input extends JsonObject,
+>(name: string, schema: ZodSchema<Output, ZodTypeDef, Input>) {
   function useItems() {
     const warn = useWarn()
     return RoomContext.useStorage((root) => {
@@ -140,11 +140,11 @@ export function defineLiveblocksListCollection<T extends JsonObject>(
       if (list == null) return []
 
       if (!Array.isArray(list)) {
-        warn(`Expected ${name} to be a Map`)
+        warn(`Expected ${name} to be an array`, list)
         return []
       }
 
-      const items: T[] = []
+      const items: Output[] = []
       for (const item of list) {
         const result = schema.safeParse(item)
         if (!result.success) {
@@ -165,7 +165,7 @@ export function defineLiveblocksListCollection<T extends JsonObject>(
     const resolveList = (storage: LiveObject<LsonObject>) => {
       let list = storage.get(name)
       if (list == null) {
-        list = new LiveList<LiveObject<T>>()
+        list = new LiveList<LiveObject<Output>>()
         storage.set(name, list)
       }
 
@@ -177,12 +177,16 @@ export function defineLiveblocksListCollection<T extends JsonObject>(
       return list
     }
 
-    const append = RoomContext.useMutation(({ storage }, item: T) => {
-      resolveList(storage)?.push(new LiveObject<T>(item))
+    const append = RoomContext.useMutation(({ storage }, item: Input) => {
+      resolveList(storage)?.push(new LiveObject(item))
     }, [])
 
     const updateWhere = RoomContext.useMutation(
-      ({ storage }, predicate: (item: T) => unknown, data: Partial<T>) => {
+      (
+        { storage },
+        predicate: (item: Output) => unknown,
+        data: Partial<Input>,
+      ) => {
         const list = resolveList(storage)
         if (!list) return
 
@@ -204,7 +208,7 @@ export function defineLiveblocksListCollection<T extends JsonObject>(
     )
 
     const removeWhere = RoomContext.useMutation(
-      ({ storage }, predicate: (item: T) => unknown) => {
+      ({ storage }, predicate: (item: Output) => unknown) => {
         const list = resolveList(storage)
         if (!list) return
 
