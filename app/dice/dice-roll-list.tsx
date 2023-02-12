@@ -1,62 +1,34 @@
-import type { DiceResultType, Prisma } from "@prisma/client"
 import clsx from "clsx"
 import { Virtuoso } from "react-virtuoso"
-
-export type DiceRoll = {
-  id: string
-  intent: string
-  resultType: DiceResultType
-  rolledBy: { name: string } | null
-  dice: Prisma.JsonValue
-}
+import { WorldContext } from "~/world/world-context"
+import type { DiceRoll } from "./collections"
 
 export function DiceRollList({ rolls }: { rolls: DiceRoll[] }) {
   return (
-    <div className="h-full">
-      <Virtuoso
-        className="thin-scrollbar"
-        data={rolls}
-        itemContent={(index, roll) => (
-          <div className="px-4 pt-4">
-            <DiceRollItem roll={roll} />
-          </div>
-        )}
-        initialTopMostItemIndex={rolls.length - 1}
-        followOutput="smooth"
-      />
-    </div>
+    <Virtuoso
+      className="thin-scrollbar"
+      data={rolls}
+      itemContent={(index, roll) => (
+        <div
+          className={clsx("px-4 pt-4", index === rolls.length - 1 && "pb-4")}
+        >
+          <DiceRollItem roll={roll} />
+        </div>
+      )}
+      initialTopMostItemIndex={rolls.length - 1}
+      followOutput="smooth"
+    />
   )
 }
 
-type Die = { sides: number; result: number }
-
-function parseDice(json: Prisma.JsonValue): Die[] {
-  const dice: Die[] = []
-  if (Array.isArray(json)) {
-    for (const die of json) {
-      if (
-        typeof die === "object" &&
-        die !== null &&
-        "sides" in die &&
-        "result" in die
-      ) {
-        const { sides, result } = die
-        if (typeof sides === "number" && typeof result === "number") {
-          dice.push({ sides, result })
-        }
-      }
-    }
-  }
-  return dice
-}
-
 function DiceRollItem({ roll }: { roll: DiceRoll }) {
-  const dice = parseDice(roll.dice)
+  const { world } = WorldContext.useValue()
+  const rolledBy = world.memberships.find((m) => m.user.id === roll.rolledBy)
 
   const poolResult =
-    roll.resultType === "HIGHEST"
-      ? Math.max(...dice.map((d) => d.result))
-      : Math.min(...dice.map((d) => d.result))
+    roll.resultType === "highest"
+      ? Math.max(...roll.dice.map((d) => d.value))
+      : Math.min(...roll.dice.map((d) => d.value))
 
   const poolResultColor =
     poolResult === 6
@@ -70,19 +42,19 @@ function DiceRollItem({ roll }: { roll: DiceRoll }) {
       {roll.intent && <p className="leading-snug">{roll.intent}</p>}
 
       <ul className="flex flex-wrap gap-1">
-        {[...dice]
-          .sort((a, b) => b.result - a.result)
+        {[...roll.dice]
+          .sort((a, b) => b.value - a.value)
           .map((die, index) => (
             <li
               key={index}
               className={clsx(
                 "relative flex items-center justify-center",
-                die.result === poolResult && poolResultColor,
+                die.value === poolResult && poolResultColor,
               )}
             >
               <HexagonFilled className="h-8 w-8" />
               <span className="absolute translate-y-[1px] font-medium text-gray-800">
-                {die.result}
+                {die.value}
               </span>
             </li>
           ))}
@@ -90,8 +62,8 @@ function DiceRollItem({ roll }: { roll: DiceRoll }) {
 
       <p className="text-sm text-gray-400">
         Rolled by{" "}
-        {roll.rolledBy?.name ?? <span className="opacity-75">(unknown)</span>}
-        {roll.resultType === "LOWEST" && " (disadvantage)"}
+        {rolledBy?.user.name ?? <span className="opacity-75">(unknown)</span>}
+        {roll.resultType === "lowest" && " (disadvantage)"}
       </p>
     </div>
   )
