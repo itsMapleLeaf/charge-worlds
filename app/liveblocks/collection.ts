@@ -1,5 +1,5 @@
-import type { JsonObject } from "@liveblocks/client"
-import { LiveMap, LiveObject } from "@liveblocks/client"
+import type { JsonObject, LsonObject } from "@liveblocks/client"
+import { LiveList, LiveMap, LiveObject } from "@liveblocks/client"
 import type { ZodSchema } from "zod"
 import type { RequiredKeys, Simplify } from "~/helpers/types"
 import { useToastActions } from "~/ui/toast"
@@ -13,7 +13,7 @@ function useWarn() {
   }
 }
 
-export function defineLiveblocksCollection<
+export function defineLiveblocksMapCollection<
   T extends { id: string } & JsonObject,
 >(name: string, schema: ZodSchema<T>) {
   function useItem(id: string) {
@@ -130,4 +130,114 @@ export function defineLiveblocksCollection<
   }
 
   return { useItem, useItems, useMutations }
+}
+
+export function defineLiveblocksListCollection<T extends JsonObject>(
+  name: string,
+  schema: ZodSchema<T>,
+) {
+  function useItems() {
+    const warn = useWarn()
+    return RoomContext.useStorage((root) => {
+      const list = root[name]
+      if (list == null) return []
+
+      if (!Array.isArray(list)) {
+        warn(`Expected ${name} to be a Map`)
+        return []
+      }
+
+      const items: T[] = []
+      for (const item of list) {
+        const result = schema.safeParse(item)
+        if (!result.success) {
+          warn(`Invalid ${name} item: ${result.error.message}`, item)
+          continue
+        }
+
+        items.push(result.data)
+      }
+
+      return items
+    })
+  }
+
+  function useMutations() {
+    const warn = useWarn()
+
+    const resolveList = (storage: LiveObject<LsonObject>) => {
+      let list = storage.get(name)
+      if (list == null) {
+        list = new LiveList<LiveObject<T>>()
+        storage.set(name, list)
+      }
+
+      if (!(list instanceof LiveList)) {
+        warn(`Expected ${name} to be a LiveList`)
+        return
+      }
+
+      return list
+    }
+
+    const append = RoomContext.useMutation(({ storage }, item: T) => {
+      resolveList(storage)?.push(new LiveObject<T>(item))
+    }, [])
+
+    const updateWhere = RoomContext.useMutation(
+      ({ storage }, predicate: (item: T) => unknown, data: Partial<T>) => {
+        const list = resolveList(storage)
+        if (!list) return
+
+        for (const item of list) {
+          if (!(item instanceof LiveObject)) {
+            console.warn(`Expected ${name} item to be a LiveObject`)
+            continue
+          }
+
+          const result = schema.safeParse(item.toImmutable())
+          if (!result.success) continue
+
+          if (!predicate(result.data)) continue
+
+          item.update(data)
+        }
+      },
+      [],
+    )
+
+    const removeWhere = RoomContext.useMutation(
+      ({ storage }, predicate: (item: T) => unknown) => {
+        const list = resolveList(storage)
+        if (!list) return
+
+        for (let i = list.length - 1; i >= 0; i--) {
+          const item = list.get(i)
+          if (!(item instanceof LiveObject)) {
+            console.warn(`Expected ${name} item to be a LiveObject`, item)
+            continue
+          }
+
+          const result = schema.safeParse(item.toImmutable())
+          if (!result.success) continue
+
+          if (!predicate(result.data)) continue
+
+          list.delete(i)
+        }
+      },
+      [],
+    )
+
+    const move = RoomContext.useMutation(
+      ({ storage }, fromIndex: number, toIndex: number) => {
+        resolveList(storage)?.move(fromIndex, toIndex)
+      },
+      [],
+    )
+
+    return { append, updateWhere, removeWhere, move }
+  }
+
+  return { useItems, useMutations }
 }

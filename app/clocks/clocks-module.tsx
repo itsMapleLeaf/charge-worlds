@@ -1,12 +1,12 @@
 import { Clock, Plus } from "lucide-react"
 import { z } from "zod"
-import { defineLiveblocksCollection } from "~/liveblocks/collection"
+import { defineLiveblocksMapCollection } from "~/liveblocks/collection"
 import { useAuthContext } from "../auth/auth-context"
 import { DashboardModule } from "../dashboard/dashboard-module"
 import { ClockInput } from "../ui/clock-input"
 import { clearButtonClass } from "../ui/styles"
 
-const ClocksCollection = defineLiveblocksCollection(
+const ClocksCollection = defineLiveblocksMapCollection(
   "clocks",
   z.object({
     id: z.string(),
