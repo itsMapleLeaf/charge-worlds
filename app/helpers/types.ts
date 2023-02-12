@@ -11,3 +11,5 @@ export type Simplify<T> = { [K in keyof T]: T[K] } & {}
 export type RequiredNonNullable<T> = {
   [K in keyof T]-?: NonNullable<T[K]>
 }
+
+export type Nullish<T> = T | null | undefined

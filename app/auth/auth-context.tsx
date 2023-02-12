@@ -2,7 +2,7 @@ import type { Role } from "@prisma/client"
 import { createContext, useContext } from "react"
 
 export type Auth = {
-  user?: { name: string; avatarUrl: string | null }
+  user?: { id: string; name: string; avatarUrl: string | null }
   membership?: { role: Role }
 }
 
