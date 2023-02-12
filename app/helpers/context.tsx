@@ -21,5 +21,5 @@ export function createContextWrapper<T, P extends { [key: string]: unknown }>(
     return <Context.Provider value={value}>{props.children}</Context.Provider>
   }
 
-  return [useValue, Provider] as const
+  return { Provider, useValue }
 }
