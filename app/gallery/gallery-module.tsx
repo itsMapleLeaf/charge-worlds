@@ -1,22 +1,13 @@
-import { Form, useFetcher } from "@remix-run/react"
 import { Dialog, DialogDismiss, useDialogState } from "ariakit"
 import clsx from "clsx"
 import { Eye, EyeOff, Image, ImagePlus, Trash, X } from "lucide-react"
 import type { ReactNode } from "react"
 import { Fragment, useState } from "react"
-import { route } from "routes-gen"
+import ExpandingTextArea from "react-expanding-textarea"
 import { z } from "zod"
-import { zfd } from "zod-form-data"
-import { getMembership, requireWorldOwner } from "../auth/membership.server"
-import { getSessionUser, requireSessionUser } from "../auth/session.server"
-import { db } from "../core/db.server"
+import { useAuthContext } from "~/auth/auth-context"
+import { defineLiveblocksListCollection } from "~/liveblocks/collection"
 import { DashboardModule } from "../dashboard/dashboard-module"
-import { parseKeys } from "../helpers/parse-keys"
-import { getWorldEmitter } from "../routes/worlds.$worldId.events/emitter"
-import {
-  DebouncedExpandingTextArea,
-  DebouncedInput,
-} from "../ui/debounced-input"
 import { Field } from "../ui/field"
 import {
   clearButtonClass,
@@ -24,147 +15,47 @@ import {
   solidButtonClass,
   textAreaClass,
 } from "../ui/styles"
-import { getWorld } from "../world/world-db.server"
+
+const galleryItemSchema = z.object({
+  id: z.string(),
+  imageUrl: z.string().optional(),
+  caption: z.string().default(""),
+  hidden: z.boolean().default(true),
+})
+type GalleryItemInput = z.input<typeof galleryItemSchema>
+type GalleryItem = z.output<typeof galleryItemSchema>
+
+const GalleryCollection = defineLiveblocksListCollection(
+  "gallery",
+  galleryItemSchema,
+)
 
 export const galleryModule = new DashboardModule({
   name: "Gallery",
   description: "Visual references for NPCs, maps, etc.",
   icon: <Image />,
 
-  async loader({ request, params }) {
-    const { worldId } = parseKeys(params, ["worldId"])
+  component: function GalleryModuleView() {
+    const { isOwner } = useAuthContext()
 
-    const [user, world] = await Promise.all([
-      getSessionUser(request),
-      getWorld(worldId),
-    ])
-
-    const membership = user && (await getMembership(user, world))
-    const canEdit = membership?.role === "OWNER"
-
-    const where = canEdit ? { worldId } : { worldId, hidden: false }
-
-    const items = await db.galleryItem.findMany({
-      where,
-      orderBy: { order: "asc" },
-      select: {
-        id: true,
-        imageUrl: true,
-        caption: true,
-        hidden: true,
-      },
-    })
-
-    return { items, canEdit }
-  },
-
-  async action({ request, params }) {
-    const { redirect } = await import("@remix-run/node")
-
-    const { worldId } = parseKeys(params, ["worldId"])
-
-    const [user, world] = await Promise.all([
-      requireSessionUser(request),
-      getWorld(worldId),
-    ])
-
-    const membership = await requireWorldOwner(user, world)
-
-    if (request.method === "POST") {
-      const count = await db.galleryItem.count({
-        where: { worldId },
-      })
-
-      await db.galleryItem.create({
-        data: {
-          imageUrl: "",
-          caption: "",
-          hidden: membership?.role === "OWNER",
-          order: count,
-          worldId,
-        },
-      })
-
-      getWorldEmitter(worldId).emit({ type: "update", sourceUserId: user.id })
+    let items = GalleryCollection.useItems()
+    if (!isOwner) {
+      items = items.filter((item) => !item.hidden)
     }
 
-    if (request.method === "DELETE") {
-      const data = await request.formData()
-      await db.galleryItem.delete({ where: { id: data.get("id") as string } })
-      getWorldEmitter(worldId).emit({ type: "update", sourceUserId: user.id })
-    }
+    const mutations = GalleryCollection.useMutations()
 
-    if (request.method === "PATCH") {
-      const schema = zfd.formData({
-        id: zfd.text(),
-        caption: zfd.text().optional(),
-        hidden: zfd
-          .text(z.enum(["true", "false"]).transform((v) => v === "true"))
-          .optional(),
-        imageUrl: zfd.text().optional(),
-      })
-
-      const { id, ...data } = schema.parse(await request.formData())
-      await db.galleryItem.update({ where: { id }, data })
-      getWorldEmitter(worldId).emit({ type: "update", sourceUserId: user.id })
-    }
-
-    return redirect(route("/worlds/:worldId/dashboard", { worldId }))
-  },
-
-  component: function GalleryModuleView(props) {
-    type Item = (typeof props.loaderData.items)[0]
-
-    const { canEdit } = props.loaderData
-    let { items } = props.loaderData
-
-    const { submit, submission } = useFetcher()
-
-    if (submission?.action === props.formAction) {
-      if (submission.method === "POST") {
-        items = [
-          ...items,
-          { id: "placeholder", imageUrl: "", caption: "", hidden: false },
-        ]
-      }
-      if (submission.method === "DELETE") {
-        items = items.filter(
-          (item) => item.id !== submission.formData.get("id"),
-        )
-      }
-      if (submission.method === "PATCH") {
-        items = items.map((item) => {
-          if (item.id !== submission.formData.get("id")) return item
-          return {
-            ...item,
-            imageUrl:
-              (submission.formData.get("imageUrl") as string) || item.imageUrl,
-            caption:
-              (submission.formData.get("caption") as string) || item.caption,
-            hidden: submission.formData.has("hidden")
-              ? submission.formData.get("hidden") === "true"
-              : item.hidden,
-          }
-        })
-      }
-    }
-
-    const [currentId, setCurrentId] = useState<Item["id"]>()
+    const [currentId, setCurrentId] = useState<GalleryItem["id"]>()
     const [overlayVisible, setOverlayVisible] = useState(false)
     const current = items.find((item) => item.id === currentId)
 
-    const showOverlay = (id: Item["id"]) => {
+    const showOverlay = (id: GalleryItem["id"]) => {
       setCurrentId(id)
       setOverlayVisible(true)
     }
 
-    const updateItem = (id: string, item: Partial<Item>) => {
-      const body = new FormData()
-      body.set("id", id)
-      if (item.imageUrl) body.set("imageUrl", item.imageUrl)
-      if (item.caption) body.set("caption", item.caption)
-      if (item.hidden !== undefined) body.set("hidden", String(item.hidden))
-      submit(body, { action: props.formAction, method: "patch" })
+    const updateItem = (input: GalleryItemInput) => {
+      mutations.updateWhere((item) => item.id === input.id, input)
     }
 
     return (
@@ -174,28 +65,29 @@ export const galleryModule = new DashboardModule({
             <div className="isolate m-auto grid w-full grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] place-content-center gap-4">
               {items.map((item, index) => (
                 <Fragment key={item.id}>
-                  <div className="relative aspect-square w-full overflow-clip rounded bg-black/25">
+                  <div className="group relative aspect-square w-full overflow-clip rounded bg-black/25">
                     <button
                       type="button"
                       onClick={() => showOverlay(item.id)}
-                      className="block h-full w-full ring-blue-500 hover:bg-black/50 focus:outline-none focus-visible:ring-2"
+                      className="block h-full w-full ring-inset ring-blue-500 hover:bg-black/50 focus:outline-none focus-visible:ring-2"
                     >
-                      <img
-                        src={item.imageUrl}
-                        alt={`Gallery item ${index + 1}`}
-                        className="h-full w-full object-contain"
-                      />
+                      {item.imageUrl ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={`Gallery item ${index + 1}`}
+                          className="h-full w-full object-contain"
+                        />
+                      ) : (
+                        <Image
+                          className="mx-auto h-24 w-24 opacity-75"
+                          aria-label="No image found"
+                        />
+                      )}
                     </button>
-                    {canEdit && (
-                      <div className="absolute bottom-0 left-0 flex gap-2 p-2">
-                        <ToggleHiddenButton
-                          {...item}
-                          formAction={props.formAction}
-                        />
-                        <DeleteButton
-                          itemId={item.id}
-                          formAction={props.formAction}
-                        />
+                    {isOwner && (
+                      <div className="absolute bottom-0 left-0 flex gap-2 p-2 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
+                        <ToggleHiddenButton {...item} />
+                        <DeleteButton itemId={item.id} />
                       </div>
                     )}
                   </div>
@@ -207,12 +99,14 @@ export const galleryModule = new DashboardModule({
                 </p>
               )}
             </div>
-            {canEdit && (
-              <Form method="post" action={props.formAction}>
-                <button className={solidButtonClass}>
-                  <ImagePlus /> Add item
-                </button>
-              </Form>
+            {isOwner && (
+              <button
+                type="button"
+                className={solidButtonClass}
+                onClick={() => mutations.append({ id: crypto.randomUUID() })}
+              >
+                <ImagePlus /> Add item
+              </button>
             )}
           </div>
         </div>
@@ -224,50 +118,52 @@ export const galleryModule = new DashboardModule({
           {current && (
             <div className="flex h-full flex-col gap-6">
               <div className="min-h-0 flex-1">
-                <img
-                  src={current.imageUrl}
-                  alt=""
-                  className={clsx(
-                    "h-full w-full object-contain transition",
-                    overlayVisible ? "scale-100" : "scale-90",
-                  )}
-                  role="presentation"
-                  onClick={() => setOverlayVisible(false)}
-                />
+                {current.imageUrl ? (
+                  <img
+                    src={current.imageUrl}
+                    alt=""
+                    className={clsx(
+                      "h-full w-full object-contain transition",
+                      overlayVisible ? "scale-100" : "scale-90",
+                    )}
+                    role="presentation"
+                    onClick={() => setOverlayVisible(false)}
+                  />
+                ) : (
+                  <p>No image found</p>
+                )}
               </div>
 
-              {canEdit ? (
+              {isOwner ? (
                 <div className="mx-auto grid w-full max-w-screen-sm gap-4">
                   <div className="flex items-end gap-2">
                     <Field label="Image URL" className="flex-1">
-                      <DebouncedInput
+                      <input
                         className={inputClass}
                         type="url"
                         value={current.imageUrl}
-                        onChangeText={(imageUrl) => {
-                          updateItem(current.id, { imageUrl })
+                        onChange={(event) => {
+                          updateItem({
+                            id: current.id,
+                            imageUrl: event.target.value,
+                          })
                         }}
-                        debouncePeriod={500}
                       />
                     </Field>
-                    <ToggleHiddenButton
-                      {...current}
-                      formAction={props.formAction}
-                    />
-                    <DeleteButton
-                      itemId={current.id}
-                      formAction={props.formAction}
-                    />
+                    <ToggleHiddenButton {...current} />
+                    <DeleteButton itemId={current.id} />
                   </div>
 
                   <Field label="Caption">
-                    <DebouncedExpandingTextArea
+                    <ExpandingTextArea
                       className={textAreaClass}
-                      value={current.caption}
                       placeholder="Describe the image"
-                      debouncePeriod={500}
-                      onChangeText={(caption) => {
-                        updateItem(current.id, { caption })
+                      value={current.caption}
+                      onChange={(event) => {
+                        updateItem({
+                          id: current.id,
+                          caption: event.target.value,
+                        })
                       }}
                     />
                   </Field>
@@ -285,45 +181,38 @@ export const galleryModule = new DashboardModule({
   },
 })
 
-function DeleteButton({
-  formAction,
-  itemId,
-}: {
-  formAction: string
-  itemId: string
-}) {
+function DeleteButton({ itemId }: { itemId: string }) {
+  const mutations = GalleryCollection.useMutations()
   return (
-    <Form method="delete" action={formAction}>
-      <input type="hidden" name="id" value={itemId} />
-      <button title="Delete" className={solidButtonClass}>
-        <Trash />
-      </button>
-    </Form>
+    <button
+      title="Delete"
+      className={solidButtonClass}
+      onClick={() => {
+        mutations.removeWhere((item) => item.id === itemId)
+      }}
+    >
+      <Trash />
+    </button>
   )
 }
 
-function ToggleHiddenButton({
-  id,
-  hidden,
-  formAction,
-}: {
-  id: string
-  hidden: boolean
-  formAction: string
-}) {
+function ToggleHiddenButton({ id, hidden }: { id: string; hidden: boolean }) {
+  const mutations = GalleryCollection.useMutations()
   return (
-    <Form method="patch" action={formAction}>
-      <input type="hidden" name="id" value={id} />
-      <input type="hidden" name="hidden" value={String(!hidden)} />
-      <button
-        title="Hidden - click to toggle"
-        role="checkbox"
-        aria-checked={hidden}
-        className={solidButtonClass}
-      >
-        {hidden ? <EyeOff /> : <Eye />}
-      </button>
-    </Form>
+    <button
+      title="Hidden - click to toggle"
+      role="checkbox"
+      aria-checked={hidden}
+      className={solidButtonClass}
+      onClick={() => {
+        mutations.updateWhere((item) => item.id === id, {
+          id,
+          hidden: !hidden,
+        })
+      }}
+    >
+      {hidden ? <EyeOff /> : <Eye />}
+    </button>
   )
 }
 
