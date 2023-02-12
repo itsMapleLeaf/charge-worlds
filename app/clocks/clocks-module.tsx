@@ -9,7 +9,6 @@ import { clearButtonClass } from "../ui/styles"
 const ClocksCollection = defineLiveblocksMapCollection(
   "clocks",
   z.object({
-    id: z.string(),
     name: z.string(),
     progress: z.number(),
     maxProgress: z.number(),
@@ -32,23 +31,23 @@ export const clocksModule = new DashboardModule({
         {clocks.length > 0 && (
           <div className="flex flex-wrap justify-center gap-4 ">
             {clocks.map((clock) => (
-              <div key={clock.id} className="rounded-md bg-black/25 p-4">
+              <div key={clock._id} className="rounded-md bg-black/25 p-4">
                 {auth.isSpectator ? (
                   <ClockInput {...clock} onProgressChange={() => {}} />
                 ) : (
                   <ClockInput
                     {...clock}
                     onNameChange={(name) => {
-                      mutations.update({ id: clock.id, name })
+                      mutations.update(clock._id, { name })
                     }}
                     onProgressChange={(progress) => {
-                      mutations.update({ id: clock.id, progress })
+                      mutations.update(clock._id, { progress })
                     }}
                     onMaxProgressChange={(maxProgress) => {
-                      mutations.update({ id: clock.id, maxProgress })
+                      mutations.update(clock._id, { maxProgress })
                     }}
                     onRemove={() => {
-                      mutations.remove(clock.id)
+                      mutations.remove(clock._id)
                     }}
                   />
                 )}

@@ -1,7 +1,6 @@
 import type { JsonObject, LsonObject } from "@liveblocks/client"
 import { LiveList, LiveMap, LiveObject } from "@liveblocks/client"
-import type { ZodSchema } from "zod"
-import type { RequiredKeys, Simplify } from "~/helpers/types"
+import type { ZodSchema, ZodTypeDef } from "zod"
 import { useToastActions } from "~/ui/toast"
 import { RoomContext } from "./liveblocks-client"
 
@@ -14,8 +13,9 @@ function useWarn() {
 }
 
 export function defineLiveblocksMapCollection<
-  T extends { id: string } & JsonObject,
->(name: string, schema: ZodSchema<T>) {
+  Output extends JsonObject,
+  Input extends JsonObject,
+>(name: string, schema: ZodSchema<Output, ZodTypeDef, Input>) {
   function useItem(id: string) {
     const warn = useWarn()
     return RoomContext.useStorage((root) => {
@@ -36,7 +36,7 @@ export function defineLiveblocksMapCollection<
         return undefined
       }
 
-      return result.data
+      return { ...result.data, _id: id }
     })
   }
 
@@ -51,15 +51,15 @@ export function defineLiveblocksMapCollection<
         return []
       }
 
-      const items: T[] = []
-      for (const item of collectionMap.values()) {
+      const items: Array<Output & { _id: string }> = []
+      for (const [id, item] of collectionMap) {
         const result = schema.safeParse(item)
         if (!result.success) {
           warn(`Invalid ${name} item: ${result.error.message}`, item)
           continue
         }
 
-        items.push(result.data)
+        items.push({ ...result.data, _id: id })
       }
 
       return items
@@ -69,30 +69,27 @@ export function defineLiveblocksMapCollection<
   function useMutations() {
     const warn = useWarn()
 
-    const create = RoomContext.useMutation(
-      ({ storage }, item: Simplify<Omit<T, "id">>) => {
-        let map = storage.get(name)
-        if (map == null) {
-          map = new LiveMap<string, LiveObject<T>>()
-          storage.set(name, map)
-        }
+    const create = RoomContext.useMutation(({ storage }, item: Input) => {
+      let map = storage.get(name)
+      if (map == null) {
+        map = new LiveMap<string, LiveObject<Input>>()
+        storage.set(name, map)
+      }
 
-        if (!(map instanceof LiveMap)) {
-          warn(`Expected ${name} to be a LiveMap`)
-          return
-        }
+      if (!(map instanceof LiveMap)) {
+        warn(`Expected ${name} to be a LiveMap`)
+        return
+      }
 
-        const id = crypto.randomUUID()
-        map.set(id, new LiveObject<T>({ ...item, id } as any))
-      },
-      [],
-    )
+      const id = crypto.randomUUID()
+      map.set(id, new LiveObject(item))
+    }, [])
 
     const update = RoomContext.useMutation(
-      ({ storage }, item: RequiredKeys<Partial<T>, "id">) => {
+      ({ storage }, id: string, data: Partial<Input>) => {
         let map = storage.get(name)
         if (map == null) {
-          map = new LiveMap<string, LiveObject<T>>()
+          map = new LiveMap<string, LiveObject<Input>>()
           storage.set(name, map)
         }
 
@@ -101,7 +98,7 @@ export function defineLiveblocksMapCollection<
           return
         }
 
-        const existing = map.get(item.id)
+        const existing = map.get(id)
         if (existing == null) return
 
         if (!(existing instanceof LiveObject)) {
@@ -109,7 +106,7 @@ export function defineLiveblocksMapCollection<
           return
         }
 
-        existing.update(item)
+        existing.update(data)
       },
       [],
     )
@@ -134,7 +131,7 @@ export function defineLiveblocksMapCollection<
 
 export function defineLiveblocksListCollection<T extends JsonObject>(
   name: string,
-  schema: ZodSchema<T>,
+  schema: ZodSchema<T, ZodTypeDef, unknown>,
 ) {
   function useItems() {
     const warn = useWarn()
