@@ -10,6 +10,7 @@ import type { ShouldRevalidateFunction } from "@remix-run/react"
 import {
   Link,
   Links,
+  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -134,9 +135,7 @@ function Document({
       <body className={bodyClassName}>
         <ToastProvider>{children}</ToastProvider>
         <Scripts />
-        {process.env.NODE_ENV !== "production" && (
-          <script src="/live-reload.js" />
-        )}
+        {process.env.NODE_ENV !== "production" && <LiveReload />}
       </body>
     </html>
   )
