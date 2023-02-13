@@ -14,14 +14,13 @@ import {
 } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
 import { route } from "routes-gen"
-import { z } from "zod"
 import { zfd } from "zod-form-data"
+import { CharacterFieldCollection } from "~/characters/collections"
 import { requireWorldOwner } from "../auth/membership.server"
 import { requireSessionUser } from "../auth/session.server"
 import { db } from "../core/db.server"
 import { assert } from "../helpers/assert"
 import { discordIdSchema } from "../helpers/discord-id"
-import { raise } from "../helpers/errors"
 import { ActionRouter, useActionUi } from "../helpers/form-action-router"
 import { Field } from "../ui/field"
 import {
@@ -87,81 +86,6 @@ const removePlayerAction = router.route("removePlayer", {
         worldId_userDiscordId: { worldId, userDiscordId: discordId },
       },
     })
-  },
-})
-
-const addCharacterFieldAction = router.route("addCharacterField", {
-  callback: async (data, { worldId }) => {
-    await db.characterField.create({
-      data: { name: "New Field", isLong: false, worldId },
-    })
-  },
-})
-
-const updateCharacterFieldsAction = router.route("updateCharacterFields", {
-  input: zfd.formData({
-    fields: zfd.repeatableOfType(
-      zfd.formData({
-        id: zfd.text(),
-        name: zfd.text(z.string().max(256)),
-        description: zfd.text(z.string().max(1024).optional()),
-        isLong: zfd.checkbox(),
-      }),
-    ),
-  }),
-  callback: async ({ fields }, { worldId }) => {
-    await db.world.update({
-      where: { id: worldId },
-      data: {
-        characterFields: {
-          update: fields.map(({ id, ...data }) => ({ where: { id }, data })),
-        },
-      },
-    })
-  },
-})
-
-const reorderCharacterFieldAction = router.route("reorderCharacterField", {
-  input: zfd.formData({
-    fieldId: zfd.text(),
-    direction: zfd.text(z.union([z.literal("up"), z.literal("down")])),
-  }),
-  callback: async ({ fieldId, direction }, { worldId }) => {
-    const currentFields = await db.characterField.findMany({
-      where: { worldId },
-      orderBy: { order: "asc" },
-      select: { id: true },
-    })
-
-    const currentFieldIndex = currentFields.findIndex((f) => f.id === fieldId)
-    if (currentFieldIndex === -1) raise(`Field ${fieldId} not found`)
-
-    if (direction === "up") {
-      const removed = currentFields.splice(currentFieldIndex, 1)
-      currentFields.splice(currentFieldIndex - 1, 0, ...removed)
-    } else {
-      const removed = currentFields.splice(currentFieldIndex, 1)
-      currentFields.splice(currentFieldIndex + 1, 0, ...removed)
-    }
-
-    await db.world.update({
-      where: { id: worldId },
-      data: {
-        characterFields: {
-          update: currentFields.map(({ id }, order) => ({
-            where: { id },
-            data: { order },
-          })),
-        },
-      },
-    })
-  },
-})
-
-const removeCharacterFieldAction = router.route("removeCharacterField", {
-  input: zfd.formData({ id: zfd.text() }),
-  callback: async ({ id }, { worldId }) => {
-    await db.characterField.delete({ where: { id } })
   },
 })
 
@@ -352,68 +276,24 @@ function RemovePlayerForm({
 }
 
 function CharacterFieldsSection() {
-  const data = useLoaderData<typeof loader>()
-  const actionData = useActionData<typeof action>()
-
-  const addCharacterField = useActionUi(addCharacterFieldAction, actionData)
-  const updateCharacterFields = useActionUi(
-    updateCharacterFieldsAction,
-    actionData,
-  )
-  const removeCharacterField = useActionUi(
-    removeCharacterFieldAction,
-    actionData,
-  )
-
-  const updateFormId = useId()
-
+  const fields = CharacterFieldCollection.useItems()
+  const mutations = CharacterFieldCollection.useMutations()
   return (
     <PageSection title="Character Fields">
-      <div className="grid gap-2">
-        {[
-          addCharacterField.errors,
-          updateCharacterFields.errors,
-          removeCharacterField.errors,
-        ]
-          .flat()
-          .filter(Boolean)
-          .map((error, index) => (
-            <p key={index} className={errorTextClass}>
-              {error}
-            </p>
-          ))}
-      </div>
-
       <div className="grid gap-4">
-        <updateCharacterFields.Form className="contents" id={updateFormId} />
-
-        {data.characterFields.map((field, index) => (
+        {fields.map((field, index) => (
           <div key={field.id} className="border-b-2 border-black/25">
-            <CharacterFieldForm
-              field={field}
-              index={index}
-              canMoveUp={index > 0}
-              canMoveDown={index < data.characterFields.length - 1}
-              formId={updateFormId}
-            />
+            <CharacterFieldForm field={field} index={index} />
           </div>
         ))}
 
         <div className="flex">
-          <addCharacterField.Form>
-            <button className={solidButtonClass} type="submit">
-              <ListPlus /> Add field
-            </button>
-          </addCharacterField.Form>
-
-          <div className="flex-1" />
-
           <button
+            type="button"
             className={solidButtonClass}
-            type="submit"
-            form={updateFormId}
+            onClick={() => mutations.append({ id: crypto.randomUUID() })}
           >
-            <CheckCircle size={20} /> Save
+            <ListPlus /> Add field
           </button>
         </div>
       </div>
@@ -422,55 +302,34 @@ function CharacterFieldsSection() {
 }
 
 function CharacterFieldForm({
-  formId,
   field,
   index,
-  canMoveUp,
-  canMoveDown,
 }: {
-  formId: string
   field: { id: string; description: string; name: string; isLong: boolean }
   index: number
-  canMoveUp: boolean
-  canMoveDown: boolean
 }) {
-  const actionData = useActionData<typeof action>()
+  const fields = CharacterFieldCollection.useItems()
+  const mutations = CharacterFieldCollection.useMutations()
 
   const nameId = useId()
   const descriptionId = useId()
   const isLongId = useId()
 
-  const removeCharacterField = useActionUi(
-    removeCharacterFieldAction,
-    actionData,
-  )
-
-  const reorderCharacterFields = useActionUi(
-    reorderCharacterFieldAction,
-    actionData,
-  )
-
   const labelClass = clsx("select-none pt-3 font-medium leading-tight")
 
   return (
     <div className="grid auto-rows-[minmax(3rem,auto)] grid-cols-[auto,1fr] gap-x-4 gap-y-1">
-      <input
-        type="hidden"
-        name={`fields[${index}].id`}
-        value={field.id}
-        form={formId}
-      />
-
       <label className={labelClass} htmlFor={nameId}>
         Label
       </label>
       <input
         id={nameId}
-        name={`fields[${index}].name`}
-        defaultValue={field.name}
-        className={inputClass}
         placeholder="Field name"
-        form={formId}
+        className={inputClass}
+        value={field.name}
+        onChange={(event) => {
+          mutations.update(index, { name: event.target.value })
+        }}
       />
 
       <label className={labelClass} htmlFor={descriptionId}>
@@ -478,12 +337,13 @@ function CharacterFieldForm({
       </label>
       <textarea
         id={descriptionId}
-        name={`fields[${index}].description`}
-        defaultValue={field.description}
-        className={inputClass}
         placeholder="Tell players what to put here."
-        form={formId}
+        className={inputClass}
         rows={2}
+        value={field.description}
+        onChange={(event) => {
+          mutations.update(index, { description: event.target.value })
+        }}
       />
 
       <label className={labelClass} htmlFor={isLongId}>
@@ -492,48 +352,50 @@ function CharacterFieldForm({
       <div className="flex items-start gap-2 pt-3 leading-tight">
         <input
           id={isLongId}
-          name={`fields[${index}].isLong`}
-          required={false}
           type="checkbox"
-          defaultChecked={field.isLong}
-          form={formId}
           className={checkboxClass}
+          checked={field.isLong}
+          onChange={(event) => {
+            mutations.update(index, { isLong: event.target.checked })
+          }}
         />
 
         <div className="flex-1" />
 
-        <reorderCharacterFields.Form className="contents">
-          <reorderCharacterFields.HiddenInput name="fieldId" value={field.id} />
-          {canMoveUp && (
-            <button
-              className={clearButtonClass}
-              type="submit"
-              name="direction"
-              value="up"
-              title="Move field up"
-            >
-              <ChevronUp />
-            </button>
-          )}
-          {canMoveDown && (
-            <button
-              className={clearButtonClass}
-              type="submit"
-              name="direction"
-              value="down"
-              title="Move field down"
-            >
-              <ChevronDown />
-            </button>
-          )}
-        </reorderCharacterFields.Form>
-
-        <removeCharacterField.Form method="post" className="contents">
-          <removeCharacterField.HiddenInput name="id" value={field.id} />
-          <button className={clearButtonClass} title={`Remove ${field.name}`}>
-            <X />
+        {index > 0 && (
+          <button
+            type="button"
+            title="Move field up"
+            className={clearButtonClass}
+            onClick={() => {
+              mutations.move(index, index - 1)
+            }}
+          >
+            <ChevronUp />
           </button>
-        </removeCharacterField.Form>
+        )}
+        {index < fields.length - 1 && (
+          <button
+            type="button"
+            title="Move field down"
+            className={clearButtonClass}
+            onClick={() => {
+              mutations.move(index, index + 1)
+            }}
+          >
+            <ChevronDown />
+          </button>
+        )}
+
+        <button
+          title={`Remove ${field.name}`}
+          className={clearButtonClass}
+          onClick={() => {
+            mutations.remove(index)
+          }}
+        >
+          <X />
+        </button>
       </div>
     </div>
   )
