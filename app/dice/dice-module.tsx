@@ -44,6 +44,7 @@ export const diceModule = new DashboardModule({
 
 export function DiceRollForm() {
   const mutations = DiceRollCollection.useMutations()
+  const rolls = DiceRollCollection.useItems()
   const intent = useStore(intentStore)
   const poolSize = useStore(poolSizeStore)
   const intentRef = useRef<HTMLInputElement>(null)
@@ -71,6 +72,10 @@ export function DiceRollForm() {
       rolledBy: user.id,
       rolledAt: new Date().toISOString(),
     })
+
+    for (let i = 0; i < rolls.length - 100; i++) {
+      mutations.remove(0)
+    }
   }
 
   return (

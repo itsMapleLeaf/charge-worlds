@@ -207,6 +207,10 @@ export function defineLiveblocksListCollection<
       [],
     )
 
+    const remove = RoomContext.useMutation(({ storage }, index: number) => {
+      resolveList(storage)?.delete(index)
+    }, [])
+
     const removeWhere = RoomContext.useMutation(
       ({ storage }, predicate: (item: Output) => unknown) => {
         const list = resolveList(storage)
@@ -237,7 +241,7 @@ export function defineLiveblocksListCollection<
       [],
     )
 
-    return { append, updateWhere, removeWhere, move }
+    return { append, updateWhere, remove, removeWhere, move }
   }
 
   return { useItems, useMutations }
