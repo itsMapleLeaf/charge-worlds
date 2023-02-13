@@ -29,6 +29,7 @@ const characterFieldSchema = z.object({
   isLong: z.boolean().default(false),
 })
 export type CharacterField = z.output<typeof characterFieldSchema>
+export type CharacterFieldInput = z.input<typeof characterFieldSchema>
 
 export const CharacterFieldCollection = defineLiveblocksListCollection(
   "characterFields",
