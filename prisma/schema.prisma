@@ -18,14 +18,21 @@ model User {
   discordId   String       @unique
   sessionId   String?      @unique
   memberships Membership[]
+  characters  Character[]
+  diceLogs    DiceLog[]
 }
 
 model World {
-  id                    String       @id @default(cuid())
-  createdAt             DateTime     @default(now())
+  id                    String           @id @default(cuid())
+  createdAt             DateTime         @default(now())
   name                  String
   memberships           Membership[]
-  liveblocksRoomVersion Int          @default(0)
+  characters            Character[]
+  clocks                Clock[]
+  diceLogs              DiceLog[]
+  characterFields       CharacterField[]
+  galleryItems          GalleryItem[]
+  liveblocksRoomVersion Int              @default(0)
 }
 
 model Membership {
@@ -45,4 +52,95 @@ model Membership {
 enum Role {
   OWNER
   PLAYER
+}
+
+model CharacterField {
+  id          String                @id @default(cuid())
+  name        String
+  description String                @default("")
+  isLong      Boolean
+  order       Int                   @default(0)
+  fieldValues CharacterFieldValue[]
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId String
+}
+
+model Character {
+  id           String  @id @default(cuid())
+  name         String  @default("New Character")
+  group        String  @default("")
+  concept      String  @default("")
+  appearance   String  @default("")
+  ties         String  @default("")
+  momentum     Int     @default(2)
+  stress       Int     @default(0)
+  condition    String  @default("")
+  actionLevels Json    @default("{}")
+  talents      String  @default("")
+  hidden       Boolean @default(true)
+  color        String?
+  imageUrl     String?
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId String
+
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String
+
+  fieldValues CharacterFieldValue[]
+}
+
+model CharacterFieldValue {
+  id    String @id @default(cuid())
+  value String
+
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId String
+
+  field   CharacterField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  fieldId String
+
+  @@unique([characterId, fieldId])
+}
+
+model Clock {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  name        String   @default("New Clock")
+  progress    Int      @default(0)
+  maxProgress Int      @default(8)
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId String
+}
+
+model DiceLog {
+  id         String         @id @default(cuid())
+  intent     String
+  dice       Json // [{sides: 6, value: 3}, ...]
+  resultType DiceResultType
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId String
+
+  // we don't want to delete the dice logs if the rolling user is deleted
+  rolledBy   User?   @relation(fields: [rolledById], references: [id])
+  rolledById String?
+}
+
+enum DiceResultType {
+  HIGHEST
+  LOWEST
+}
+
+model GalleryItem {
+  id       String  @id @default(cuid())
+  caption  String  @default("")
+  imageUrl String
+  order    Int
+  hidden   Boolean @default(true)
+
+  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId String
 }
