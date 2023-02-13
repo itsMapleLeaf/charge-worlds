@@ -1,4 +1,4 @@
-import type { JsonObject, LsonObject } from "@liveblocks/client"
+import type { JsonObject, Lson, LsonObject } from "@liveblocks/client"
 import { LiveList, LiveMap, LiveObject } from "@liveblocks/client"
 import type { ZodSchema, ZodTypeDef } from "zod"
 import { useToastActions } from "~/ui/toast"
@@ -177,9 +177,25 @@ export function defineLiveblocksListCollection<
       return list
     }
 
+    const resolveLiveObjectItem = (item: Lson | undefined) => {
+      if (!(item instanceof LiveObject)) {
+        console.warn(`Expected ${name} item to be a LiveObject`)
+        return
+      }
+      return item
+    }
+
     const append = RoomContext.useMutation(({ storage }, item: Input) => {
       resolveList(storage)?.push(new LiveObject(item))
     }, [])
+
+    const update = RoomContext.useMutation(
+      ({ storage }, index: number, data: Partial<Input>) => {
+        const list = resolveList(storage)?.get(index)
+        resolveLiveObjectItem(list)?.update(data)
+      },
+      [],
+    )
 
     const updateWhere = RoomContext.useMutation(
       (
@@ -241,7 +257,7 @@ export function defineLiveblocksListCollection<
       [],
     )
 
-    return { append, updateWhere, remove, removeWhere, move }
+    return { append, update, updateWhere, remove, removeWhere, move }
   }
 
   return { useItems, useMutations }
