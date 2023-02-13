@@ -40,7 +40,7 @@ export const links: LinksFunction = () => [
   { rel: "icon", href: favicon },
 ]
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request }: LoaderArgs) {
   const user = await getSessionUser(request)
   return json({
     user: user && pick(user, ["name", "avatarUrl"]),

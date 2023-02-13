@@ -2,6 +2,7 @@ import type { ForwardedRef, ReactElement, ReactNode } from "react"
 import { forwardRef, useCallback, useInsertionEffect, useRef } from "react"
 
 export function useEvent<A extends unknown[], R>(fn: (...args: A) => R) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const ref = useRef((...args: A): R => {
     throw new Error("Cannot call event handler while rendering.")
   })

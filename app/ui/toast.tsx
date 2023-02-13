@@ -13,7 +13,9 @@ type Toast = {
 const ToastContext = createContext<Toast[]>([])
 
 const ToastActionsContext = createContext({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   add: (type: Toast["type"], message: string) => {},
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   dismiss: (id: string) => {},
 })
 
