@@ -10,7 +10,7 @@ const config = {
 }
 
 if (process.env.VERCEL) {
-  config.server = "server.vercel.ts"
+  config.server = "./server.vercel.ts"
   config.serverBuildPath = "api/index.js"
 }
 
