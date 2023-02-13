@@ -34,6 +34,17 @@ model World {
   galleryItems          GalleryItem[]
   liveblocksRoomVersion Int              @default(0)
   migratedToLiveblocks  Boolean          @default(false)
+  snapshots             WorldSnapshot[]
+}
+
+model WorldSnapshot {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  name      String
+  data      Json     @db.Json
+
+  world   World  @relation(fields: [worldId], references: [id])
+  worldId String
 }
 
 model Membership {

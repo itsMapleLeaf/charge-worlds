@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/prefer-module */
 /** @type {import('@remix-run/dev').AppConfig} */
 const config = {
-  serverDependenciesToBundle: ["@formkit/auto-animate/react"],
+  serverDependenciesToBundle: ["@formkit/auto-animate/react", "pretty-bytes"],
   future: {
     v2_routeConvention: true,
     unstable_tailwind: true,
