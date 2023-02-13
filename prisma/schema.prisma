@@ -21,10 +21,11 @@ model User {
 }
 
 model World {
-  id          String       @id @default(cuid())
-  createdAt   DateTime     @default(now())
-  name        String
-  memberships Membership[]
+  id                    String       @id @default(cuid())
+  createdAt             DateTime     @default(now())
+  name                  String
+  memberships           Membership[]
+  liveblocksRoomVersion Int          @default(0)
 }
 
 model Membership {

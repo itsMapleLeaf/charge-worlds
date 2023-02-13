@@ -1,4 +1,3 @@
-import type { JsonObject } from "@liveblocks/client"
 import { join } from "node:path"
 import { env } from "~/core/env.server"
 
@@ -6,31 +5,43 @@ const baseHeaders: Record<string, string> = {
   Authorization: `Bearer ${env.LIVEBLOCKS_SECRET_KEY}`,
 }
 
+export const RoomAccesses = {
+  private: [],
+  read: ["room:read", "room:presence:write"],
+  write: ["room:write"],
+} as const
+export type RoomAccess = keyof typeof RoomAccesses
+
 const getApiUrl = (endpoint: string) =>
   new URL(join("/v2", endpoint), "https://api.liveblocks.io")
 
-async function checkResponseError(response: Response) {
-  if (!response.ok) {
-    console.error(
-      "Failed to create Liveblocks room",
-      response.status,
-      response.statusText,
-      await response.json().catch(() => undefined),
-    )
-    throw new Response(undefined, { status: 500 })
-  }
+export async function throwResponseError(response: Response) {
+  console.error(
+    "Liveblocks request failed:",
+    response.status,
+    response.statusText,
+    await response.json().catch(() => undefined),
+  )
+  throw new Response(undefined, { status: 500 })
 }
 
 export async function liveblocksGet(endpoint: string) {
-  const response = await fetch(getApiUrl(endpoint), {
+  return fetch(getApiUrl(endpoint), {
     method: "GET",
     headers: baseHeaders,
   })
-  await checkResponseError(response)
 }
 
-export async function liveblocksPost(endpoint: string, body: JsonObject) {
-  const response = await fetch(getApiUrl(endpoint), {
+type JsonInput =
+  | string
+  | number
+  | boolean
+  | null
+  | { readonly [property: string]: JsonInput }
+  | readonly JsonInput[]
+
+export async function liveblocksPost(endpoint: string, body: JsonInput) {
+  return fetch(getApiUrl(endpoint), {
     method: "POST",
     headers: {
       ...baseHeaders,
@@ -38,6 +49,4 @@ export async function liveblocksPost(endpoint: string, body: JsonObject) {
     },
     body: JSON.stringify(body),
   })
-  await checkResponseError(response)
-  return response.json()
 }
