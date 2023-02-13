@@ -27,8 +27,8 @@ function DiceRollItem({ roll }: { roll: DiceRoll }) {
 
   const poolResult =
     roll.resultType === "highest"
-      ? Math.max(...roll.dice.map((d) => d.value))
-      : Math.min(...roll.dice.map((d) => d.value))
+      ? Math.max(...roll.dice.map((d) => d.result))
+      : Math.min(...roll.dice.map((d) => d.result))
 
   const poolResultColor =
     poolResult === 6
@@ -43,18 +43,18 @@ function DiceRollItem({ roll }: { roll: DiceRoll }) {
 
       <ul className="flex flex-wrap gap-1">
         {[...roll.dice]
-          .sort((a, b) => b.value - a.value)
+          .sort((a, b) => b.result - a.result)
           .map((die, index) => (
             <li
               key={index}
               className={clsx(
                 "relative flex items-center justify-center",
-                die.value === poolResult && poolResultColor,
+                die.result === poolResult && poolResultColor,
               )}
             >
               <HexagonFilled className="h-8 w-8" />
               <span className="absolute translate-y-[1px] font-medium text-gray-800">
-                {die.value}
+                {die.result}
               </span>
             </li>
           ))}

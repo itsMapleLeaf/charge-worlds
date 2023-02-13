@@ -61,7 +61,7 @@ export function DiceRollForm() {
 
     const dice = Array.from({ length: diceCount }, () => ({
       sides: 6,
-      value: randomIntInclusive(1, 6),
+      result: randomIntInclusive(1, 6),
     }))
 
     mutations.append({

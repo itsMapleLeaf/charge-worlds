@@ -32,21 +32,26 @@ export async function liveblocksGet(endpoint: string) {
   })
 }
 
-type JsonInput =
-  | string
-  | number
-  | boolean
-  | null
-  | { readonly [property: string]: JsonInput }
-  | readonly JsonInput[]
+export async function liveblocksFetch(
+  method: "GET" | "POST" | "DELETE",
+  endpoint: string,
+  body?: unknown,
+) {
+  const url = getApiUrl(endpoint)
 
-export async function liveblocksPost(endpoint: string, body: JsonInput) {
-  return fetch(getApiUrl(endpoint), {
-    method: "POST",
-    headers: {
-      ...baseHeaders,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  })
+  const options: RequestInit = body
+    ? {
+        method,
+        headers: {
+          ...baseHeaders,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    : {
+        method,
+        headers: baseHeaders,
+      }
+
+  return fetch(url, options)
 }

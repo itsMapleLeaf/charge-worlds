@@ -22,7 +22,7 @@ const galleryItemSchema = z.object({
   caption: z.string().default(""),
   hidden: z.boolean().default(true),
 })
-type GalleryItemInput = z.input<typeof galleryItemSchema>
+export type GalleryItemInput = z.input<typeof galleryItemSchema>
 type GalleryItem = z.output<typeof galleryItemSchema>
 
 const GalleryCollection = defineLiveblocksListCollection(

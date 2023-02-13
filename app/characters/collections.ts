@@ -16,6 +16,7 @@ const characterSchema = z.object({
   imageUrl: z.string().optional(),
 })
 export type Character = z.output<typeof characterSchema>
+export type CharacterInput = z.input<typeof characterSchema>
 
 export const CharacterCollection = defineLiveblocksMapCollection(
   "characters",
