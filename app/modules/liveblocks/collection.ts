@@ -1,7 +1,7 @@
 import type { JsonObject, Lson, LsonObject } from "@liveblocks/client"
 import { LiveList, LiveMap, LiveObject } from "@liveblocks/client"
 import type { ZodSchema, ZodTypeDef } from "zod"
-import { useToastActions } from "~/ui/toast"
+import { useToastActions } from "~/modules/ui/toast"
 import { RoomContext } from "./liveblocks-client"
 
 function useWarn() {

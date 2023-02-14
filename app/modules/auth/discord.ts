@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { env } from "../core/env.server"
+import { env } from "../app/env.server"
 
 export function getAuthorizeUrl() {
   const url = new URL("https://discord.com/api/oauth2/authorize")

@@ -1,5 +1,5 @@
 import { join } from "node:path"
-import { env } from "~/core/env.server"
+import { env } from "~/modules/app/env.server"
 
 const baseHeaders: Record<string, string> = {
   Authorization: `Bearer ${env.LIVEBLOCKS_SECRET_KEY}`,

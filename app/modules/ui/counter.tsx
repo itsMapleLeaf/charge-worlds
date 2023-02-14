@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { MinusCircle, PlusCircle } from "lucide-react"
-import { range } from "../helpers/range"
+import { range } from "../../helpers/range"
 import { activePressClass, clearButtonClass } from "./styles"
 
 export function Counter({

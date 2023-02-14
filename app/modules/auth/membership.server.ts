@@ -1,6 +1,6 @@
 import type { User, World } from "@prisma/client"
-import { db } from "../core/db.server"
-import { raise } from "../helpers/errors"
+import { raise } from "../../helpers/errors"
+import { db } from "../app/db.server"
 
 export async function getMembership(
   user: { discordId: string },

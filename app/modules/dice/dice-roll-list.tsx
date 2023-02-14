@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Virtuoso } from "react-virtuoso"
-import { WorldContext } from "~/world/world-context"
+import { WorldContext } from "~/modules/world/world-context"
 import type { DiceRoll } from "./collections"
 
 export function DiceRollList({ rolls }: { rolls: DiceRoll[] }) {

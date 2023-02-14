@@ -1,8 +1,8 @@
 import { Inngest } from "inngest"
 import { serve } from "inngest/remix"
 import prettyBytes from "pretty-bytes"
-import { db } from "~/core/db.server"
-import { createWorldSnapshot } from "~/world/world-snapshots"
+import { db } from "~/modules/app/db.server"
+import { createWorldSnapshot } from "~/modules/world/world-snapshots"
 
 type Events = {
   "world/create-snapshot": {

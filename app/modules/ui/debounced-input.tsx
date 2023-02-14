@@ -1,8 +1,8 @@
 import type { ComponentProps } from "react"
 import { createElement, useState } from "react"
 import TextArea from "react-expanding-textarea"
-import { autoRef } from "../helpers/react"
-import { useDebouncedCallback } from "../helpers/use-debounced-callback"
+import { autoRef } from "../../helpers/react"
+import { useDebouncedCallback } from "../../helpers/use-debounced-callback"
 
 export type DebouncedInputOptions = {
   value: string

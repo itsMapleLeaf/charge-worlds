@@ -1,5 +1,5 @@
-import { db } from "../core/db.server"
-import { raise } from "../helpers/errors"
+import { raise } from "../../helpers/errors"
+import { db } from "../app/db.server"
 
 export async function createWorld() {
   return db.world.create({

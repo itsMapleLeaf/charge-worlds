@@ -1,8 +1,8 @@
 import type { LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import { useLoaderData } from "@remix-run/react"
-import { dashboardModules } from "../dashboard/dashboard-modules"
-import { DashboardMosaic } from "../dashboard/dashboard-ui"
+import { dashboardModules } from "../modules/dashboard/dashboard-modules"
+import { DashboardMosaic } from "../modules/dashboard/dashboard-ui"
 
 export async function loader({ request, params, context }: LoaderArgs) {
   const moduleData: Record<string, any> = {}

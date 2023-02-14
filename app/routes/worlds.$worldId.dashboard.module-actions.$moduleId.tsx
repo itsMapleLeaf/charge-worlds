@@ -1,8 +1,8 @@
 import type { ActionArgs } from "@remix-run/node"
 import { redirect } from "@remix-run/node"
-import type { DashboardModule } from "../dashboard/dashboard-module"
-import { dashboardModules } from "../dashboard/dashboard-modules"
 import { parseKeys } from "../helpers/parse-keys"
+import type { DashboardModule } from "../modules/dashboard/dashboard-module"
+import { dashboardModules } from "../modules/dashboard/dashboard-modules"
 
 export async function loader() {
   return redirect("../..")

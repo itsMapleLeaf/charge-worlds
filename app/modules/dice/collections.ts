@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { defineLiveblocksListCollection } from "~/liveblocks/collection"
+import { defineLiveblocksListCollection } from "~/modules/liveblocks/collection"
 
 export const diceSchema = z.array(
   z.object({ sides: z.number().int(), result: z.number().int() }),

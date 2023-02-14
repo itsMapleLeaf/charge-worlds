@@ -1,6 +1,6 @@
 import { Clock, Plus } from "lucide-react"
 import { z } from "zod"
-import { defineLiveblocksMapCollection } from "~/liveblocks/collection"
+import { defineLiveblocksMapCollection } from "~/modules/liveblocks/collection"
 import { useAuthContext } from "../auth/auth-context"
 import { DashboardModule } from "../dashboard/dashboard-module"
 import { ClockInput } from "../ui/clock-input"

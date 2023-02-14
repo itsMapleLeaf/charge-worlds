@@ -2,7 +2,7 @@ import { z } from "zod"
 import {
   defineLiveblocksListCollection,
   defineLiveblocksMapCollection,
-} from "~/liveblocks/collection"
+} from "~/modules/liveblocks/collection"
 
 const characterSchema = z.object({
   name: z.string().max(128).default("New character"),

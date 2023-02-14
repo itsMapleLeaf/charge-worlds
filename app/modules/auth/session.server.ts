@@ -2,9 +2,9 @@ import type { User } from "@prisma/client"
 import { createCookie } from "@remix-run/node"
 import cuid from "cuid"
 import { z } from "zod"
-import { db } from "../core/db.server"
-import { env } from "../core/env.server"
-import { raise } from "../helpers/errors"
+import { raise } from "../../helpers/errors"
+import { db } from "../app/db.server"
+import { env } from "../app/env.server"
 import { discordLogin, getDiscordAuthUser } from "./discord"
 
 const sessionSchema = z.object({

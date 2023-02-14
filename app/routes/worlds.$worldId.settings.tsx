@@ -15,14 +15,14 @@ import {
 import { useEffect, useId, useRef } from "react"
 import { route } from "routes-gen"
 import { zfd } from "zod-form-data"
-import { CharacterFieldCollection } from "~/characters/collections"
-import { requireWorldOwner } from "../auth/membership.server"
-import { requireSessionUser } from "../auth/session.server"
-import { db } from "../core/db.server"
+import { CharacterFieldCollection } from "~/modules/characters/collections"
 import { assert } from "../helpers/assert"
 import { discordIdSchema } from "../helpers/discord-id"
 import { ActionRouter, useActionUi } from "../helpers/form-action-router"
-import { Field } from "../ui/field"
+import { db } from "../modules/app/db.server"
+import { requireWorldOwner } from "../modules/auth/membership.server"
+import { requireSessionUser } from "../modules/auth/session.server"
+import { Field } from "../modules/ui/field"
 import {
   checkboxClass,
   clearButtonClass,
@@ -30,8 +30,8 @@ import {
   inputClass,
   maxWidthContainerClass,
   solidButtonClass,
-} from "../ui/styles"
-import { getWorld } from "../world/world-db.server"
+} from "../modules/ui/styles"
+import { getWorld } from "../modules/world/world-db.server"
 
 const thisRoute = (params: Params) =>
   route("/worlds/:worldId/settings", params as any)

@@ -1,7 +1,7 @@
 import { redirect } from "@remix-run/node"
 import { route } from "routes-gen"
-import { db } from "../core/db.server"
-import { createWorld } from "../world/world-db.server"
+import { db } from "../modules/app/db.server"
+import { createWorld } from "../modules/world/world-db.server"
 
 export async function loader() {
   const defaultWorld =

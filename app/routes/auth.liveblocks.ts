@@ -1,23 +1,23 @@
 import { authorize } from "@liveblocks/node"
 import type { ActionArgs } from "@remix-run/node"
 import { z } from "zod"
-import { getSessionUser } from "~/auth/session.server"
+import { raise } from "~/helpers/errors"
+import { notFound } from "~/helpers/responses"
+import { db } from "~/modules/app/db.server"
+import { env } from "~/modules/app/env.server"
+import { getSessionUser } from "~/modules/auth/session.server"
 import type {
   CharacterFieldInput,
   CharacterInput,
-} from "~/characters/collections"
-import { db } from "~/core/db.server"
-import { env } from "~/core/env.server"
-import type { DiceRollInput } from "~/dice/collections"
-import { diceSchema } from "~/dice/collections"
-import type { GalleryItemInput } from "~/gallery/gallery-module"
-import { raise } from "~/helpers/errors"
-import { notFound } from "~/helpers/responses"
+} from "~/modules/characters/collections"
+import type { DiceRollInput } from "~/modules/dice/collections"
+import { diceSchema } from "~/modules/dice/collections"
+import type { GalleryItemInput } from "~/modules/gallery/gallery-module"
 import {
   liveblocksFetch,
   RoomAccesses,
   throwResponseError,
-} from "~/liveblocks/liveblocks-api.server"
+} from "~/modules/liveblocks/liveblocks-api.server"
 
 const currentRoomVersion = 1
 

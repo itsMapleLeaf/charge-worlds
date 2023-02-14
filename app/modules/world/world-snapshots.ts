@@ -1,5 +1,5 @@
-import { db } from "~/core/db.server"
-import { liveblocksFetch } from "~/liveblocks/liveblocks-api.server"
+import { db } from "~/modules/app/db.server"
+import { liveblocksFetch } from "~/modules/liveblocks/liveblocks-api.server"
 
 export async function createWorldSnapshot(world: { id: string; name: string }) {
   const response = await liveblocksFetch(
