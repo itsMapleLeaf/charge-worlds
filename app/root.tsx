@@ -28,8 +28,8 @@ import { UserMenuButton } from "./modules/auth/user-menu-button"
 import { CatchBoundaryMessage } from "./modules/ui/catch-boundary-message"
 import { PendingIndicator } from "./modules/ui/pending-indivator"
 import { clearButtonClass, maxWidthContainerClass } from "./modules/ui/styles"
+import tailwind from "./modules/ui/tailwind.css"
 import { ToastProvider } from "./modules/ui/toast"
-import tailwind from "./ui/tailwind.css"
 
 export const meta = (): HtmlMetaDescriptor => getAppMeta()
 

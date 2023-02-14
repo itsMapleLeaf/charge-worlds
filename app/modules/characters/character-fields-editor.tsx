@@ -1,9 +1,6 @@
 import type { ReactNode } from "react"
 import { useId } from "react"
-import {
-  DebouncedExpandingTextArea,
-  DebouncedInput,
-} from "../ui/debounced-input"
+import ExpandingTextArea from "react-expanding-textarea"
 import { inputClass, textAreaClass } from "../ui/styles"
 import type { CharacterField } from "./collections"
 
@@ -18,10 +15,7 @@ export function CharacterFieldsEditor(props: CharacterFieldsEditorProps) {
   return (
     <div className="grid gap-4">
       {props.fields.map((field) => {
-        const InputComponent = field.isLong
-          ? DebouncedExpandingTextArea
-          : DebouncedInput
-
+        const InputComponent = field.isLong ? ExpandingTextArea : "input"
         return (
           <Id key={field.id}>
             {(id) => (
@@ -40,8 +34,9 @@ export function CharacterFieldsEditor(props: CharacterFieldsEditorProps) {
                   id={id}
                   placeholder={`Enter your ${field.name.toLowerCase()}.`}
                   value={props.fieldValues[field.id] ?? ""}
-                  onChangeText={(value) => props.onChange(field.id, value)}
-                  debouncePeriod={500}
+                  onChange={(event) =>
+                    props.onChange(field.id, event.target.value)
+                  }
                   className={field.isLong ? textAreaClass : inputClass}
                   readOnly={props.readOnly}
                 />

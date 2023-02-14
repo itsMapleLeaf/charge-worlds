@@ -1,4 +1,3 @@
-import { useParams } from "@remix-run/react"
 import { Select, SelectItem, SelectPopover, useSelectState } from "ariakit"
 import clsx from "clsx"
 import cuid from "cuid"
@@ -15,11 +14,9 @@ import {
   MosaicWindowContext,
   updateTree,
 } from "react-mosaic-component"
-import { route } from "routes-gen"
 import { z } from "zod"
 import { isObject } from "../../helpers/is-object"
 import { useLocalStorage } from "../../helpers/local-storage"
-import { parseKeys } from "../../helpers/parse-keys"
 import {
   activePressClass,
   clearButtonClass,
@@ -153,11 +150,7 @@ export function DashboardWindowButtons(props: {
   )
 }
 
-export function DashboardMosaic({
-  moduleData,
-}: {
-  moduleData: Record<string, any>
-}) {
+export function DashboardMosaic() {
   const { mosaic, setMosaic } = useContext(DashboardContext)
   return (
     <Mosaic
@@ -176,7 +169,7 @@ export function DashboardMosaic({
             </div>
           )}
         >
-          <DashboardWindowContent windowId={id} moduleData={moduleData} />
+          <DashboardWindowContent windowId={id} />
         </MosaicWindow>
       )}
       zeroStateView={
@@ -194,30 +187,16 @@ export function DashboardMosaic({
   )
 }
 
-function DashboardWindowContent({
-  windowId,
-  moduleData,
-}: {
-  windowId: string
-  moduleData: Record<string, any>
-}) {
+function DashboardWindowContent({ windowId }: { windowId: string }) {
   const { windowModules } = useContext(DashboardContext)
   const modules = dashboardModules as Record<string, DashboardModule>
   const moduleId = windowModules[windowId]?.moduleId ?? Object.keys(modules)[0]
   const module = moduleId ? modules[moduleId] : undefined
-  const { worldId } = parseKeys(useParams(), ["worldId"])
 
   return (
     <section className="thin-scrollbar h-full w-full overflow-y-auto bg-slate-800">
       {module && moduleId ? (
-        <module.config.component
-          loaderData={moduleData[moduleId]}
-          actionData={{}}
-          formAction={route(
-            "/worlds/:worldId/dashboard/module-actions/:moduleId",
-            { worldId, moduleId },
-          )}
-        />
+        <module.config.component />
       ) : (
         <p className="p-4 text-2xl font-light opacity-50">
           Couldn&apos;t find that module 🤔
