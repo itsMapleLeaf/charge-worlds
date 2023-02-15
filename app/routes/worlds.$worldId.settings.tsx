@@ -113,16 +113,9 @@ export async function loader({ request, params }: LoaderArgs) {
     },
   })
 
-  const characterFields = await db.characterField.findMany({
-    where: { worldId: world.id },
-    orderBy: { order: "asc" },
-    select: { id: true, name: true, description: true, isLong: true },
-  })
-
   return json({
     players,
     world: { name: world.name },
-    characterFields,
   })
 }
 
