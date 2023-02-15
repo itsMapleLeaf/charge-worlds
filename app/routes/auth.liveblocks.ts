@@ -6,13 +6,6 @@ import { notFound } from "~/helpers/responses"
 import { db } from "~/modules/app/db.server"
 import { env } from "~/modules/app/env.server"
 import { getSessionUser } from "~/modules/auth/session.server"
-import type {
-  CharacterFieldInput,
-  CharacterInput,
-} from "~/modules/characters/collections"
-import type { DiceRollInput } from "~/modules/dice/collections"
-import { diceSchema } from "~/modules/dice/collections"
-import type { GalleryItemInput } from "~/modules/gallery/gallery-module"
 import {
   liveblocksFetch,
   RoomAccesses,
@@ -49,16 +42,11 @@ export async function action({ request }: ActionArgs) {
       select: {
         id: true,
         liveblocksRoomVersion: true,
-        migratedToLiveblocks: true,
       },
     })) ?? raise(notFound("World not found"))
 
   if (world.liveblocksRoomVersion < currentRoomVersion) {
     await syncLiveblocksRoom(world.id, body.room)
-  }
-
-  if (!world.migratedToLiveblocks) {
-    await migrateWorldToLiveblocks(world.id, body.room)
   }
 
   const membership =
@@ -112,123 +100,5 @@ async function syncLiveblocksRoom(worldId: string, roomId: string) {
   await db.world.update({
     where: { id: worldId },
     data: { liveblocksRoomVersion: currentRoomVersion },
-  })
-}
-
-async function migrateWorldToLiveblocks(worldId: string, room: string) {
-  console.info(`Migrating world ${worldId} to Liveblocks`)
-
-  const world = await db.world.findUniqueOrThrow({
-    where: { id: worldId },
-    include: {
-      characters: {
-        include: {
-          fieldValues: true,
-        },
-      },
-      characterFields: true,
-      clocks: true,
-      diceLogs: true,
-      galleryItems: true,
-    },
-  })
-
-  const liveObjectJson = <T>(data: T) => ({
-    liveblocksType: "LiveObject",
-    data,
-  })
-
-  const liveListJson = (data: unknown[]) => ({
-    liveblocksType: "LiveList",
-    data,
-  })
-
-  const liveMapJson = (data: Array<[string, unknown]>) => ({
-    liveblocksType: "LiveMap",
-    data: Object.fromEntries(data),
-  })
-
-  const storage = liveObjectJson({
-    characters: liveMapJson(
-      world.characters.map((character) => [
-        character.id,
-        liveObjectJson<CharacterInput>({
-          name: character.name,
-          momentum: character.momentum,
-          stress: character.stress,
-          condition: character.condition,
-          fieldValues: Object.fromEntries(
-            character.fieldValues.map((fieldValue) => [
-              fieldValue.fieldId,
-              fieldValue.value,
-            ]),
-          ),
-          actionLevels: z.record(z.number()).parse(character.actionLevels),
-          hidden: character.hidden,
-          color: character.color ?? undefined,
-          imageUrl: character.imageUrl ?? undefined,
-        }),
-      ]),
-    ),
-    characterFields: liveListJson(
-      world.characterFields.map((characterField) =>
-        liveObjectJson<CharacterFieldInput>({
-          id: characterField.id,
-          name: characterField.name,
-          description: characterField.description,
-          isLong: characterField.isLong,
-        }),
-      ),
-    ),
-    clocks: liveMapJson(
-      world.clocks.map((clock) => [
-        clock.id,
-        liveObjectJson({
-          name: clock.name,
-          progress: clock.progress,
-          maxProgress: clock.maxProgress,
-        }),
-      ]),
-    ),
-    diceRolls: liveListJson(
-      world.diceLogs.slice(-100).map((diceLog) =>
-        liveObjectJson<DiceRollInput>({
-          intent: diceLog.intent,
-          dice: diceSchema.parse(diceLog.dice),
-          resultType: diceLog.resultType === "HIGHEST" ? "highest" : "lowest",
-          rolledBy: diceLog.rolledById ?? "",
-          rolledAt: new Date().toISOString(),
-        }),
-      ),
-    ),
-    gallery: liveListJson(
-      world.galleryItems.map((galleryItem) =>
-        liveObjectJson<GalleryItemInput>({
-          id: galleryItem.id,
-          caption: galleryItem.caption,
-          imageUrl: galleryItem.imageUrl,
-          hidden: galleryItem.hidden,
-        }),
-      ),
-    ),
-  })
-
-  let response
-
-  response = await liveblocksFetch("DELETE", `/rooms/${room}/storage`)
-  if (!response.ok) {
-    await throwResponseError(response)
-  }
-
-  response = await liveblocksFetch("POST", `/rooms/${room}/storage`, storage)
-  if (!response.ok) {
-    await throwResponseError(response)
-  }
-
-  await db.world.update({
-    where: { id: worldId },
-    data: {
-      migratedToLiveblocks: true,
-    },
   })
 }

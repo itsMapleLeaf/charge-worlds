@@ -26,7 +26,6 @@ model World {
   name                  String
   memberships           Membership[]
   liveblocksRoomVersion Int             @default(0)
-  migratedToLiveblocks  Boolean         @default(false)
   snapshots             WorldSnapshot[]
 }
 
