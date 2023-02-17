@@ -26,5 +26,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: "lts/*"
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm ${{ matrix.script }}
