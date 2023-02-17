@@ -1,0 +1,30 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: lint:${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: ${{ matrix.script }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        script: [lint, typecheck]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm ${{ matrix.script }}
