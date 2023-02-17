@@ -28,4 +28,4 @@ jobs:
           node-version: "lts/*"
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
-      - run: pnpm ${{ matrix.script }}
+      - run: pnpm run ${{ matrix.script }}
