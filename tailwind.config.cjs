@@ -11,7 +11,10 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(function thinScrollbarComponent({ addComponents, theme }) {
+    // @ts-expect-error
+    require("@tailwindcss/container-queries"),
+
+    plugin(function thinScrollbar({ addComponents, theme }) {
       addComponents({
         ".thin-scrollbar": {
           "&::-webkit-scrollbar": {
@@ -28,6 +31,44 @@ module.exports = {
             },
         },
       })
+    }),
+
+    // adds a can-hover: variant, which applies if the device has pointer hovering capabilities
+    plugin(function canHover({ addVariant }) {
+      addVariant("can-hover", "@media (hover: hover)")
+    }),
+
+    // adds fluid-cols-* which applies the class `grid-template-columns: repeat(auto-fill, minmax(*, 1fr))`
+    // also fluid-cols-[auto-fill/auto-fit] to adjust the behavior
+    plugin(function fluidCols(api) {
+      api.matchUtilities(
+        {
+          "fluid-cols": (value) => ({
+            "--tw-fluid-cols": "auto-fill",
+            "grid-template-columns": `repeat(var(--tw-fluid-cols), minmax(${value}, 1fr))`,
+          }),
+        },
+        {
+          values: api.theme("width"),
+        },
+      )
+
+      api.addUtilities({
+        ".fluid-cols-auto-fill": {
+          "--tw-fluid-cols": "auto-fill",
+        },
+        ".fluid-cols-auto-fit": {
+          "--tw-fluid-cols": "auto-fit",
+        },
+      })
+    }),
+
+    // adds s-* utilities to apply both width and height
+    plugin(function size(api) {
+      api.matchUtilities(
+        { s: (value) => ({ width: value, height: value }) },
+        { values: api.theme("width") },
+      )
     }),
   ],
 }
