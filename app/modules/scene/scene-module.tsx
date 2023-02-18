@@ -39,52 +39,54 @@ export const sceneModule = new DashboardModule({
     "View reference images, clocks, and other info related to the current scene. This is where the action happens.",
   icon: <Scroll />,
 
-  component: function SceneView() {
-    const tabState = useTabState()
-
-    const tabs = [
-      {
-        id: "scene",
-        tabLabel: "Current Scene",
-        tabContent: <CurrentSceneView />,
-      },
-      {
-        id: "library",
-        tabLabel: "Library",
-        tabContent: <LibraryView />,
-      },
-    ]
-
-    return (
-      <div className="min-h-full bg-slate-900">
-        <TabList
-          as="nav"
-          state={tabState}
-          className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 p-3"
-        >
-          {tabs.map((tab) => (
-            <Tab
-              as="button"
-              key={tab.id}
-              id={tab.id}
-              className={navLinkClass({
-                isActive: tabState.selectedId === tab.id,
-              })}
-            >
-              {tab.tabLabel}
-            </Tab>
-          ))}
-        </TabList>
-
-        {tabs.map((tab) => (
-          <TabPanel key={tab.id} state={tabState} id={tab.id}>
-            {tab.tabContent}
-          </TabPanel>
-        ))}
-      </div>
-    )
-  },
+  component: SceneView,
 })
+
+function SceneView() {
+  const tabState = useTabState()
+
+  const tabs = [
+    {
+      id: "scene",
+      tabLabel: "Current Scene",
+      tabContent: <CurrentSceneView />,
+    },
+    {
+      id: "library",
+      tabLabel: "Library",
+      tabContent: <LibraryView />,
+    },
+  ]
+
+  return (
+    <div className="min-h-full bg-slate-900">
+      <TabList
+        as="nav"
+        state={tabState}
+        className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 p-3"
+      >
+        {tabs.map((tab) => (
+          <Tab
+            as="button"
+            key={tab.id}
+            id={tab.id}
+            className={navLinkClass({
+              isActive: tabState.selectedId === tab.id,
+            })}
+          >
+            {tab.tabLabel}
+          </Tab>
+        ))}
+      </TabList>
+
+      {tabs.map((tab) => (
+        <TabPanel key={tab.id} state={tabState} id={tab.id}>
+          {tab.tabContent}
+        </TabPanel>
+      ))}
+    </div>
+  )
+}
 
 function CurrentSceneView() {
   const cards = SceneCardCollection.useItems()
