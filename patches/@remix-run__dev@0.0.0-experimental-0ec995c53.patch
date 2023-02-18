@@ -1,0 +1,13 @@
+diff --git a/dist/compiler/plugins/cssBundleEntryModulePlugin.js b/dist/compiler/plugins/cssBundleEntryModulePlugin.js
+index 77f5e1b4ed5611f5211dfd39e080e3d8f6ac65cb..e3a4b73bd7f8dd065b1b8e14d1039ad8127be402 100644
+--- a/dist/compiler/plugins/cssBundleEntryModulePlugin.js
++++ b/dist/compiler/plugins/cssBundleEntryModulePlugin.js
+@@ -47,7 +47,7 @@ function cssBundleEntryModulePlugin(config) {
+           loader: "js",
+           contents: [
+           // These need to be exports to avoid tree shaking
+-          `export * as entryClient from ${JSON.stringify(path__default["default"].relative(config.rootDirectory, config.entryClientFilePath))};`, ...Object.keys(config.routes).map((key, index) => {
++          `export * as entryClient from ${JSON.stringify(path__default["default"].resolve(config.rootDirectory, config.entryClientFilePath))};`, ...Object.keys(config.routes).map((key, index) => {
+             let route = config.routes[key];
+             return `export * as route${index} from ${JSON.stringify(`./${route.file}`)};`;
+           })].join("\n")
