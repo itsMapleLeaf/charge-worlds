@@ -1,25 +1,25 @@
-import { ClientSideSuspense } from "@liveblocks/react"
 import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { Link, Outlet, useLoaderData, useParams } from "@remix-run/react"
-import { LayoutDashboard, Wrench } from "lucide-react"
-import { useId } from "react"
+import { useLoaderData } from "@remix-run/react"
+import {
+  Dialog,
+  DialogDisclosure,
+  DialogDismiss,
+  useDialogState,
+} from "ariakit"
+import { cx } from "class-variance-authority"
+import { SidebarClose, SidebarOpen } from "lucide-react"
 import { route } from "routes-gen"
+import { AppHeader } from "~/modules/app/app-header"
 import { db } from "~/modules/app/db.server"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
-import { LoadingPlaceholder } from "~/modules/ui/loading"
+import { circleButton } from "~/modules/ui/button"
+import { panel } from "~/modules/ui/panel"
 import { WorldContext } from "~/modules/world/world-context"
-import { assert } from "../helpers/assert"
 import { pick } from "../helpers/pick"
 import { getAppMeta } from "../modules/app/meta"
-import { AuthProvider } from "../modules/auth/auth-context"
 import { getMembership } from "../modules/auth/membership.server"
 import { getSessionUser } from "../modules/auth/session.server"
-import {
-  DashboardProvider,
-  DashboardWindowButtons,
-} from "../modules/dashboard/dashboard-ui"
-import { clearButtonClass } from "../modules/ui/styles"
 import { getWorld } from "../modules/world/world-db.server"
 
 export const meta: MetaFunction<typeof loader> = ({ data }) =>
@@ -32,6 +32,7 @@ export async function loader({ request, params }: LoaderArgs) {
     db.membership.findMany({
       where: { worldId: params.worldId },
       select: {
+        role: true,
         user: {
           select: { id: true, name: true, avatarUrl: true },
         },
@@ -45,6 +46,7 @@ export async function loader({ request, params }: LoaderArgs) {
     user: user && pick(user, ["id", "name", "avatarUrl"]),
     membership: membership && pick(membership, ["role"]),
     world: {
+      id: world.id,
       name: world.name,
       memberships,
     },
@@ -53,68 +55,65 @@ export async function loader({ request, params }: LoaderArgs) {
 
 export default function WorldPage() {
   const data = useLoaderData<typeof loader>()
-  const params = useParams()
-
-  assert(params.worldId, "worldId is required")
-  const worldId = params.worldId
-
-  const worldHeadingId = useId()
-
   return (
-    <AuthProvider value={data}>
-      <DashboardProvider>
-        <RoomContext.RoomProvider id={`world:${worldId}`} initialPresence={{}}>
-          <WorldContext.Provider world={data.world}>
-            <section
-              className="grid h-full grid-cols-[auto,1fr]"
-              aria-labelledby={worldHeadingId}
-            >
-              <nav className="thin-scrollbar flex w-12 flex-col items-center gap-4 bg-black/25 py-4 xl:w-64 xl:items-start xl:px-4">
-                <h2
-                  className="sr-only text-3xl font-light xl:not-sr-only"
-                  id={worldHeadingId}
-                >
-                  {data.world.name}
-                </h2>
-
-                <DashboardWindowButtons
-                  renderLabel={(label) => (
-                    <span className="sr-only xl:not-sr-only">{label}</span>
-                  )}
-                />
-
-                <div className="flex-1" />
-
-                {data.membership?.role === "OWNER" && (
-                  <>
-                    <Link
-                      to={route("/worlds/:worldId/dashboard", { worldId })}
-                      className={clearButtonClass}
-                      title="Dashboard"
-                    >
-                      <LayoutDashboard className="pointer-events-none" />
-                      <span className="sr-only xl:not-sr-only">Dashboard</span>
-                    </Link>
-                    <Link
-                      to={route("/worlds/:worldId/settings", { worldId })}
-                      className={clearButtonClass}
-                      title="Settings"
-                    >
-                      <Wrench className="pointer-events-none" />
-                      <span className="sr-only xl:not-sr-only">Settings</span>
-                    </Link>
-                  </>
-                )}
-              </nav>
-              <div>
-                <ClientSideSuspense fallback={<LoadingPlaceholder />}>
-                  {() => <Outlet />}
-                </ClientSideSuspense>
-              </div>
-            </section>
-          </WorldContext.Provider>
-        </RoomContext.RoomProvider>
-      </DashboardProvider>
-    </AuthProvider>
+    <WorldContext.Provider {...data}>
+      <RoomContext.RoomProvider
+        id={`world:${data.world.id}`}
+        initialPresence={{}}
+      >
+        <div className="flex flex-1 flex-col gap-4">
+          <AppHeader
+            title={data.world.name}
+            breadcrumbs={[{ label: "Your Worlds", to: route("/") }]}
+          />
+          <div className="flex flex-1 gap-4">
+            <aside className={cx(panel(), "w-48 hidden md:block lg:w-64")}>
+              <WorldNav />
+            </aside>
+            <main>main content</main>
+          </div>
+          <div className="sticky bottom-4 md:hidden">
+            <DrawerButton />
+          </div>
+        </div>
+      </RoomContext.RoomProvider>
+    </WorldContext.Provider>
   )
+}
+
+function DrawerButton() {
+  const dialog = useDialogState({
+    animated: true,
+  })
+  return (
+    <>
+      <DialogDisclosure
+        state={dialog}
+        className={circleButton}
+        title="Open drawer"
+      >
+        <SidebarOpen />
+      </DialogDisclosure>
+      <Dialog
+        state={dialog}
+        className={cx(
+          panel({ border: "right" }),
+          "fixed inset-y-0 left-0 flex min-h-0 w-64 -translate-x-full flex-col overflow-y-auto opacity-0 transition duration-300 data-[enter]:translate-x-0 data-[enter]:opacity-100",
+        )}
+      >
+        <div className="flex-1">
+          <WorldNav />
+        </div>
+        <div className="sticky bottom-0 p-4">
+          <DialogDismiss className={circleButton} title="Dismiss">
+            <SidebarClose />
+          </DialogDismiss>
+        </div>
+      </Dialog>
+    </>
+  )
+}
+
+function WorldNav() {
+  return <nav className="p-4">world nav</nav>
 }
