@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  * {
+    @apply outline-none;
+  }
+
+  :focus-visible {
+    @apply ring-2 ring-foreground-8/75;
+  }
+}
+
 .mosaic-window-toolbar {
   background: theme("colors.slate.700") !important;
   box-shadow: none !important;

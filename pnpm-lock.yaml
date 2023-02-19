@@ -33,6 +33,7 @@ specifiers:
   clsx: ^1.2.1
   cross-env: ^7.0.3
   cuid: ^3.0.0
+  date-fns: ^2.29.3
   del-cli: ^5.0.0
   depcheck: ^1.4.3
   eslint: ^8.34.0
@@ -74,6 +75,7 @@ dependencies:
   ariakit: 2.0.0-next.43_zula6vjvt3wdocc4mwcxqa6nzi
   clsx: 1.2.1
   cuid: 3.0.0
+  date-fns: 2.29.3
   inngest: 1.1.0
   lucide-react: 0.114.0_react@18.2.0
   pretty-bytes: 6.1.0
@@ -3709,6 +3711,11 @@ packages:
   /data-uri-to-buffer/3.0.1:
     resolution: {integrity: sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==}
     engines: {node: '>= 6'}
+
+  /date-fns/2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
+    dev: false
 
   /deasync/0.1.28:
     resolution: {integrity: sha512-QqLF6inIDwiATrfROIyQtwOQxjZuek13WRYZ7donU5wJPLoP67MnYxA6QtqdvdBy2mMqv5m3UefBVdJjvevOYg==}
