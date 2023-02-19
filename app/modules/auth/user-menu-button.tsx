@@ -17,7 +17,7 @@ export function UserMenuButton({ user }: UserMenuButtonProps) {
   })
   return (
     <>
-      <MenuButton state={menu} className="block">
+      <MenuButton state={menu} className="block" title="Account actions">
         {user.avatarUrl ? (
           <img
             src={user.avatarUrl}
