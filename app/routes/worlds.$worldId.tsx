@@ -1,7 +1,7 @@
 import { ClientSideSuspense } from "@liveblocks/react"
 import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { Link, useLoaderData } from "@remix-run/react"
+import { Link, Outlet, useLoaderData } from "@remix-run/react"
 import {
   Dialog,
   DialogDisclosure,
@@ -85,7 +85,7 @@ export default function WorldPage() {
             title={data.world.name}
             breadcrumbs={[{ label: "Your Worlds", to: route("/") }]}
           />
-          <div className="flex flex-1 gap-4">
+          <div className="flex flex-1 items-start gap-4">
             <aside
               className={cx(
                 panel(),
@@ -94,7 +94,9 @@ export default function WorldPage() {
             >
               <WorldNav />
             </aside>
-            <main>main content</main>
+            <div className="flex-1">
+              <Outlet />
+            </div>
           </div>
           <div className="sticky bottom-4 md:hidden">
             <DrawerButton />
@@ -144,7 +146,7 @@ function WorldNav() {
   return (
     <nav className="flex flex-col">
       <WorldNavLink
-        to={route("/worlds/:worldId/scene", { worldId: world.id })}
+        to={route("/worlds/:worldId", { worldId: world.id })}
         icon={Mountain}
         label="Scene"
       />
