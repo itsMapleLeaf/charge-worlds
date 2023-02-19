@@ -19,7 +19,7 @@ export const panel = cva("", {
       none: "",
     },
     shadow: {
-      default: "shadow-md",
+      default: "shadow-md shadow-black/50",
       none: "",
     },
   },
