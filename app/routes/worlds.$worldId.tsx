@@ -21,6 +21,7 @@ import {
   SidebarOpen,
   Users,
 } from "lucide-react"
+import { useLayoutEffect, useState } from "react"
 import { route } from "routes-gen"
 import { AppHeader } from "~/modules/app/app-header"
 import { db } from "~/modules/app/db.server"
@@ -88,7 +89,7 @@ export default function WorldPage() {
             <aside
               className={cx(
                 panel(),
-                "w-48 hidden md:block lg:w-64 overflow-y-auto",
+                "w-48 hidden md:block lg:w-64 overflow-y-auto thin-scrollbar",
               )}
             >
               <WorldNav />
@@ -121,7 +122,7 @@ function DrawerButton() {
         state={dialog}
         className={cx(
           panel({ border: "right" }),
-          "fixed inset-y-0 left-0 flex min-h-0 w-64 -translate-x-full flex-col overflow-y-auto opacity-0 transition duration-300 data-[enter]:translate-x-0 data-[enter]:opacity-100",
+          "fixed inset-y-0 left-0 flex min-h-0 w-64 -translate-x-full flex-col overflow-y-auto opacity-0 transition duration-300 data-[enter]:translate-x-0 data-[enter]:opacity-100 thin-scrollbar",
         )}
       >
         <div className="flex-1">
@@ -148,20 +149,14 @@ function WorldNav() {
         label="Scene"
       />
 
-      <details className="group">
-        <summary
-          className={cx(button({ border: "none", shadow: "none" }), "w-full")}
-        >
-          <Users aria-hidden />
-          <span className="flex-1">Characters</span>
-          <ChevronUp aria-hidden className="transition group-open:rotate-180" />
-        </summary>
+      <CharacterListDetails>
+        <CharacterListSummary />
         <div className="border-y border-white/10">
           <ClientSideSuspense fallback={<LoadingPlaceholder />}>
             {() => <CharacterList />}
           </ClientSideSuspense>
         </div>
-      </details>
+      </CharacterListDetails>
 
       <WorldNavLink
         to={route("/worlds/:worldId/library", { worldId: world.id })}
@@ -202,6 +197,27 @@ function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
   )
 }
 
+function CharacterListDetails(props: { children: React.ReactNode }) {
+  const persistenceRef = useDetailsPersistence("world-nav-characters")
+  return (
+    <details className="group" ref={persistenceRef}>
+      {props.children}
+    </details>
+  )
+}
+
+function CharacterListSummary() {
+  return (
+    <summary
+      className={cx(button({ border: "none", shadow: "none" }), "w-full")}
+    >
+      <Users aria-hidden />
+      <span className="flex-1">Characters</span>
+      <ChevronUp aria-hidden className="transition group-open:rotate-180" />
+    </summary>
+  )
+}
+
 function CharacterList() {
   const { world, membership } = WorldContext.useValue()
 
@@ -235,4 +251,24 @@ function CharacterList() {
       ))}
     </div>
   )
+}
+
+function useDetailsPersistence(key: string) {
+  const [element, ref] = useState<HTMLDetailsElement | null>()
+
+  useLayoutEffect(() => {
+    if (!element) return
+
+    element.open = localStorage.getItem(key) === "true"
+
+    const handleToggle = () => {
+      localStorage.setItem(key, String(element.open))
+    }
+    element.addEventListener("toggle", handleToggle)
+    return () => {
+      element.removeEventListener("toggle", handleToggle)
+    }
+  }, [element, key])
+
+  return ref
 }
