@@ -99,7 +99,7 @@ function CreateWorldButton() {
 
   return (
     <Form method="post">
-      <button className={button}>
+      <button className={button()}>
         {pending ? <LoadingSpinner size="small" /> : <Wand2 />}
         Create a new world
       </button>

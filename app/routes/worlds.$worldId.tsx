@@ -1,6 +1,7 @@
+import { ClientSideSuspense } from "@liveblocks/react"
 import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { useLoaderData } from "@remix-run/react"
+import { Link, useLoaderData } from "@remix-run/react"
 import {
   Dialog,
   DialogDisclosure,
@@ -8,12 +9,18 @@ import {
   useDialogState,
 } from "ariakit"
 import { cx } from "class-variance-authority"
-import { SidebarClose, SidebarOpen } from "lucide-react"
+import { ChevronLeft, SidebarClose, SidebarOpen, Users } from "lucide-react"
 import { route } from "routes-gen"
 import { AppHeader } from "~/modules/app/app-header"
 import { db } from "~/modules/app/db.server"
+import {
+  characterColors,
+  defaultCharacterColor,
+} from "~/modules/characters/character-colors"
+import { CharacterCollection } from "~/modules/characters/collections"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
-import { circleButton } from "~/modules/ui/button"
+import { button, circleButton } from "~/modules/ui/button"
+import { LoadingPlaceholder } from "~/modules/ui/loading"
 import { panel } from "~/modules/ui/panel"
 import { WorldContext } from "~/modules/world/world-context"
 import { pick } from "../helpers/pick"
@@ -67,7 +74,12 @@ export default function WorldPage() {
             breadcrumbs={[{ label: "Your Worlds", to: route("/") }]}
           />
           <div className="flex flex-1 gap-4">
-            <aside className={cx(panel(), "w-48 hidden md:block lg:w-64")}>
+            <aside
+              className={cx(
+                panel(),
+                "w-48 hidden md:block lg:w-64 overflow-y-auto",
+              )}
+            >
               <WorldNav />
             </aside>
             <main>main content</main>
@@ -115,5 +127,49 @@ function DrawerButton() {
 }
 
 function WorldNav() {
-  return <nav className="p-4">world nav</nav>
+  return (
+    <nav className="flex flex-col">
+      <ClientSideSuspense fallback={<LoadingPlaceholder />}>
+        {() => <CharactersNav />}
+      </ClientSideSuspense>
+    </nav>
+  )
+}
+
+function CharactersNav() {
+  const { world } = WorldContext.useValue()
+  const characters = CharacterCollection.useItems()
+
+  return (
+    <details className="group" open>
+      <summary className={cx(button({ border: "none" }), "w-full")}>
+        <Users aria-hidden />
+        <span className="flex-1">Characters</span>
+        <ChevronLeft aria-hidden className="transition group-open:-rotate-90" />
+      </summary>
+      <div className="flex flex-col">
+        {characters.map((character) => (
+          <Link
+            to={route("/worlds/:worldId/characters/:characterId", {
+              worldId: world.id,
+              characterId: character._id,
+            })}
+            className={button({ border: "none", size: 10 })}
+            key={character._id}
+          >
+            <div
+              className={cx(
+                "s-5 rounded-full relative -top-px brightness-150",
+                (
+                  (character.color && characterColors[character.color]) ||
+                  defaultCharacterColor
+                ).background,
+              )}
+            />
+            <span className="flex-1">{character.name}</span>
+          </Link>
+        ))}
+      </div>
+    </details>
+  )
 }
