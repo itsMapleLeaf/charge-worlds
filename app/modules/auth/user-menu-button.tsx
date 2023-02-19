@@ -2,26 +2,27 @@ import { Form } from "@remix-run/react"
 import { Menu, MenuButton, MenuItem, useMenuState } from "ariakit"
 import { LogOut, User } from "lucide-react"
 import { route } from "routes-gen"
-import { clearButtonClass, menuItemClass, menuPanelClass } from "../ui/styles"
+import type { AuthContextUser } from "../app/auth"
+import { menuItemClass, menuPanelClass } from "../ui/styles"
 
-export function UserMenuButton({
-  user,
-}: {
-  user: { name: string; avatarUrl: string | null }
-}) {
+export type UserMenuButtonProps = {
+  user: AuthContextUser
+}
+
+export function UserMenuButton({ user }: UserMenuButtonProps) {
   const menu = useMenuState({
-    gutter: 4,
+    gutter: 8,
     placement: "bottom-end",
     animated: true,
   })
   return (
     <>
-      <MenuButton className={clearButtonClass} state={menu}>
+      <MenuButton state={menu} className="block">
         {user.avatarUrl ? (
           <img
             src={user.avatarUrl}
             alt=""
-            className="h-6 w-6 rounded-full object-cover"
+            className="rounded-full object-cover s-8"
           />
         ) : (
           <User />

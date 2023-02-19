@@ -1,10 +1,25 @@
 const plugin = require("tailwindcss/plugin")
+const colors = require("@radix-ui/colors")
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["app/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      colors: {
+        neutral: Object.fromEntries(
+          Object.entries(colors.violetDark).map(([key, value]) => [
+            key.replace("violet", ""),
+            value,
+          ]),
+        ),
+        foreground: Object.fromEntries(
+          Object.entries(colors.violet).map(([key, value]) => [
+            key.replace("violet", ""),
+            value,
+          ]),
+        ),
+      },
       fontFamily: {
         body: ["RubikVariable", "sans-serif"],
       },

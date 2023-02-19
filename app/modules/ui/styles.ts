@@ -22,11 +22,11 @@ export const solidButtonClass = clsx(
 )
 
 export const menuPanelClass = clsx(
-  "flex min-w-[10rem] max-w-[16rem] origin-top flex-col overflow-clip rounded-md bg-slate-600 shadow-lg transition duration-100 data-[enter]:scale-100 data-[leave]:scale-95 data-[enter]:opacity-100 data-[leave]:opacity-0",
+  "flex min-w-[10rem] max-w-[16rem] origin-top flex-col overflow-clip rounded-md bg-foreground-1 text-neutral-1 shadow-lg transition duration-100 data-[enter]:scale-100 data-[leave]:scale-95 data-[enter]:opacity-100 data-[leave]:opacity-0",
 )
 
 export const menuItemClass = clsx(
-  "block cursor-pointer p-3 data-[active-item]:bg-black/25",
+  "block cursor-pointer p-3 transition data-[active-item]:bg-black/25",
 )
 
 export const navLinkClass = ({ isActive = false } = {}) =>

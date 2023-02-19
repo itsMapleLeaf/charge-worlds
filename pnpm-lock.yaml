@@ -13,6 +13,7 @@ specifiers:
   '@liveblocks/node': ^1.0.0
   '@liveblocks/react': ^1.0.0
   '@prisma/client': ^4.10.1
+  '@radix-ui/colors': ^0.1.8
   '@remix-run/dev': 0.0.0-experimental-0ec995c53
   '@remix-run/express': 0.0.0-experimental-0ec995c53
   '@remix-run/node': 0.0.0-experimental-0ec995c53
@@ -65,6 +66,7 @@ dependencies:
   '@liveblocks/node': 1.0.0
   '@liveblocks/react': 1.0.0_react@18.2.0
   '@prisma/client': 4.10.1_prisma@4.10.1
+  '@radix-ui/colors': 0.1.8
   '@remix-run/node': 0.0.0-experimental-0ec995c53
   '@remix-run/react': 0.0.0-experimental-0ec995c53_biqbaboplfbrettd7655fr4n2y
   '@remix-run/vercel': 0.0.0-experimental-0ec995c53_@vercel+node@2.9.4
@@ -2034,6 +2036,10 @@ packages:
   /@prisma/engines/4.10.1:
     resolution: {integrity: sha512-B3tcTxjx196nuAu1GOTKO9cGPUgTFHYRdkPkTS4m5ptb2cejyBlH9X7GOfSt3xlI7p4zAJDshJP4JJivCg9ouA==}
     requiresBuild: true
+
+  /@radix-ui/colors/0.1.8:
+    resolution: {integrity: sha512-jwRMXYwC0hUo0mv6wGpuw254Pd9p/R6Td5xsRpOmaWkUHlooNWqVcadgyzlRumMq3xfOTXwJReU0Jv+EIy4Jbw==}
+    dev: false
 
   /@react-dnd/asap/4.0.1:
     resolution: {integrity: sha512-kLy0PJDDwvwwTXxqTFNAAllPHD73AycE9ypWeln/IguoGBEbvFcPDbCV03G52bEcC5E+YgupBE0VzHGdC8SIXg==}

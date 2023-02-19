@@ -28,6 +28,7 @@
     "@liveblocks/node": "^1.0.0",
     "@liveblocks/react": "^1.0.0",
     "@prisma/client": "^4.10.1",
+    "@radix-ui/colors": "^0.1.8",
     "@remix-run/node": "0.0.0-experimental-0ec995c53",
     "@remix-run/react": "0.0.0-experimental-0ec995c53",
     "@remix-run/vercel": "0.0.0-experimental-0ec995c53",
