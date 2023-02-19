@@ -23,7 +23,9 @@ import { pick } from "./helpers/pick"
 import { AuthProvider } from "./modules/app/auth"
 import { getAppMeta } from "./modules/app/meta"
 import { getSessionUser } from "./modules/auth/session.server"
+import { ExternalLink } from "./modules/dom/external-link"
 import { CatchBoundaryMessage } from "./modules/ui/catch-boundary-message"
+import { linkClass } from "./modules/ui/link"
 import { maxWidthContainerClass } from "./modules/ui/styles"
 import tailwind from "./modules/ui/tailwind.css"
 import { ToastProvider } from "./modules/ui/toast"
@@ -108,6 +110,22 @@ function Document({ children }: { children: ReactNode }) {
           <div className="mx-auto flex w-full max-w-screen-lg flex-1 flex-col p-4 md:px-8">
             <ToastProvider>{children}</ToastProvider>
           </div>
+          <footer className="p-2 text-center text-xs opacity-60">
+            art by{" "}
+            <ExternalLink
+              href="https://www.pixiv.net/en/artworks/101034134"
+              className={linkClass}
+            >
+              ALC.3%VOL
+            </ExternalLink>{" "}
+            &bull;{" "}
+            <ExternalLink
+              href="https://github.com/itsMapleLeaf/charge-worlds"
+              className={linkClass}
+            >
+              view source
+            </ExternalLink>
+          </footer>
         </div>
         <Scripts />
         {process.env.NODE_ENV !== "production" && <LiveReload />}
