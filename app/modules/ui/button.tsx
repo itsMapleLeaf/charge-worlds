@@ -14,6 +14,9 @@ export const button = ({
     size === 12 && "h-12",
   )
 
+export const squareButton = (props?: PanelProps) =>
+  clsx(interactivePanel(props), "inline-flex items-center justify-center s-12")
+
 export const circleButton = clsx(
   interactivePanel({ border: "circle" }),
   "inline-flex items-center justify-center s-12",

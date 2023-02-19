@@ -95,7 +95,9 @@ export default function WorldPage() {
               <WorldNav />
             </aside>
             <div className="flex-1">
-              <Outlet />
+              <ClientSideSuspense fallback={<LoadingPlaceholder />}>
+                {() => <Outlet />}
+              </ClientSideSuspense>
             </div>
           </div>
           <div className="sticky bottom-4 md:hidden">
