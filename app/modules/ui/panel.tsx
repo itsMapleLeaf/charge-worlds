@@ -33,5 +33,5 @@ export const panel = cva("", {
 export const interactivePanel = (props?: PanelProps) =>
   cx(
     panel(props),
-    "transition hover:border-foreground-8/50 hover:text-foreground-7 active:scale-95 active:duration-[0s]",
+    "transition hover:border-foreground-8/50 hover:text-foreground-7 active:scale-[0.97] active:duration-[0s] select-none cursor-pointer",
   )
