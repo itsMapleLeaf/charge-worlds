@@ -9,7 +9,18 @@ import {
   useDialogState,
 } from "ariakit"
 import { cx } from "class-variance-authority"
-import { ChevronLeft, SidebarClose, SidebarOpen, Users } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
+import {
+  ChevronUp,
+  Gamepad,
+  Globe,
+  Library,
+  List,
+  Mountain,
+  SidebarClose,
+  SidebarOpen,
+  Users,
+} from "lucide-react"
 import { route } from "routes-gen"
 import { AppHeader } from "~/modules/app/app-header"
 import { db } from "~/modules/app/db.server"
@@ -127,49 +138,101 @@ function DrawerButton() {
 }
 
 function WorldNav() {
+  const { world, membership } = WorldContext.useValue()
+
   return (
     <nav className="flex flex-col">
-      <ClientSideSuspense fallback={<LoadingPlaceholder />}>
-        {() => <CharactersNav />}
-      </ClientSideSuspense>
+      <WorldNavLink
+        to={route("/worlds/:worldId/scene", { worldId: world.id })}
+        icon={Mountain}
+        label="Scene"
+      />
+
+      <details className="group">
+        <summary
+          className={cx(button({ border: "none", shadow: "none" }), "w-full")}
+        >
+          <Users aria-hidden />
+          <span className="flex-1">Characters</span>
+          <ChevronUp aria-hidden className="transition group-open:rotate-180" />
+        </summary>
+        <div className="border-y border-white/10">
+          <ClientSideSuspense fallback={<LoadingPlaceholder />}>
+            {() => <CharacterList />}
+          </ClientSideSuspense>
+        </div>
+      </details>
+
+      <WorldNavLink
+        to={route("/worlds/:worldId/library", { worldId: world.id })}
+        icon={Library}
+        label="Library"
+      />
+
+      {membership?.role === "OWNER" && (
+        <>
+          <WorldNavLink
+            to={route("/worlds/:worldId/settings", { worldId: world.id })}
+            icon={Globe}
+            label="World Details"
+          />
+          <WorldNavLink
+            to={route("/worlds/:worldId/players", { worldId: world.id })}
+            icon={Gamepad}
+            label="Players"
+          />
+          <WorldNavLink
+            to={route("/worlds/:worldId/character-fields", {
+              worldId: world.id,
+            })}
+            icon={List}
+            label="Character Fields"
+          />
+        </>
+      )}
     </nav>
   )
 }
 
-function CharactersNav() {
-  const { world } = WorldContext.useValue()
-  const characters = CharacterCollection.useItems()
+function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
+  return (
+    <Link to={props.to} className={button({ border: "none", shadow: "none" })}>
+      <props.icon aria-hidden /> {props.label}
+    </Link>
+  )
+}
+
+function CharacterList() {
+  const { world, membership } = WorldContext.useValue()
+
+  let characters = CharacterCollection.useItems()
+  if (membership?.role !== "OWNER") {
+    characters = characters.filter((character) => !character.hidden)
+  }
 
   return (
-    <details className="group" open>
-      <summary className={cx(button({ border: "none" }), "w-full")}>
-        <Users aria-hidden />
-        <span className="flex-1">Characters</span>
-        <ChevronLeft aria-hidden className="transition group-open:-rotate-90" />
-      </summary>
-      <div className="flex flex-col">
-        {characters.map((character) => (
-          <Link
-            to={route("/worlds/:worldId/characters/:characterId", {
-              worldId: world.id,
-              characterId: character._id,
-            })}
-            className={button({ border: "none", size: 10 })}
-            key={character._id}
-          >
-            <div
-              className={cx(
-                "s-5 rounded-full relative -top-px brightness-150",
-                (
-                  (character.color && characterColors[character.color]) ||
-                  defaultCharacterColor
-                ).background,
-              )}
-            />
-            <span className="flex-1">{character.name}</span>
-          </Link>
-        ))}
-      </div>
-    </details>
+    <div className="flex flex-col">
+      {characters.map((character) => (
+        <Link
+          to={route("/worlds/:worldId/characters/:characterId", {
+            worldId: world.id,
+            characterId: character._id,
+          })}
+          className={button({ border: "none", shadow: "none", size: 10 })}
+          key={character._id}
+        >
+          <div
+            className={cx(
+              "s-5 rounded-full relative -top-px brightness-150",
+              (
+                (character.color && characterColors[character.color]) ||
+                defaultCharacterColor
+              ).background,
+            )}
+          />
+          <span className="flex-1">{character.name}</span>
+        </Link>
+      ))}
+    </div>
   )
 }
