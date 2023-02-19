@@ -30,6 +30,7 @@ specifiers:
   '@types/react-dom': ^18.0.11
   '@vercel/node': ^2.9.4
   ariakit: 2.0.0-next.43
+  class-variance-authority: ^0.4.0
   clsx: ^1.2.1
   cross-env: ^7.0.3
   cuid: ^3.0.0
@@ -73,6 +74,7 @@ dependencies:
   '@remix-run/vercel': 0.0.0-experimental-0ec995c53_@vercel+node@2.9.4
   '@vercel/node': 2.9.4
   ariakit: 2.0.0-next.43_zula6vjvt3wdocc4mwcxqa6nzi
+  class-variance-authority: 0.4.0_typescript@4.9.5
   clsx: 1.2.1
   cuid: 3.0.0
   date-fns: 2.29.3
@@ -3424,6 +3426,17 @@ packages:
     resolution: {integrity: sha512-up5ggbaDqOqJ4UqLKZ2naVkyqSJQgJi5lwD6b6mM748ysrghDBX0bx/qJTUHzw7zu6Mq4gycviSF5hJnwceD8w==}
     engines: {node: '>=8'}
     dev: true
+
+  /class-variance-authority/0.4.0_typescript@4.9.5:
+    resolution: {integrity: sha512-74enNN8O9ZNieycac/y8FxqgyzZhZbxmCitAtAeUrLPlxjSd5zA7LfpprmxEcOmQBnaGs5hYhiSGnJ0mqrtBLQ==}
+    peerDependencies:
+      typescript: '>= 4.5.5 < 5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      typescript: 4.9.5
+    dev: false
 
   /classnames/2.3.2:
     resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
@@ -8919,7 +8932,6 @@ packages:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /ufo/1.0.1:
     resolution: {integrity: sha512-boAm74ubXHY7KJQZLlXrtMz52qFvpsbOxDcZOnw/Wf+LS4Mmyu7JxmzD4tDLtUQtmZECypJ0FrCz4QIe6dvKRA==}

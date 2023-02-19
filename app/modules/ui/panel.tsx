@@ -1,10 +1,37 @@
-import clsx from "clsx"
+import type { VariantProps } from "class-variance-authority"
+import { cva, cx } from "class-variance-authority"
 
-export const panelStyle = clsx(
-  "rounded-md border border-white/10 bg-black/50 shadow-md backdrop-blur",
-)
+export type PanelProps = VariantProps<typeof panel>
 
-export const interactivePanelStyle = clsx(
-  panelStyle,
-  "transition hover:border-foreground-8/50 hover:text-foreground-7 active:scale-95 active:duration-[0s]",
-)
+export const panel = cva("", {
+  variants: {
+    background: {
+      default: "bg-black/50 backdrop-blur",
+      none: "",
+    },
+    border: {
+      default: "border border-white/10 rounded-md",
+      circle: "border border-white/10 rounded-full",
+      left: "border-l border-white/10",
+      right: "border-r border-white/10",
+      top: "border-t border-white/10",
+      bottom: "border-b border-white/10",
+      none: "",
+    },
+    shadow: {
+      default: "shadow-md",
+      none: "",
+    },
+  },
+  defaultVariants: {
+    background: "default",
+    border: "default",
+    shadow: "default",
+  },
+})
+
+export const interactivePanel = (props?: PanelProps) =>
+  cx(
+    panel(props),
+    "transition hover:border-foreground-8/50 hover:text-foreground-7 active:scale-95 active:duration-[0s]",
+  )

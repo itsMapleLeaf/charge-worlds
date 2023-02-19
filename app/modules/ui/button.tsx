@@ -1,7 +1,12 @@
 import clsx from "clsx"
-import { interactivePanelStyle } from "./panel"
+import { interactivePanel } from "./panel"
 
-export const buttonStyle = clsx(
-  interactivePanelStyle,
+export const button = clsx(
+  interactivePanel(),
   "inline-flex h-12 items-center gap-2 px-3 [&>svg]:s-5",
+)
+
+export const circleButton = clsx(
+  interactivePanel({ border: "circle" }),
+  "inline-flex items-center justify-center s-12",
 )

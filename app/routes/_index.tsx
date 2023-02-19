@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node"
+import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json, redirect } from "@remix-run/node"
 import { Form, Link, useLoaderData, useTransition } from "@remix-run/react"
 import clsx from "clsx"
@@ -7,13 +7,17 @@ import { route } from "routes-gen"
 import { raise } from "~/helpers/errors"
 import { unauthorized } from "~/helpers/responses"
 import { AppHeader } from "~/modules/app/app-header"
+import { getAppMeta } from "~/modules/app/meta"
 import { getSessionUser } from "~/modules/auth/session.server"
 import { RelativeTimestamp } from "~/modules/dom/relative-timestamp"
-import { buttonStyle } from "~/modules/ui/button"
+import { button } from "~/modules/ui/button"
 import { linkClass } from "~/modules/ui/link"
 import { LoadingSpinner } from "~/modules/ui/loading"
-import { interactivePanelStyle } from "~/modules/ui/panel"
+import { interactivePanel } from "~/modules/ui/panel"
 import { db } from "../modules/app/db.server"
+
+export const meta: MetaFunction<typeof loader> = () =>
+  getAppMeta({ title: "Your Worlds" })
 
 export async function loader({ request }: LoaderArgs) {
   const user = await getSessionUser(request)
@@ -95,7 +99,7 @@ function CreateWorldButton() {
 
   return (
     <Form method="post">
-      <button className={buttonStyle}>
+      <button className={button}>
         {pending ? <LoadingSpinner size="small" /> : <Wand2 />}
         Create a new world
       </button>
@@ -133,7 +137,7 @@ function WorldList({
         <Link
           key={world.id}
           to={route("/worlds/:worldId", { worldId: world.id })}
-          className={clsx(interactivePanelStyle, "flex flex-col p-4")}
+          className={clsx(interactivePanel(), "flex flex-col p-4")}
         >
           <h2 className="mb-2 text-2xl font-light">{world.name}</h2>
           <p className="mt-auto text-sm opacity-75">
