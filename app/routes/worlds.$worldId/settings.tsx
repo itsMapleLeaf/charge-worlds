@@ -16,13 +16,13 @@ import { useEffect, useId, useRef } from "react"
 import { route } from "routes-gen"
 import { zfd } from "zod-form-data"
 import { CharacterFieldCollection } from "~/modules/characters/collections"
-import { assert } from "../helpers/assert"
-import { discordIdSchema } from "../helpers/discord-id"
-import { ActionRouter, useActionUi } from "../helpers/form-action-router"
-import { db } from "../modules/app/db.server"
-import { requireWorldOwner } from "../modules/auth/membership.server"
-import { requireSessionUser } from "../modules/auth/session.server"
-import { Field } from "../modules/ui/field"
+import { assert } from "../../helpers/assert"
+import { discordIdSchema } from "../../helpers/discord-id"
+import { ActionRouter, useActionUi } from "../../helpers/form-action-router"
+import { db } from "../../modules/app/db.server"
+import { requireWorldOwner } from "../../modules/auth/membership.server"
+import { requireSessionUser } from "../../modules/auth/session.server"
+import { Field } from "../../modules/ui/field"
 import {
   checkboxClass,
   clearButtonClass,
@@ -30,8 +30,8 @@ import {
   inputClass,
   maxWidthContainerClass,
   solidButtonClass,
-} from "../modules/ui/styles"
-import { getWorld } from "../modules/world/world-db.server"
+} from "../../modules/ui/styles"
+import { getWorld } from "../../modules/world/world-db.server"
 
 const thisRoute = (params: Params) =>
   route("/worlds/:worldId/settings", params as any)

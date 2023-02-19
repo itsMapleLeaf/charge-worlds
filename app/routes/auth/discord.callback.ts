@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node"
 import { redirect } from "@remix-run/node"
-import { createSessionCookie } from "../modules/auth/session.server"
+import { createSessionCookie } from "../../modules/auth/session.server"
 
 export async function loader({ request }: LoaderArgs) {
   const url = new URL(request.url)
