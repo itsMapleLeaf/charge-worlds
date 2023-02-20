@@ -1,4 +1,4 @@
-import type { UniqueIdentifier } from "@dnd-kit/core"
+import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core"
 import {
   closestCenter,
   DndContext,
@@ -17,15 +17,8 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { cx } from "class-variance-authority"
-import {
-  Eye,
-  EyeOff,
-  GripVertical,
-  Image,
-  PlusSquare,
-  Trash,
-  Type,
-} from "lucide-react"
+import type { LucideIcon } from "lucide-react"
+import { Eye, EyeOff, Grip, Image, PlusSquare, Trash, Type } from "lucide-react"
 import type { ReactNode } from "react"
 import { Fragment } from "react"
 import TextArea from "react-expanding-textarea"
@@ -33,7 +26,6 @@ import { CardCollection } from "~/modules/cards/card-collection"
 import type { Card, CardBlock } from "~/modules/cards/card-schema"
 import { button } from "~/modules/ui/button"
 import { panel } from "~/modules/ui/panel"
-import { dividerClass } from "~/modules/ui/styles"
 import { WorldContext } from "~/modules/world/world-context"
 
 export default function LibraryPage() {
@@ -152,102 +144,90 @@ function CardEditor({
 
   const [animateRef] = useAutoAnimate()
 
-  return (
-    <Draggable id={card.id}>
-      {({ handle }) => (
-        <div className={panel()} ref={animateRef}>
-          <div className="flex min-w-0">
-            {handle}
-            <input
-              title="Card Title"
-              placeholder="Card Title"
-              value={card.title}
-              onChange={(event) => {
-                mutations.update(index, { title: event.target.value })
-              }}
-              className="min-w-0 flex-1 bg-transparent py-2 pr-2 text-2xl font-light transition focus:text-foreground-8 focus:ring-0"
-            />
-          </div>
+  function updateBlock(id: string, props: Partial<CardBlock>) {
+    mutations.update(index, {
+      blocks: card.blocks.map((block) =>
+        block.id === id ? { ...block, ...(props as {}) } : block,
+      ),
+    })
+  }
 
-          <hr className={dividerClass} />
+  function deleteBlock(id: string) {
+    mutations.update(index, {
+      blocks: card.blocks.filter((block) => block.id !== id),
+    })
+  }
+
+  function handleDragEnd({ over, active }: DragEndEvent) {
+    if (over && active) {
+      const overIndex = card.blocks.findIndex((block) => block.id === over.id)
+      const activeIndex = card.blocks.findIndex(
+        (block) => block.id === active.id,
+      )
+      mutations.update(index, {
+        blocks: arrayMove(card.blocks, activeIndex, overIndex),
+      })
+    }
+  }
+
+  return (
+    <DragSortable id={card.id}>
+      {({ handle }) => (
+        <div className={cx(panel(), "divide-y divide-white/10")}>
+          <input
+            title="Card Title"
+            placeholder="Card Title"
+            value={card.title}
+            onChange={(event) => {
+              mutations.update(index, { title: event.target.value })
+            }}
+            className="min-w-0 flex-1 bg-transparent p-2 text-2xl font-light transition focus:text-foreground-8 focus:ring-0"
+          />
 
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
-            onDragEnd={({ over, active }) => {
-              if (over && active) {
-                const overIndex = card.blocks.findIndex(
-                  (block) => block.id === over.id,
-                )
-                const activeIndex = card.blocks.findIndex(
-                  (block) => block.id === active.id,
-                )
-                mutations.update(index, {
-                  blocks: arrayMove(card.blocks, activeIndex, overIndex),
-                })
-              }
-            }}
+            onDragEnd={handleDragEnd}
           >
             <SortableContext items={card.blocks}>
-              {card.blocks.map((block) => (
-                <Draggable id={block.id} key={block.id}>
-                  {({ handle }) => (
-                    <div className="flex min-w-0 items-center">
-                      {handle}
-                      <div className="flex min-w-0 flex-1 items-center">
+              <div className="grid gap-2 p-2" ref={animateRef}>
+                {card.blocks.map((block) => (
+                  <DragSortable id={block.id} key={block.id}>
+                    {({ handle }) => (
+                      <CardBlockControls
+                        dragHandle={handle}
+                        onDelete={() => {
+                          deleteBlock(block.id)
+                        }}
+                      >
                         {block.type === "text" ? (
                           <CardTextBlockEditor
                             block={block}
                             onChangeText={(text) => {
-                              mutations.update(index, {
-                                blocks: card.blocks.map((b) =>
-                                  b.id === block.id ? { ...b, text } : b,
-                                ),
-                              })
+                              updateBlock(block.id, { text })
                             }}
                           />
                         ) : block.type === "image" ? (
                           <CardImageBlockEditor
                             block={block}
                             onChangeSrc={(src) => {
-                              mutations.update(index, {
-                                blocks: card.blocks.map((b) =>
-                                  b.id === block.id ? { ...b, src } : b,
-                                ),
-                              })
+                              updateBlock(block.id, { src })
                             }}
                           />
                         ) : null}
-                      </div>
-                      <button
-                        title="Delete block"
-                        className="px-1.5"
-                        onClick={() => {
-                          mutations.update(index, {
-                            blocks: card.blocks.filter(
-                              (b) => b.id !== block.id,
-                            ),
-                          })
-                        }}
-                      >
-                        <Trash className="s-5" aria-hidden />
-                      </button>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
+                      </CardBlockControls>
+                    )}
+                  </DragSortable>
+                ))}
+              </div>
             </SortableContext>
           </DndContext>
 
-          <hr className={dividerClass} />
-
-          <div className="grid auto-cols-fr grid-flow-col">
-            <button
-              title="Add text block"
-              className={cx(
-                button({ border: "none", background: "none" }),
-                "block justify-center",
-              )}
+          <Toolbar>
+            {handle}
+            <ToolbarButton
+              label="Add text block"
+              icon={Type}
               onClick={() => {
                 mutations.update(index, {
                   blocks: [
@@ -256,15 +236,10 @@ function CardEditor({
                   ],
                 })
               }}
-            >
-              <Type aria-hidden />
-            </button>
-            <button
-              title="Add image block"
-              className={cx(
-                button({ border: "none", background: "none" }),
-                "block justify-center",
-              )}
+            />
+            <ToolbarButton
+              label="Add image block"
+              icon={Image}
               onClick={() => {
                 mutations.update(index, {
                   blocks: [
@@ -273,72 +248,49 @@ function CardEditor({
                   ],
                 })
               }}
-            >
-              <Image aria-hidden />
-            </button>
-            <button
-              title="Toggle hidden"
-              className={cx(
-                button({ border: "none", background: "none" }),
-                "block justify-center",
-              )}
+            />
+            <ToolbarButton
+              label={card.hidden ? "Show card" : "Hide card"}
+              icon={card.hidden ? EyeOff : Eye}
               onClick={() => {
                 mutations.update(index, { hidden: !card.hidden })
               }}
-            >
-              {card.hidden ? (
-                <EyeOff aria-label="Hidden" />
-              ) : (
-                <Eye aria-label="Visible" />
-              )}
-            </button>
-            <button
-              title="Delete card"
-              className={cx(
-                button({ border: "none", background: "none" }),
-                "block justify-center",
-              )}
+            />
+            <ToolbarButton
+              label="Delete card"
+              icon={Trash}
               onClick={() => {
                 mutations.remove(index)
               }}
-            >
-              <Trash aria-hidden />
-            </button>
-          </div>
+            />
+          </Toolbar>
         </div>
       )}
-    </Draggable>
+    </DragSortable>
   )
 }
 
-function Draggable({
-  children,
-  id,
-}: {
-  children: (args: { handle: ReactNode }) => React.ReactNode
-  id: UniqueIdentifier
+function CardBlockControls(props: {
+  children: ReactNode
+  dragHandle: ReactNode
+  onDelete: () => void
 }) {
-  const sortable = useSortable({ id, transition: null })
-
-  const handle = (
-    <button {...sortable.attributes} {...sortable.listeners} className="px-1.5">
-      <GripVertical className="s-5" aria-label="Click and hold to rearrange" />
-    </button>
-  )
-
   return (
     <div
-      ref={sortable.setNodeRef}
-      style={{
-        transform: sortable.isDragging
-          ? CSS.Translate.toString(sortable.transform)
-          : undefined,
-        opacity: sortable.isOver ? 0.5 : 1,
-        transition: "0.2s opacity",
-        zIndex: sortable.isDragging ? 10 : undefined,
-      }}
+      className={cx(
+        panel({ shadow: "none" }),
+        "flex flex-col divide-y divide-white/10",
+      )}
     >
-      {children({ handle })}
+      {props.children}
+      <Toolbar>
+        {props.dragHandle}
+        <ToolbarButton
+          label="Delete block"
+          icon={Trash}
+          onClick={props.onDelete}
+        />
+      </Toolbar>
     </div>
   )
 }
@@ -358,7 +310,8 @@ function CardTextBlockEditor({
       onChange={(event) => {
         onChangeText(event.target.value)
       }}
-      className="min-w-0 flex-1 resize-none bg-transparent py-2 pr-2 transition focus:text-foreground-8 focus:ring-0"
+      rows={1}
+      className="min-w-0 resize-none bg-transparent p-2 transition focus:text-foreground-8 focus:ring-0"
     />
   )
 }
@@ -371,7 +324,7 @@ function CardImageBlockEditor({
   onChangeSrc: (src: string) => void
 }) {
   return (
-    <div>
+    <div className="divide-y divide-white/10">
       <img src={block.src} alt="" className="aspect-square object-contain" />
       <input
         title="Card Image"
@@ -380,8 +333,77 @@ function CardImageBlockEditor({
         onChange={(event) => {
           onChangeSrc(event.target.value)
         }}
-        className="w-full min-w-0 flex-1 bg-transparent py-2 pr-2 transition focus:text-foreground-8 focus:ring-0"
+        className="w-full min-w-0 flex-1 bg-transparent p-2 transition focus:text-foreground-8 focus:ring-0"
       />
+    </div>
+  )
+}
+
+function Toolbar(props: { children: ReactNode }) {
+  return (
+    <div className="grid auto-cols-fr grid-flow-col divide-x divide-white/10">
+      {props.children}
+    </div>
+  )
+}
+
+function ToolbarButton(props: {
+  label: string
+  icon: LucideIcon
+  onClick: () => void
+}) {
+  return (
+    <button
+      title={props.label}
+      className={cx(
+        button({ border: "none", background: "none" }),
+        "block justify-center !h-10",
+      )}
+      onClick={props.onClick}
+    >
+      <props.icon aria-hidden className="!s-4" />
+    </button>
+  )
+}
+
+function DragSortable({
+  children,
+  id,
+}: {
+  children: (args: { handle: ReactNode }) => React.ReactNode
+  id: UniqueIdentifier
+}) {
+  const sortable = useSortable({ id, transition: null })
+
+  const handle = (
+    <button
+      {...sortable.attributes}
+      {...sortable.listeners}
+      className={cx(
+        "px-1.5 text-center",
+        sortable.isDragging ? "cursor-grabbing" : "cursor-grab",
+      )}
+    >
+      <Grip
+        className="inline leading-4 s-4"
+        aria-label="Click and hold to rearrange"
+      />
+    </button>
+  )
+
+  return (
+    <div
+      ref={sortable.setNodeRef}
+      style={{
+        transform: sortable.isDragging
+          ? CSS.Translate.toString(sortable.transform)
+          : undefined,
+        opacity: sortable.isOver ? 0.5 : 1,
+        transition: "0.2s opacity",
+        zIndex: sortable.isDragging ? 10 : undefined,
+      }}
+    >
+      {children({ handle })}
     </div>
   )
 }
