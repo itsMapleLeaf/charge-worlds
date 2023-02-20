@@ -5,11 +5,13 @@ export const cardBlockSchema = z.union([
     id: z.string(),
     type: z.literal("text"),
     text: z.string(),
+    hidden: z.boolean().default(true),
   }),
   z.object({
     id: z.string(),
     type: z.literal("image"),
     src: z.string(),
+    hidden: z.boolean().default(true),
   }),
 ])
 type CardBlockOutput = z.output<typeof cardBlockSchema>

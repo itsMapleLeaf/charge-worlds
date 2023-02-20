@@ -102,13 +102,21 @@ export default function LibraryPage() {
 }
 
 function CardPanel({ card }: { card: Card }) {
+  const { isOwner } = WorldContext.useValue()
+
+  let blocks = card.blocks
+  if (!isOwner) {
+    blocks = blocks.filter((block) => !block.hidden)
+  }
+
   const [animateRef] = useAutoAnimate()
+
   return (
     <article className={panel()} key={card.id} ref={animateRef}>
       <h3 className="border-b border-white/10 p-3 text-2xl font-light">
         {card.title}
       </h3>
-      {card.blocks.map((block) => (
+      {blocks.map((block) => (
         <Fragment key={block.id}>
           {block.type === "text" ? (
             <p className="my-3 whitespace-pre-line px-3">{block.text}</p>
@@ -125,13 +133,7 @@ function CardPanel({ card }: { card: Card }) {
   )
 }
 
-function CardEditor({
-  card,
-  index,
-}: {
-  card: Card
-  index: number
-}): JSX.Element {
+function CardEditor({ card, index }: { card: Card; index: number }) {
   const mutations = CardCollection.useMutations()
 
   const sensors = useSensors(
@@ -195,9 +197,13 @@ function CardEditor({
                   <DragSortable id={block.id} key={block.id}>
                     {({ handle }) => (
                       <CardBlockControls
+                        block={block}
                         dragHandle={handle}
                         onDelete={() => {
                           deleteBlock(block.id)
+                        }}
+                        onToggleHidden={() => {
+                          updateBlock(block.id, { hidden: !block.hidden })
                         }}
                       >
                         {block.type === "text" ? (
@@ -271,9 +277,11 @@ function CardEditor({
 }
 
 function CardBlockControls(props: {
+  block: CardBlock
   children: ReactNode
   dragHandle: ReactNode
   onDelete: () => void
+  onToggleHidden: () => void
 }) {
   return (
     <div
@@ -285,6 +293,11 @@ function CardBlockControls(props: {
       {props.children}
       <Toolbar>
         {props.dragHandle}
+        <ToolbarButton
+          label={props.block.hidden ? "Show block" : "Hide block"}
+          icon={props.block.hidden ? EyeOff : Eye}
+          onClick={props.onToggleHidden}
+        />
         <ToolbarButton
           label="Delete block"
           icon={Trash}
