@@ -171,7 +171,7 @@ function WorldNav() {
       {membership?.role === "OWNER" && (
         <>
           <WorldNavLink
-            to={route("/worlds/:worldId/settings", { worldId: world.id })}
+            to={route("/worlds/:worldId/details", { worldId: world.id })}
             icon={Globe}
             label="World Details"
           />

@@ -23,4 +23,4 @@ export const circleButton = clsx(
   "inline-flex items-center justify-center s-12",
 )
 
-export const clearButton = () => cx(interactive)
+export const clearButton = () => cx(interactive())
