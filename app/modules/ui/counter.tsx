@@ -52,7 +52,7 @@ export function DotCounter({
 }) {
   return (
     <div className="flex items-center gap-2">
-      {range(1, max).map((n) => (
+      {range(1, max + 1).map((n) => (
         <button
           key={n}
           type="button"

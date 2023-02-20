@@ -1,4 +1,4 @@
-import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core"
+import type { DragEndEvent } from "@dnd-kit/core"
 import {
   closestCenter,
   DndContext,
@@ -14,17 +14,16 @@ import {
   sortableKeyboardCoordinates,
   useSortable,
 } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { useAutoAnimate } from "@formkit/auto-animate/react"
 import { cx } from "class-variance-authority"
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion"
 import type { LucideIcon } from "lucide-react"
 import { Eye, EyeOff, Grip, Image, PlusSquare, Trash, Type } from "lucide-react"
 import type { ReactNode } from "react"
-import { Fragment } from "react"
 import TextArea from "react-expanding-textarea"
 import { CardCollection } from "~/modules/cards/card-collection"
 import type { Card, CardBlock } from "~/modules/cards/card-schema"
 import { button } from "~/modules/ui/button"
+import { Masonry } from "~/modules/ui/masonry"
 import { panel } from "~/modules/ui/panel"
 import { WorldContext } from "~/modules/world/world-context"
 
@@ -45,8 +44,6 @@ export default function LibraryPage() {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   )
-
-  const [animateRef] = useAutoAnimate()
 
   return (
     <section className="grid gap-4" aria-label="Library">
@@ -79,20 +76,19 @@ export default function LibraryPage() {
         }}
       >
         <SortableContext items={cards}>
-          {cards.length > 0 && (
-            <div
-              className="grid items-start gap-2 fluid-cols-64"
-              ref={animateRef}
-            >
-              {cards.map((card, index) =>
-                isOwner ? (
-                  <CardEditor key={card.id} card={card} index={index} />
-                ) : (
-                  <CardPanel key={card.id} card={card} />
-                ),
-              )}
-            </div>
-          )}
+          <Masonry
+            items={cards}
+            itemKey={(card) => card.id}
+            columnWidth={256}
+            gap={8}
+            renderItem={(card, index) =>
+              isOwner ? (
+                <CardEditor key={card.id} card={card} index={index} />
+              ) : (
+                <CardPanel key={card.id} card={card} />
+              )
+            }
+          />
         </SortableContext>
       </DndContext>
 
@@ -109,27 +105,38 @@ function CardPanel({ card }: { card: Card }) {
     blocks = blocks.filter((block) => !block.hidden)
   }
 
-  const [animateRef] = useAutoAnimate()
-
   return (
-    <article className={panel()} key={card.id} ref={animateRef}>
-      <h3 className="border-b border-white/10 p-3 text-2xl font-light">
-        {card.title}
-      </h3>
-      {blocks.map((block) => (
-        <Fragment key={block.id}>
-          {block.type === "text" ? (
-            <p className="my-3 whitespace-pre-line px-3">{block.text}</p>
-          ) : block.type === "image" ? (
-            <img
-              src={block.src}
-              alt=""
-              className="h-auto w-full object-cover"
-            />
-          ) : null}
-        </Fragment>
-      ))}
-    </article>
+    <LayoutGroup>
+      <motion.article layout layoutId={card.id} className={panel()}>
+        <motion.h3
+          layout
+          className="border-b border-white/10 p-3 text-2xl font-light"
+        >
+          {card.title}
+        </motion.h3>
+        <AnimatePresence>
+          {blocks.map((block) => (
+            <motion.div
+              key={block.id}
+              layoutId={block.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              {block.type === "text" ? (
+                <p className="my-3 whitespace-pre-line px-3">{block.text}</p>
+              ) : block.type === "image" ? (
+                <img
+                  src={block.src}
+                  alt=""
+                  className="h-auto w-full object-cover"
+                />
+              ) : null}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.article>
+    </LayoutGroup>
   )
 }
 
@@ -143,8 +150,6 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   )
-
-  const [animateRef] = useAutoAnimate()
 
   function updateBlock(id: string, props: Partial<CardBlock>) {
     mutations.update(index, {
@@ -192,7 +197,7 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
             onDragEnd={handleDragEnd}
           >
             <SortableContext items={card.blocks}>
-              <div className="grid gap-2 p-2" ref={animateRef}>
+              <div className="grid gap-2 p-2">
                 {card.blocks.map((block) => (
                   <DragSortable id={block.id} key={block.id}>
                     {({ handle }) => (
@@ -384,7 +389,7 @@ function DragSortable({
   id,
 }: {
   children: (args: { handle: ReactNode }) => React.ReactNode
-  id: UniqueIdentifier
+  id: string
 }) {
   const sortable = useSortable({ id, transition: null })
 
@@ -405,18 +410,30 @@ function DragSortable({
   )
 
   return (
-    <div
+    <motion.div
       ref={sortable.setNodeRef}
+      layoutId={id}
+      animate={
+        sortable.transform && sortable.isDragging
+          ? {
+              x: sortable.transform.x,
+              y: sortable.transform.y,
+              opacity: 1,
+            }
+          : {
+              x: 0,
+              y: 0,
+              opacity: sortable.isOver ? 0.5 : 1,
+            }
+      }
+      transition={{
+        duration: sortable.isDragging ? 0 : 0.35,
+      }}
       style={{
-        transform: sortable.isDragging
-          ? CSS.Translate.toString(sortable.transform)
-          : undefined,
-        opacity: sortable.isOver ? 0.5 : 1,
-        transition: "0.2s opacity",
         zIndex: sortable.isDragging ? 10 : undefined,
       }}
     >
       {children({ handle })}
-    </div>
+    </motion.div>
   )
 }

@@ -41,6 +41,7 @@
     "clsx": "^1.2.1",
     "cuid": "^3.0.0",
     "date-fns": "^2.29.3",
+    "framer-motion": "^9.0.4",
     "inngest": "^1.1.0",
     "lucide-react": "^0.114.0",
     "pretty-bytes": "^6.1.0",
