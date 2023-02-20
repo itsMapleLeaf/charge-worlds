@@ -10,8 +10,8 @@ export const panel = cva("", {
       none: "",
     },
     border: {
-      default: "border border-white/10 rounded-md",
-      circle: "border border-white/10 rounded-full",
+      default: "border border-white/10 rounded-md overflow-clip",
+      circle: "border border-white/10 rounded-full overflow-clip",
       left: "border-l border-white/10",
       right: "border-r border-white/10",
       top: "border-t border-white/10",
