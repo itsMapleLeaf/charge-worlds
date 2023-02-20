@@ -19,10 +19,14 @@ module.exports = {
             value,
           ]),
         ),
+        radix: colors,
       },
       fontFamily: {
         body: ["RubikVariable", "sans-serif"],
       },
+      minHeight: (utils) => ({
+        ...utils.theme("width"),
+      }),
     },
   },
   plugins: [

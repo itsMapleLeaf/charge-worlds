@@ -5,14 +5,14 @@ const inputFocusRing = cx("ring-inset focus:ring-1 focus:ring-foreground-8/75")
 
 export const input = () =>
   cx(
-    "px-3 h-12 block w-full cursor-text",
+    "px-3 h-12 block w-full",
     inputFocusRing,
     interactivePanel({ shadow: "none", cursor: "unset" }),
   )
 
 export const textArea = () =>
   cx(
-    "px-3 py-2 min-h-12 block",
+    "p-3 leading-[22px] min-h-12 block resize-none",
     inputFocusRing,
     interactivePanel({ shadow: "none", cursor: "unset" }),
   )

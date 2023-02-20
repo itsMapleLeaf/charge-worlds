@@ -1,9 +1,12 @@
+import { cx } from "class-variance-authority"
 import clsx from "clsx"
 import ExpandingTextArea from "react-expanding-textarea"
 import { ClockInput } from "../ui/clock-input"
 import { Counter } from "../ui/counter"
 import { Field } from "../ui/field"
-import { inputClass, labelTextClass, textAreaClass } from "../ui/styles"
+import { input, textArea } from "../ui/input"
+import { panel } from "../ui/panel"
+import { labelTextClass } from "../ui/styles"
 import { CharacterImage } from "./character-image"
 import type { Character } from "./collections"
 
@@ -20,7 +23,7 @@ export function CharacterPrimaryInfoEditor({
 }) {
   return (
     <div className="flex flex-wrap gap-4 [&>*]:flex-1 [&>*]:basis-48">
-      <div className="min-h-[16rem]">
+      <div className={cx(panel({ shadow: "none" }), "min-h-[16rem]")}>
         <CharacterImage src={character.imageUrl ?? undefined} />
       </div>
 
@@ -33,13 +36,13 @@ export function CharacterPrimaryInfoEditor({
             onChange={(event) => {
               onCharacterChange({ name: event.target.value })
             }}
-            className={inputClass}
+            className={input()}
             readOnly={isSpectator}
           />
         </Field>
         <Field label="Reference image">
           <input
-            className={inputClass}
+            className={input()}
             placeholder="https://the/image.png"
             value={character.imageUrl ?? ""}
             onChange={(event) => {
@@ -50,7 +53,12 @@ export function CharacterPrimaryInfoEditor({
         </Field>
         <section className="grid gap-2">
           <h2 className={labelTextClass}>Momentum</h2>
-          <div className={clsx(inputClass, "grid place-items-center")}>
+          <div
+            className={clsx(
+              panel({ shadow: "none" }),
+              "grid h-12 place-items-center",
+            )}
+          >
             {isGameMaster ? (
               <Counter
                 value={character.momentum}
@@ -64,7 +72,12 @@ export function CharacterPrimaryInfoEditor({
       </div>
 
       <div className="flex flex-col gap-4">
-        <div className="flex flex-1 items-center justify-center rounded-md bg-black/25 p-4">
+        <div
+          className={cx(
+            panel({ shadow: "none" }),
+            "flex flex-1 items-center justify-center rounded-md bg-black/25 p-4",
+          )}
+        >
           <ClockInput
             name="Stress"
             progress={character.stress}
@@ -81,7 +94,7 @@ export function CharacterPrimaryInfoEditor({
             onChange={(event) => {
               onCharacterChange({ condition: event.target.value })
             }}
-            className={textAreaClass}
+            className={textArea()}
             readOnly={isSpectator}
           />
         </Field>

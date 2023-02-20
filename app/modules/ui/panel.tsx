@@ -19,7 +19,7 @@ export const panel = cva("", {
       none: "",
     },
     shadow: {
-      default: "shadow-md shadow-black/50",
+      default: "shadow-md shadow-black/25",
       none: "",
     },
   },
@@ -30,12 +30,17 @@ export const panel = cva("", {
   },
 })
 
-export const interactive = (cursor?: "pointer" | "unset") =>
+export type InteractableProps = {
+  cursor?: "pointer" | "unset"
+  active?: boolean
+}
+
+export const interactable = ({ cursor, active }: InteractableProps = {}) =>
   cx(
     "transition hover:border-foreground-8/50 hover:text-foreground-7 active:translate-y-0.5 active:duration-[0s] select-none",
     cursor === "unset" ? "" : "cursor-pointer",
+    active ? "border-foreground-8/50 text-foreground-7" : "",
   )
 
-export const interactivePanel = (
-  props?: PanelProps & { cursor?: "pointer" | "unset" },
-) => cx(panel(props), interactive(props?.cursor))
+export const interactivePanel = (props?: PanelProps & InteractableProps) =>
+  cx(panel(props), interactable(props))

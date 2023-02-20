@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { cx } from "class-variance-authority"
 
 export type CharacterColorClasses = {
   background: string
@@ -6,46 +6,50 @@ export type CharacterColorClasses = {
 }
 
 export const defaultCharacterColor = {
-  background: clsx("bg-neutral-800"),
-  border: clsx("bg-neutral-700"),
+  background: cx("bg-black/75"),
+  border: cx("border-white/25"),
 }
 
 export const characterColors: Record<string, CharacterColorClasses> = {
   neutral: defaultCharacterColor,
+
   red: {
-    background: clsx("bg-[#612323]"),
-    border: clsx("border-[#782b2b]"),
+    background: cx("bg-radix-redDark-red1/75"),
+    border: cx("border-radix-redDark-red10/25"),
   },
+
   orange: {
-    background: clsx("bg-[#833f28]"),
-    border: clsx("border-[#9c4b2f]"),
+    background: cx("bg-radix-orangeDark-orange1/75"),
+    border: cx("border-radix-orangeDark-orange10/25"),
   },
+
   dandelion: {
-    background: clsx("bg-[#756c28]"),
-    border: clsx("border-[#8a7f2f]"),
+    background: cx("bg-radix-yellowDark-yellow1/75"),
+    border: cx("border-radix-yellowDark-yellow10/25"),
   },
+
   lime: {
-    background: clsx("bg-[#334a19]"),
-    border: clsx("border-[#415e20]"),
+    background: cx("bg-radix-grassDark-grass1/75"),
+    border: cx("border-radix-grassDark-grass10/25"),
   },
+
   ocean: {
-    background: clsx("bg-[#0d4647]"),
-    border: clsx("border-[#105859]"),
+    background: cx("bg-radix-skyDark-sky1/75"),
+    border: cx("border-radix-skyDark-sky10/25"),
   },
+
   blue: {
-    background: clsx("bg-[#1a4378]"),
-    border: clsx("border-[#1f5191]"),
+    background: cx("bg-radix-blueDark-blue1/75"),
+    border: cx("border-radix-blueDark-blue10/25"),
   },
-  midnight: {
-    background: clsx("bg-[#21325e]"),
-    border: clsx("border-[#263a6e]"),
-  },
+
   violet: {
-    background: clsx("bg-[#382a49]"),
-    border: clsx("border-[#48365e]"),
+    background: cx("bg-radix-violetDark-violet1/75"),
+    border: cx("border-radix-violetDark-violet10/25"),
   },
+
   pink: {
-    background: clsx("bg-[#702342]"),
-    border: clsx("border-[#872a50]"),
+    background: cx("bg-radix-pinkDark-pink1/75"),
+    border: cx("border-radix-pinkDark-pink10/25"),
   },
 }

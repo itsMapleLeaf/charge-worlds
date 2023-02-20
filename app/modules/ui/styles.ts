@@ -38,7 +38,7 @@ export const navLinkClass = ({ isActive = false } = {}) =>
       : "border-transparent opacity-50 hover:opacity-75",
   )
 
-export const dividerClass = "border-black/25"
+export const dividerClass = "border-white/10"
 
 export const inputBaseClass = clsx(
   "block w-full resize-none rounded-md bg-black/25 transition focus:bg-black/50 focus:outline-none focus:ring-2 focus:ring-blue-500",

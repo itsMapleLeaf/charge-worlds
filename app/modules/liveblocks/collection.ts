@@ -83,6 +83,8 @@ export function defineLiveblocksMapCollection<
 
       const id = crypto.randomUUID()
       map.set(id, new LiveObject(item))
+
+      return { _id: id, ...schema.parse(item) }
     }, [])
 
     const update = RoomContext.useMutation(

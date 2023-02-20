@@ -1,6 +1,8 @@
+import { cx } from "class-variance-authority"
 import { ChevronsRight, Dices } from "lucide-react"
 import { entriesTyped } from "../../helpers/entries-typed"
 import { DotCounter } from "../ui/counter"
+import { panel } from "../ui/panel"
 import { labelTextClass } from "../ui/styles"
 import { CharacterActionRollButton } from "./character-action-roll-button"
 import { characterActionLibrary } from "./character-actions"
@@ -32,7 +34,7 @@ export function CharacterActionLevelsEditor({
       {entriesTyped(characterActionLibrary).map(([category, actions]) => (
         <section
           key={category}
-          className="flex flex-col rounded-md bg-black/25 p-4"
+          className={cx(panel({ shadow: "none" }), "flex flex-col p-4")}
         >
           <h4 className="mb-4 text-center text-xl leading-tight tracking-wide">
             {category}

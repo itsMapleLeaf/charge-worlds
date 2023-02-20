@@ -1,5 +1,5 @@
 import { setRoll } from "../dice/dice-module"
-import { clearButtonClass } from "../ui/styles"
+import { clearButton } from "../ui/button"
 
 export function CharacterActionRollButton({
   title,
@@ -15,7 +15,7 @@ export function CharacterActionRollButton({
   return (
     <button
       title={title}
-      className={clearButtonClass}
+      className={clearButton()}
       onClick={() => setRoll(intent, poolSize)}
     >
       {children}

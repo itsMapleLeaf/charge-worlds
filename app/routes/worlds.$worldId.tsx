@@ -1,7 +1,7 @@
 import { ClientSideSuspense } from "@liveblocks/react"
 import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { Link, Outlet, useLoaderData } from "@remix-run/react"
+import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react"
 import {
   Dialog,
   DialogDisclosure,
@@ -12,6 +12,7 @@ import { cx } from "class-variance-authority"
 import type { LucideIcon } from "lucide-react"
 import {
   ChevronUp,
+  EyeOff,
   Gamepad,
   Globe,
   Library,
@@ -19,6 +20,7 @@ import {
   Mountain,
   SidebarClose,
   SidebarOpen,
+  UserPlus,
   Users,
 } from "lucide-react"
 import { useLayoutEffect, useState } from "react"
@@ -29,6 +31,7 @@ import {
   characterColors,
   defaultCharacterColor,
 } from "~/modules/characters/character-colors"
+import type { Character } from "~/modules/characters/collections"
 import { CharacterCollection } from "~/modules/characters/collections"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
 import { button, circleButton } from "~/modules/ui/button"
@@ -88,8 +91,8 @@ export default function WorldPage() {
           <div className="flex flex-1 items-start gap-4">
             <aside
               className={cx(
+                "w-48 hidden md:block lg:w-64 overflow-y-auto thin-scrollbar sticky top-8",
                 panel(),
-                "w-48 hidden md:block lg:w-64 overflow-y-auto thin-scrollbar",
               )}
             >
               <WorldNav />
@@ -195,12 +198,20 @@ function WorldNav() {
 
 function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
   return (
-    <Link
+    <NavLink
       to={props.to}
-      className={button({ border: "none", shadow: "none", background: "none" })}
+      end
+      className={({ isActive }) =>
+        button({
+          border: "none",
+          shadow: "none",
+          background: "none",
+          active: isActive,
+        })
+      }
     >
       <props.icon aria-hidden /> {props.label}
-    </Link>
+    </NavLink>
   )
 }
 
@@ -230,6 +241,8 @@ function CharacterListSummary() {
 
 function CharacterList() {
   const { world, membership } = WorldContext.useValue()
+  const mutations = CharacterCollection.useMutations()
+  const navigate = useNavigate()
 
   let characters = CharacterCollection.useItems()
   if (membership?.role !== "OWNER") {
@@ -239,32 +252,81 @@ function CharacterList() {
   return (
     <div className="flex flex-col">
       {characters.map((character) => (
-        <Link
-          to={route("/worlds/:worldId/characters/:characterId", {
-            worldId: world.id,
-            characterId: character._id,
-          })}
+        <CharacterLink character={character} key={character._id} />
+      ))}
+      {membership?.role === "OWNER" && (
+        <button
+          onClick={() => {
+            const result = mutations.create({ name: "New Character" })
+            if (!result) return
+
+            navigate(
+              route("/worlds/:worldId/characters/:characterId", {
+                worldId: world.id,
+                characterId: result._id,
+              }),
+            )
+          }}
           className={button({
             border: "none",
             shadow: "none",
             background: "none",
             size: 10,
           })}
-          key={character._id}
         >
-          <div
-            className={cx(
-              "s-5 rounded-full relative -top-px brightness-150",
-              (
-                (character.color && characterColors[character.color]) ||
-                defaultCharacterColor
-              ).background,
-            )}
-          />
-          <span className="flex-1">{character.name}</span>
-        </Link>
-      ))}
+          <UserPlus aria-hidden /> Create Character
+        </button>
+      )}
     </div>
+  )
+}
+
+function CharacterLink({
+  character,
+}: {
+  character: Character & { _id: string }
+}) {
+  const { world } = WorldContext.useValue()
+
+  const colors =
+    (character.color && characterColors[character.color]) ||
+    defaultCharacterColor
+
+  return (
+    <NavLink
+      to={route("/worlds/:worldId/characters/:characterId", {
+        worldId: world.id,
+        characterId: character._id,
+      })}
+      className={({ isActive }) =>
+        button({
+          border: "none",
+          shadow: "none",
+          background: "none",
+          size: 10,
+          active: isActive,
+        })
+      }
+      key={character._id}
+    >
+      <div
+        style={{
+          backgroundColor: colors.background,
+          borderColor: colors.border,
+        }}
+        className={cx(
+          "relative -top-px rounded-full border s-5 brightness-150",
+          colors.background,
+          colors.border,
+        )}
+      />
+      <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+        {character.name}
+      </span>
+      {character.hidden && (
+        <EyeOff className="opacity-75" aria-label="Hidden" />
+      )}
+    </NavLink>
   )
 }
 

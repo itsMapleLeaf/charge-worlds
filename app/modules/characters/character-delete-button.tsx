@@ -1,7 +1,8 @@
 import { Dialog, DialogDismiss, DialogHeading, useDialogState } from "ariakit"
-import clsx from "clsx"
+import { cx } from "class-variance-authority"
 import { Trash, X } from "lucide-react"
-import { solidButtonClass } from "../ui/styles"
+import { button } from "../ui/button"
+import { panel } from "../ui/panel"
 
 export function CharacterDeleteButton({
   character,
@@ -13,17 +14,20 @@ export function CharacterDeleteButton({
   const dialog = useDialogState({ animated: true })
   return (
     <>
-      <button className={solidButtonClass} onClick={dialog.show}>
+      <button className={button()} onClick={dialog.show}>
         <Trash />
         Delete
       </button>
 
       <Dialog
         state={dialog}
-        className="pointer-events-auto m-auto flex flex-col items-center gap-4 rounded-md bg-gray-700 p-4 shadow-md transition data-[enter]:scale-100 data-[leave]:scale-90 data-[enter]:opacity-100 data-[leave]:opacity-0"
+        className={cx(
+          "m-auto flex flex-col items-center p-4 gap-4 transition data-[enter]:scale-100 data-[leave]:scale-90 data-[enter]:opacity-100 data-[leave]:opacity-0",
+          panel(),
+        )}
         backdropProps={{
-          className: clsx(
-            "fixed inset-0 flex flex-col bg-black/50 transition data-[enter]:opacity-100 data-[leave]:opacity-0",
+          className: cx(
+            "fixed inset-0 flex flex-col bg-black/50 backdrop-blur-md transition data-[enter]:opacity-100 data-[leave]:opacity-0",
           ),
         }}
       >
@@ -31,12 +35,12 @@ export function CharacterDeleteButton({
           Are you sure you want to delete {character.name}?
         </DialogHeading>
         <div className="flex items-center gap-4">
-          <DialogDismiss className={solidButtonClass}>
+          <DialogDismiss className={button()}>
             <X />
             Cancel
           </DialogDismiss>
           <button
-            className={solidButtonClass}
+            className={button()}
             onClick={() => {
               dialog.hide()
               onDelete()

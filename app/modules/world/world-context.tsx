@@ -20,6 +20,12 @@ export const WorldContext = createContextWrapper(
       role: Role
     }
   }) {
-    return props
+    return {
+      ...props,
+      isPlayer: props.membership?.role === "PLAYER",
+      isOwner: props.membership?.role === "OWNER",
+      isMember: !!props.membership,
+      isSpectator: !props.membership,
+    }
   },
 )
