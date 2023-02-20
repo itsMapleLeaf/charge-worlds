@@ -13,11 +13,28 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import {
+  Dialog,
+  DialogDisclosure,
+  DialogHeading,
+  useDialogState,
+} from "ariakit"
 import { cx } from "class-variance-authority"
-import { AnimatePresence, LayoutGroup, motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import type { LucideIcon } from "lucide-react"
-import { Eye, EyeOff, Grip, Image, PlusSquare, Trash, Type } from "lucide-react"
+import {
+  Edit,
+  Eye,
+  EyeOff,
+  Grip,
+  Image,
+  PlusSquare,
+  Trash,
+  Type,
+} from "lucide-react"
 import type { ReactNode } from "react"
 import TextArea from "react-expanding-textarea"
 import { CardCollection } from "~/modules/cards/card-collection"
@@ -83,9 +100,17 @@ export default function LibraryPage() {
             gap={8}
             renderItem={(card, index) =>
               isOwner ? (
-                <CardEditor key={card.id} card={card} index={index} />
+                <ControlsOverlay
+                  controls={<CardEditorButton card={card} index={index} />}
+                >
+                  <DragSortable id={card.id}>
+                    <CardPanel key={card.id} card={card} />
+                  </DragSortable>
+                </ControlsOverlay>
               ) : (
-                <CardPanel key={card.id} card={card} />
+                <motion.div layoutId={card.id}>
+                  <CardPanel key={card.id} card={card} />
+                </motion.div>
               )
             }
           />
@@ -100,47 +125,62 @@ export default function LibraryPage() {
 function CardPanel({ card }: { card: Card }) {
   const { isOwner } = WorldContext.useValue()
 
-  let blocks = card.blocks
-  if (!isOwner) {
-    blocks = blocks.filter((block) => !block.hidden)
-  }
+  const blocks = isOwner
+    ? card.blocks
+    : card.blocks.filter((block) => !block.hidden)
 
   return (
-    <LayoutGroup>
-      <motion.article layout layoutId={card.id} className={panel()}>
-        <motion.h3
-          layout
-          className="border-b border-white/10 p-3 text-2xl font-light"
-        >
-          {card.title}
-        </motion.h3>
-        <AnimatePresence>
+    <article className={cx(panel(), "divide-y divide-white/10")}>
+      <header className="flex items-center gap-3 p-3">
+        <h3 className="flex-1 text-2xl font-light">{card.title}</h3>
+        {card.hidden && <EyeOff aria-label="Hidden" className="opacity-50" />}
+      </header>
+      <main className="grid gap-3 p-3">
+        <AnimatePresence initial={false}>
           {blocks.map((block) => (
             <motion.div
               key={block.id}
+              layout="position"
               layoutId={block.id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              className="flex items-center gap-3"
             >
-              {block.type === "text" ? (
-                <p className="my-3 whitespace-pre-line px-3">{block.text}</p>
-              ) : block.type === "image" ? (
-                <img
-                  src={block.src}
-                  alt=""
-                  className="h-auto w-full object-cover"
-                />
-              ) : null}
+              <div className="flex-1">
+                {block.type === "text" ? (
+                  <p className="whitespace-pre-line">{block.text}</p>
+                ) : block.type === "image" ? (
+                  <img
+                    src={block.src}
+                    alt=""
+                    className="h-auto w-full object-cover"
+                  />
+                ) : null}
+              </div>
+              {block.hidden && (
+                <EyeOff aria-label="Hidden" className="opacity-50" />
+              )}
             </motion.div>
           ))}
         </AnimatePresence>
-      </motion.article>
-    </LayoutGroup>
+      </main>
+    </article>
   )
 }
 
-function CardEditor({ card, index }: { card: Card; index: number }) {
+function ControlsOverlay(props: { children: ReactNode; controls: ReactNode }) {
+  return (
+    <div className="group relative h-max">
+      {props.children}
+      <div className="absolute top-0 right-0 p-3 opacity-0 transition focus-within:opacity-100 group-hover:opacity-100">
+        {props.controls}
+      </div>
+    </div>
+  )
+}
+
+function CardEditorButton({ card, index }: { card: Card; index: number }) {
   const mutations = CardCollection.useMutations()
 
   const sensors = useSensors(
@@ -150,6 +190,8 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   )
+
+  const dialog = useDialogState()
 
   function updateBlock(id: string, props: Partial<CardBlock>) {
     mutations.update(index, {
@@ -178,28 +220,48 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
   }
 
   return (
-    <DragSortable id={card.id}>
-      {({ handle }) => (
-        <div className={cx(panel(), "divide-y divide-white/10")}>
-          <input
-            title="Card Title"
-            placeholder="Card Title"
-            value={card.title}
-            onChange={(event) => {
-              mutations.update(index, { title: event.target.value })
-            }}
-            className="min-w-0 flex-1 bg-transparent p-2 text-2xl font-light transition focus:text-foreground-8 focus:ring-0"
-          />
+    <>
+      <DialogDisclosure state={dialog} title="Edit" className={button()}>
+        <Edit aria-hidden />
+      </DialogDisclosure>
+      <Dialog
+        state={dialog}
+        backdropProps={{
+          className: cx("bg-black/75 backdrop-blur-md flex flex-col p-4"),
+        }}
+        className={cx(
+          panel(),
+          "divide-y divide-white/10 mx-auto w-full max-w-lg flex flex-col",
+        )}
+        portal
+      >
+        <DialogHeading as="h2" className="p-3 text-center text-3xl font-light">
+          Edit Card
+        </DialogHeading>
 
+        <input
+          title="Card Title"
+          placeholder="Card Title"
+          value={card.title}
+          onChange={(event) => {
+            mutations.update(index, { title: event.target.value })
+          }}
+          className="w-full bg-transparent p-2 text-2xl font-light transition focus:text-foreground-8 focus:ring-0"
+        />
+
+        <div className="thin-scrollbar min-h-0 flex-1 overflow-y-auto">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <SortableContext items={card.blocks}>
+            <SortableContext
+              items={card.blocks}
+              strategy={verticalListSortingStrategy}
+            >
               <div className="grid gap-2 p-2">
                 {card.blocks.map((block) => (
-                  <DragSortable id={block.id} key={block.id}>
+                  <DragSortableWithHandle id={block.id} key={block.id}>
                     {({ handle }) => (
                       <CardBlockControls
                         block={block}
@@ -228,56 +290,55 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
                         ) : null}
                       </CardBlockControls>
                     )}
-                  </DragSortable>
+                  </DragSortableWithHandle>
                 ))}
               </div>
             </SortableContext>
           </DndContext>
-
-          <Toolbar>
-            {handle}
-            <ToolbarButton
-              label="Add text block"
-              icon={Type}
-              onClick={() => {
-                mutations.update(index, {
-                  blocks: [
-                    ...card.blocks,
-                    { id: crypto.randomUUID(), type: "text", text: "" },
-                  ],
-                })
-              }}
-            />
-            <ToolbarButton
-              label="Add image block"
-              icon={Image}
-              onClick={() => {
-                mutations.update(index, {
-                  blocks: [
-                    ...card.blocks,
-                    { id: crypto.randomUUID(), type: "image", src: "" },
-                  ],
-                })
-              }}
-            />
-            <ToolbarButton
-              label={card.hidden ? "Show card" : "Hide card"}
-              icon={card.hidden ? EyeOff : Eye}
-              onClick={() => {
-                mutations.update(index, { hidden: !card.hidden })
-              }}
-            />
-            <ToolbarButton
-              label="Delete card"
-              icon={Trash}
-              onClick={() => {
-                mutations.remove(index)
-              }}
-            />
-          </Toolbar>
         </div>
-      )}
-    </DragSortable>
+
+        <Toolbar>
+          <ToolbarButton
+            label="Add text block"
+            icon={Type}
+            onClick={() => {
+              mutations.update(index, {
+                blocks: [
+                  ...card.blocks,
+                  { id: crypto.randomUUID(), type: "text", text: "" },
+                ],
+              })
+            }}
+          />
+          <ToolbarButton
+            label="Add image block"
+            icon={Image}
+            onClick={() => {
+              mutations.update(index, {
+                blocks: [
+                  ...card.blocks,
+                  { id: crypto.randomUUID(), type: "image", src: "" },
+                ],
+              })
+            }}
+          />
+          <ToolbarButton
+            label={card.hidden ? "Show card" : "Hide card"}
+            icon={card.hidden ? EyeOff : Eye}
+            onClick={() => {
+              mutations.update(index, { hidden: !card.hidden })
+            }}
+          />
+          <ToolbarButton
+            label="Delete card"
+            icon={Trash}
+            onClick={() => {
+              mutations.remove(index)
+            }}
+          />
+        </Toolbar>
+      </Dialog>
+    </>
   )
 }
 
@@ -384,35 +445,58 @@ function ToolbarButton(props: {
   )
 }
 
-function DragSortable({
+function DragSortableWithHandle({
   children,
   id,
 }: {
   children: (args: { handle: ReactNode }) => React.ReactNode
   id: string
 }) {
-  const sortable = useSortable({ id, transition: null })
+  const sortable = useSortable({ id })
 
   const handle = (
     <button
       {...sortable.attributes}
       {...sortable.listeners}
+      ref={sortable.setActivatorNodeRef}
       className={cx(
         "px-1.5 text-center",
         sortable.isDragging ? "cursor-grabbing" : "cursor-grab",
       )}
     >
-      <Grip
-        className="inline leading-4 s-4"
-        aria-label="Click and hold to rearrange"
-      />
+      <Grip className="inline leading-4 s-4" aria-label="Drag to rearrange" />
     </button>
   )
 
   return (
+    <div
+      ref={sortable.setNodeRef}
+      style={{
+        transition: sortable.transition,
+        transform: CSS.Translate.toString(sortable.transform),
+        zIndex: sortable.isDragging ? 10 : undefined,
+      }}
+    >
+      {children({ handle })}
+    </div>
+  )
+}
+
+function DragSortable({
+  children,
+  id,
+}: {
+  children: React.ReactNode
+  id: string
+}) {
+  const sortable = useSortable({ id, transition: null })
+  return (
     <motion.div
+      {...sortable.attributes}
+      {...sortable.listeners}
       ref={sortable.setNodeRef}
       layoutId={id}
+      className={sortable.isDragging ? "cursor-grabbing" : "cursor-grab"}
       animate={
         sortable.transform && sortable.isDragging
           ? {
@@ -433,7 +517,7 @@ function DragSortable({
         zIndex: sortable.isDragging ? 10 : undefined,
       }}
     >
-      {children({ handle })}
+      {children}
     </motion.div>
   )
 }
