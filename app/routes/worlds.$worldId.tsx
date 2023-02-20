@@ -13,7 +13,7 @@ import type { LucideIcon } from "lucide-react"
 import {
   ChevronUp,
   EyeOff,
-  Gamepad,
+  Gamepad2,
   Globe,
   Library,
   List,
@@ -180,7 +180,7 @@ function WorldNav() {
           />
           <WorldNavLink
             to={route("/worlds/:worldId/players", { worldId: world.id })}
-            icon={Gamepad}
+            icon={Gamepad2}
             label="Players"
           />
           <WorldNavLink
