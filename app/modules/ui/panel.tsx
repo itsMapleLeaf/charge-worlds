@@ -6,7 +6,7 @@ export type PanelProps = VariantProps<typeof panel>
 export const panel = cva("", {
   variants: {
     background: {
-      default: "bg-black/50 backdrop-blur",
+      default: "bg-black/75 backdrop-blur-md",
       none: "",
     },
     border: {
@@ -30,8 +30,8 @@ export const panel = cva("", {
   },
 })
 
+export const interactive =
+  "transition hover:border-foreground-8/50 hover:text-foreground-7 active:translate-y-0.5 active:duration-[0s] select-none cursor-pointer"
+
 export const interactivePanel = (props?: PanelProps) =>
-  cx(
-    panel(props),
-    "transition hover:border-foreground-8/50 hover:text-foreground-7 active:scale-[0.97] active:duration-[0s] select-none cursor-pointer",
-  )
+  cx(panel(props), interactive)

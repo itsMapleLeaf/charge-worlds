@@ -1,6 +1,7 @@
+import { cx } from "class-variance-authority"
 import clsx from "clsx"
 import type { PanelProps } from "./panel"
-import { interactivePanel } from "./panel"
+import { interactive, interactivePanel } from "./panel"
 
 export const button = ({
   size = 12,
@@ -21,3 +22,5 @@ export const circleButton = clsx(
   interactivePanel({ border: "circle" }),
   "inline-flex items-center justify-center s-12",
 )
+
+export const clearButton = () => cx(interactive)

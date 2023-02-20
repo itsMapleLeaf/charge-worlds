@@ -195,7 +195,10 @@ function WorldNav() {
 
 function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
   return (
-    <Link to={props.to} className={button({ border: "none", shadow: "none" })}>
+    <Link
+      to={props.to}
+      className={button({ border: "none", shadow: "none", background: "none" })}
+    >
       <props.icon aria-hidden /> {props.label}
     </Link>
   )
@@ -213,7 +216,10 @@ function CharacterListDetails(props: { children: React.ReactNode }) {
 function CharacterListSummary() {
   return (
     <summary
-      className={cx(button({ border: "none", shadow: "none" }), "w-full")}
+      className={cx(
+        button({ border: "none", shadow: "none", background: "none" }),
+        "w-full",
+      )}
     >
       <Users aria-hidden />
       <span className="flex-1">Characters</span>
@@ -238,7 +244,12 @@ function CharacterList() {
             worldId: world.id,
             characterId: character._id,
           })}
-          className={button({ border: "none", shadow: "none", size: 10 })}
+          className={button({
+            border: "none",
+            shadow: "none",
+            background: "none",
+            size: 10,
+          })}
           key={character._id}
         >
           <div
