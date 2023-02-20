@@ -27,6 +27,7 @@ import {
   Type,
 } from "lucide-react"
 import type { ReactNode } from "react"
+import { Fragment } from "react"
 import TextArea from "react-expanding-textarea"
 import { CardCollection } from "~/modules/cards/card-collection"
 import type { Card, CardBlock } from "~/modules/cards/card-schema"
@@ -109,13 +110,14 @@ export default function LibraryPage() {
 }
 
 function CardPanel({ card }: { card: Card }) {
+  const [animateRef] = useAutoAnimate()
   return (
-    <article className={panel()} key={card.id}>
+    <article className={panel()} key={card.id} ref={animateRef}>
       <h3 className="border-b border-white/10 p-3 text-2xl font-light">
         {card.title}
       </h3>
-      {card.blocks.map((block, index) => (
-        <div key={index}>
+      {card.blocks.map((block) => (
+        <Fragment key={block.id}>
           {block.type === "text" ? (
             <p className="my-3 whitespace-pre-line px-3">{block.text}</p>
           ) : block.type === "image" ? (
@@ -125,7 +127,7 @@ function CardPanel({ card }: { card: Card }) {
               className="h-auto w-full object-cover"
             />
           ) : null}
-        </div>
+        </Fragment>
       ))}
     </article>
   )
