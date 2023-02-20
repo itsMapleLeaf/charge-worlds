@@ -12,7 +12,7 @@ export const input = () =>
 
 export const textArea = () =>
   cx(
-    "p-3 leading-[22px] min-h-12 block resize-none",
+    "p-3 leading-[22px] min-h-12 block w-full resize-none",
     inputFocusRing,
     interactivePanel({ shadow: "none", cursor: "unset" }),
   )
