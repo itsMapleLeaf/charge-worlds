@@ -27,13 +27,14 @@ export function Masonry<T>({
     <div ref={ref} className="flex" style={{ gap }}>
       {range(columnCount).map((columnIndex) => (
         <div key={columnIndex} className="flex flex-1 flex-col" style={{ gap }}>
-          {range(columnIndex, items.length, columnCount).map((itemIndex) =>
-            items[itemIndex] ? (
-              <Fragment key={itemKey(items[itemIndex])}>
-                {renderItem(items[itemIndex], itemIndex)}
+          {range(columnIndex, items.length, columnCount).map((itemIndex) => {
+            const item = items[itemIndex]
+            return item ? (
+              <Fragment key={itemKey(item)}>
+                {renderItem(item, itemIndex)}
               </Fragment>
-            ) : null,
-          )}
+            ) : null
+          })}
         </div>
       ))}
     </div>
