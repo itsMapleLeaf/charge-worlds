@@ -25,21 +25,13 @@ import {
 import { cx } from "class-variance-authority"
 import { AnimatePresence, motion } from "framer-motion"
 import type { LucideIcon } from "lucide-react"
-import {
-  Edit,
-  Eye,
-  EyeOff,
-  Grip,
-  Image,
-  PlusSquare,
-  Trash,
-  Type,
-} from "lucide-react"
+import { Edit, Eye, EyeOff, Grip, PlusSquare, Trash } from "lucide-react"
 import type { ReactNode } from "react"
-import TextArea from "react-expanding-textarea"
+import { cardBlockTypes } from "~/modules/cards/card-block-types"
 import { CardCollection } from "~/modules/cards/card-collection"
 import type { Card, CardBlock } from "~/modules/cards/card-schema"
 import { button } from "~/modules/ui/button"
+import { ControlsOverlay } from "~/modules/ui/controls-overlay"
 import { Masonry } from "~/modules/ui/masonry"
 import { panel } from "~/modules/ui/panel"
 import { WorldContext } from "~/modules/world/world-context"
@@ -137,46 +129,41 @@ function CardPanel({ card }: { card: Card }) {
       </header>
       <main className="grid gap-3 p-3">
         <AnimatePresence initial={false}>
-          {blocks.map((block) => (
-            <motion.div
-              key={block.id}
-              layout="position"
-              layoutId={block.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex items-center gap-3"
-            >
-              <div className="flex-1">
-                {block.type === "text" ? (
-                  <p className="whitespace-pre-line">{block.text}</p>
-                ) : block.type === "image" ? (
-                  <img
-                    src={block.src}
-                    alt=""
-                    className="h-auto w-full object-cover"
-                  />
-                ) : null}
-              </div>
-              {block.hidden && (
-                <EyeOff aria-label="Hidden" className="opacity-50" />
-              )}
-            </motion.div>
-          ))}
+          {blocks.map((block) => {
+            const content = (() => {
+              const blockType = cardBlockTypes[block.type]
+              if (!blockType) {
+                return <p>Unknown block type: {block.type}</p>
+              }
+
+              const result = blockType.schema.safeParse(block.data)
+              if (!result.success) {
+                return <p>Invalid block data: {result.error.message}</p>
+              }
+
+              return <blockType.StaticComponent data={result.data} />
+            })()
+
+            return (
+              <motion.div
+                key={block.id}
+                layout="position"
+                layoutId={block.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-3"
+              >
+                <div className="flex-1">{content}</div>
+                {block.hidden && (
+                  <EyeOff aria-label="Hidden" className="opacity-50" />
+                )}
+              </motion.div>
+            )
+          })}
         </AnimatePresence>
       </main>
     </article>
-  )
-}
-
-function ControlsOverlay(props: { children: ReactNode; controls: ReactNode }) {
-  return (
-    <div className="group relative h-max">
-      {props.children}
-      <div className="absolute top-0 right-0 p-3 opacity-0 transition focus-within:opacity-100 group-hover:opacity-100">
-        {props.controls}
-      </div>
-    </div>
   )
 }
 
@@ -260,68 +247,75 @@ function CardEditorButton({ card, index }: { card: Card; index: number }) {
               strategy={verticalListSortingStrategy}
             >
               <div className="grid gap-2 p-2">
-                {card.blocks.map((block) => (
-                  <DragSortableWithHandle id={block.id} key={block.id}>
-                    {({ handle }) => (
-                      <CardBlockControls
-                        block={block}
-                        dragHandle={handle}
-                        onDelete={() => {
-                          deleteBlock(block.id)
-                        }}
-                        onToggleHidden={() => {
-                          updateBlock(block.id, { hidden: !block.hidden })
-                        }}
-                      >
-                        {block.type === "text" ? (
-                          <CardTextBlockEditor
-                            block={block}
-                            onChangeText={(text) => {
-                              updateBlock(block.id, { text })
-                            }}
-                          />
-                        ) : block.type === "image" ? (
-                          <CardImageBlockEditor
-                            block={block}
-                            onChangeSrc={(src) => {
-                              updateBlock(block.id, { src })
-                            }}
-                          />
-                        ) : null}
-                      </CardBlockControls>
-                    )}
-                  </DragSortableWithHandle>
-                ))}
+                {card.blocks.map((block) => {
+                  const content = (() => {
+                    const blockType = cardBlockTypes[block.type]
+                    if (!blockType) {
+                      return <p>Unknown block type: {block.type}</p>
+                    }
+
+                    const result = blockType.schema.safeParse(block.data)
+                    if (!result.success) {
+                      return <p>Invalid block data: {result.error.message}</p>
+                    }
+
+                    return (
+                      <section aria-label={`${block.type} block`}>
+                        <blockType.EditorComponent
+                          data={result.data}
+                          onChange={(data) => {
+                            updateBlock(block.id, { data })
+                          }}
+                        />
+                      </section>
+                    )
+                  })()
+
+                  return (
+                    <DragSortableWithHandle id={block.id} key={block.id}>
+                      {({ handle }) => (
+                        <CardBlockControls
+                          block={block}
+                          dragHandle={handle}
+                          onDelete={() => {
+                            deleteBlock(block.id)
+                          }}
+                          onToggleHidden={() => {
+                            updateBlock(block.id, { hidden: !block.hidden })
+                          }}
+                        >
+                          {content}
+                        </CardBlockControls>
+                      )}
+                    </DragSortableWithHandle>
+                  )
+                })}
               </div>
             </SortableContext>
           </DndContext>
         </div>
 
         <Toolbar>
-          <ToolbarButton
-            label="Add text block"
-            icon={Type}
-            onClick={() => {
-              mutations.update(index, {
-                blocks: [
-                  ...card.blocks,
-                  { id: crypto.randomUUID(), type: "text", text: "" },
-                ],
-              })
-            }}
-          />
-          <ToolbarButton
-            label="Add image block"
-            icon={Image}
-            onClick={() => {
-              mutations.update(index, {
-                blocks: [
-                  ...card.blocks,
-                  { id: crypto.randomUUID(), type: "image", src: "" },
-                ],
-              })
-            }}
-          />
+          {Object.entries(cardBlockTypes).map(([name, type]) => (
+            <ToolbarButton
+              key={name}
+              label={`Add ${name} block`}
+              icon={type.icon}
+              onClick={() => {
+                mutations.update(index, {
+                  blocks: [
+                    ...card.blocks,
+                    {
+                      id: crypto.randomUUID(),
+                      type: name,
+                      hidden: false,
+                      data: type.initialData,
+                    },
+                  ],
+                })
+              }}
+            />
+          ))}
           <ToolbarButton
             label={card.hidden ? "Show card" : "Hide card"}
             icon={card.hidden ? EyeOff : Eye}
@@ -370,50 +364,6 @@ function CardBlockControls(props: {
           onClick={props.onDelete}
         />
       </Toolbar>
-    </div>
-  )
-}
-
-function CardTextBlockEditor({
-  block,
-  onChangeText,
-}: {
-  block: CardBlock<"text">
-  onChangeText: (text: string) => void
-}) {
-  return (
-    <TextArea
-      title="Card Text"
-      placeholder="Write something interesting!"
-      value={block.text}
-      onChange={(event) => {
-        onChangeText(event.target.value)
-      }}
-      rows={1}
-      className="min-w-0 resize-none bg-transparent p-2 transition focus:text-foreground-8 focus:ring-0"
-    />
-  )
-}
-
-function CardImageBlockEditor({
-  block,
-  onChangeSrc,
-}: {
-  block: CardBlock<"image">
-  onChangeSrc: (src: string) => void
-}) {
-  return (
-    <div className="divide-y divide-white/10">
-      <img src={block.src} alt="" className="aspect-square object-contain" />
-      <input
-        title="Card Image"
-        placeholder="https://some.image/link.png"
-        value={block.src}
-        onChange={(event) => {
-          onChangeSrc(event.target.value)
-        }}
-        className="w-full min-w-0 flex-1 bg-transparent p-2 transition focus:text-foreground-8 focus:ring-0"
-      />
     </div>
   )
 }
