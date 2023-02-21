@@ -11,7 +11,7 @@
     "dev:remix": "remix dev",
     "dev:server": "wait-on file:build && cross-env NODE_ENV=development nodemon -w build server.dev.mjs",
     "dev:routes": "pnpm run routes --watch",
-    "build": "remix build",
+    "build": "cross-env NODE_ENV=production remix build",
     "start": "cross-env NODE_ENV=production remix-serve build",
     "lint": "eslint --ext js,ts,tsx,astro .",
     "lint-fix": "pnpm lint --fix",
