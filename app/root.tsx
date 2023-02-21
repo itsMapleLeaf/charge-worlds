@@ -98,14 +98,16 @@ function Document({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className="break-words bg-neutral-1 bg-cover bg-fixed bg-right bg-no-repeat font-body text-foreground-1 [word-break:break-word]"
-      style={{ backgroundImage: `url(${background})` }}
+      className="thin-scrollbar break-words bg-neutral-1 font-body text-foreground-1 [word-break:break-word]"
     >
       <head>
         <Meta />
         <Links />
       </head>
-      <body>
+      <body
+        className="bg-cover bg-fixed bg-right bg-no-repeat"
+        style={{ backgroundImage: `url(${background})` }}
+      >
         <div className="flex min-h-screen flex-col bg-black/50">
           <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col p-4 md:px-8">
             <ToastProvider>{children}</ToastProvider>

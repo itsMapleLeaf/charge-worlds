@@ -9,7 +9,7 @@ export function LoadingSpinner({
   return (
     <div
       className={clsx(
-        "grid w-fit animate-spin",
+        "grid w-fit animate-in animate-to-rotate-[360deg] animation-duration-1000 animation-ease-linear animate-infinite",
         size === "small" &&
           "grid-cols-[0.5rem,0.5rem] grid-rows-[0.5rem,0.5rem] gap-1",
         size === "medium" &&

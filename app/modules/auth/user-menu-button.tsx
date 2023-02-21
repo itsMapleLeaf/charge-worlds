@@ -1,23 +1,17 @@
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Form } from "@remix-run/react"
-import { Menu, MenuButton, MenuItem, useMenuState } from "ariakit"
 import { LogOut, User } from "lucide-react"
 import { route } from "routes-gen"
 import type { AuthContextUser } from "../app/auth"
-import { menuItemClass, menuPanelClass } from "../ui/styles"
 
 export type UserMenuButtonProps = {
   user: AuthContextUser
 }
 
 export function UserMenuButton({ user }: UserMenuButtonProps) {
-  const menu = useMenuState({
-    gutter: 8,
-    placement: "bottom-end",
-    animated: true,
-  })
   return (
-    <>
-      <MenuButton state={menu} className="block" title="Account actions">
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger className="block" title="Account actions">
         {user.avatarUrl ? (
           <img
             src={user.avatarUrl}
@@ -27,21 +21,27 @@ export function UserMenuButton({ user }: UserMenuButtonProps) {
         ) : (
           <User />
         )}
-      </MenuButton>
-      <Menu state={menu} className={menuPanelClass} portal>
-        <Form
-          method="post"
-          action={route("/auth/logout")}
-          reloadDocument
-          className="contents"
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content
+          className="panel origin-[var(--radix-dropdown-menu-content-transform-origin)] animate-from-opacity-0 animate-to-opacity-100 animate-from-scale-95 animate-to-scale-100 data-[state=open]:animate-in data-[state=closed]:animate-out"
+          align="end"
+          sideOffset={16}
         >
-          <MenuItem as="button" type="submit" className={menuItemClass}>
-            <div className="flex items-center gap-2 leading-none">
-              <LogOut /> Sign out
-            </div>
-          </MenuItem>
-        </Form>
-      </Menu>
-    </>
+          <Form
+            method="post"
+            action={route("/auth/logout")}
+            reloadDocument
+            className="contents"
+          >
+            <DropdownMenu.Item className="block p-3 transition data-[highlighted]:bg-black/25">
+              <div className="flex items-center gap-2 leading-none">
+                <LogOut /> Sign out
+              </div>
+            </DropdownMenu.Item>
+          </Form>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
   )
 }

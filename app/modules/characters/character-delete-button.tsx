@@ -1,8 +1,12 @@
-import { Dialog, DialogDismiss, DialogHeading, useDialogState } from "ariakit"
-import { cx } from "class-variance-authority"
 import { Trash, X } from "lucide-react"
 import { button } from "../ui/button"
-import { panel } from "../ui/panel"
+import {
+  Dialog,
+  DialogButton,
+  DialogClose,
+  DialogModalPanel,
+  DialogOverlay,
+} from "../ui/dialog"
 
 export function CharacterDeleteButton({
   character,
@@ -11,46 +15,29 @@ export function CharacterDeleteButton({
   character: { name: string }
   onDelete: () => void
 }) {
-  const dialog = useDialogState({ animated: true })
   return (
-    <>
-      <button className={button()} onClick={dialog.show}>
+    <Dialog>
+      <DialogButton className={button()}>
         <Trash />
         Delete
-      </button>
-
-      <Dialog
-        state={dialog}
-        className={cx(
-          "m-auto flex flex-col items-center p-4 gap-4 transition data-[enter]:scale-100 data-[leave]:scale-90 data-[enter]:opacity-100 data-[leave]:opacity-0",
-          panel(),
-        )}
-        backdropProps={{
-          className: cx(
-            "fixed inset-0 flex flex-col bg-black/50 backdrop-blur-md transition data-[enter]:opacity-100 data-[leave]:opacity-0",
-          ),
-        }}
-      >
-        <DialogHeading>
-          Are you sure you want to delete {character.name}?
-        </DialogHeading>
-        <div className="flex items-center gap-4">
-          <DialogDismiss className={button()}>
-            <X />
-            Cancel
-          </DialogDismiss>
-          <button
-            className={button()}
-            onClick={() => {
-              dialog.hide()
-              onDelete()
-            }}
-          >
-            <Trash />
-            Delete
-          </button>
-        </div>
-      </Dialog>
-    </>
+      </DialogButton>
+      <DialogOverlay>
+        <DialogModalPanel>
+          <div className="grid gap-3 p-3 text-center">
+            <p>Are you sure you want to delete {character.name}?</p>
+            <div className="flex items-center justify-center gap-4">
+              <DialogClose className={button()}>
+                <X />
+                Cancel
+              </DialogClose>
+              <DialogClose className={button()} onClick={onDelete}>
+                <Trash />
+                Delete
+              </DialogClose>
+            </div>
+          </div>
+        </DialogModalPanel>
+      </DialogOverlay>
+    </Dialog>
   )
 }

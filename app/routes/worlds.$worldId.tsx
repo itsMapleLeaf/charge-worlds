@@ -2,12 +2,7 @@ import { ClientSideSuspense } from "@liveblocks/react"
 import type { LoaderArgs, MetaFunction } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react"
-import {
-  Dialog,
-  DialogDisclosure,
-  DialogDismiss,
-  useDialogState,
-} from "ariakit"
+
 import { cx } from "class-variance-authority"
 import type { LucideIcon } from "lucide-react"
 import {
@@ -18,7 +13,6 @@ import {
   Library,
   List,
   Mountain,
-  SidebarClose,
   SidebarOpen,
   UserPlus,
   Users,
@@ -35,6 +29,12 @@ import type { Character } from "~/modules/characters/collections"
 import { CharacterCollection } from "~/modules/characters/collections"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
 import { button, circleButton } from "~/modules/ui/button"
+import {
+  Dialog,
+  DialogButton,
+  DialogDrawerPanel,
+  DialogOverlay,
+} from "~/modules/ui/dialog"
 import { LoadingPlaceholder } from "~/modules/ui/loading"
 import { panel } from "~/modules/ui/panel"
 import { WorldContext } from "~/modules/world/world-context"
@@ -113,35 +113,17 @@ export default function WorldPage() {
 }
 
 function DrawerButton() {
-  const dialog = useDialogState({
-    animated: true,
-  })
   return (
-    <>
-      <DialogDisclosure
-        state={dialog}
-        className={circleButton}
-        title="Open drawer"
-      >
+    <Dialog>
+      <DialogButton className={circleButton} title="Open drawer">
         <SidebarOpen />
-      </DialogDisclosure>
-      <Dialog
-        state={dialog}
-        className={cx(
-          panel({ border: "right" }),
-          "fixed inset-y-0 left-0 flex min-h-0 w-64 -translate-x-full flex-col overflow-y-auto opacity-0 transition duration-300 data-[enter]:translate-x-0 data-[enter]:opacity-100 thin-scrollbar",
-        )}
-      >
-        <div className="flex-1">
+      </DialogButton>
+      <DialogOverlay>
+        <DialogDrawerPanel side="left">
           <WorldNav />
-        </div>
-        <div className="sticky bottom-0 p-4">
-          <DialogDismiss className={circleButton} title="Dismiss">
-            <SidebarClose />
-          </DialogDismiss>
-        </div>
-      </Dialog>
-    </>
+        </DialogDrawerPanel>
+      </DialogOverlay>
+    </Dialog>
   )
 }
 

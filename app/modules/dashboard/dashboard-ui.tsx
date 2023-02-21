@@ -1,7 +1,5 @@
-import { Select, SelectItem, SelectPopover, useSelectState } from "ariakit"
-import clsx from "clsx"
 import cuid from "cuid"
-import { ChevronDown, Maximize2, SeparatorVertical, X } from "lucide-react"
+import { Maximize2, SeparatorVertical, X } from "lucide-react"
 import { createContext, useContext } from "react"
 import type { MosaicBranch, MosaicNode } from "react-mosaic-component"
 import {
@@ -17,12 +15,7 @@ import {
 import { z } from "zod"
 import { isObject } from "../../helpers/is-object"
 import { useLocalStorage } from "../../helpers/local-storage"
-import {
-  activePressClass,
-  clearButtonClass,
-  menuItemClass,
-  menuPanelClass,
-} from "../ui/styles"
+import { clearButtonClass, menuItemClass } from "../ui/styles"
 import type { DashboardModule } from "./dashboard-module"
 import { dashboardModules } from "./dashboard-modules"
 
@@ -211,40 +204,17 @@ function DashboardModuleSelect({ windowId }: { windowId: string }) {
   const modules = dashboardModules as Record<string, DashboardModule>
   const moduleIds = Object.keys(modules)
 
-  const select = useSelectState({
-    value: windowModules[windowId]?.moduleId ?? moduleIds[0],
-    setValue: (value) => setWindowModule(windowId, value),
-    gutter: 12,
-    animated: true,
-  })
-
   return (
-    <>
-      <Select
-        state={select}
-        className={clsx(
-          "-m-2 flex min-w-0 items-center gap-1 p-2 leading-none hover:text-blue-300 ",
-          activePressClass,
-        )}
-      >
-        <ChevronDown />
-        <span className="min-w-0 flex-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-lg font-medium">
-          {modules[select.value]?.config.name}
-        </span>
-      </Select>
-      <SelectPopover state={select} className={menuPanelClass}>
-        {moduleIds.map((id) => (
-          <SelectItem key={id} value={id} className={menuItemClass}>
-            <p>{modules[id]?.config.name ?? "⚠ unknown module"}</p>
-            {modules[id]?.config.description && (
-              <p className="mt-1 text-sm opacity-70">
-                {modules[id]?.config.description}
-              </p>
-            )}
-          </SelectItem>
-        ))}
-      </SelectPopover>
-    </>
+    <select
+      value={windowModules[windowId]?.moduleId ?? moduleIds[0]}
+      onChange={(e) => setWindowModule(windowId, e.target.value)}
+    >
+      {moduleIds.map((id) => (
+        <option key={id} value={id} className={menuItemClass}>
+          {modules[id]?.config.name ?? "⚠ unknown module"}
+        </option>
+      ))}
+    </select>
   )
 }
 

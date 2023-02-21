@@ -1,8 +1,8 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react"
-import { Portal } from "ariakit"
+import { Portal } from "@radix-ui/react-portal"
 import { AlertTriangle, CheckCircle2, Info, XOctagon } from "lucide-react"
 import type { ContextType } from "react"
-import { createContext, useContext, useMemo, useState } from "react"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 
 type Toast = {
   id: string
@@ -38,6 +38,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     }),
     [],
   )
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      Object.assign(window, { toast: actions })
+    }
+  }, [actions])
 
   return (
     <>
