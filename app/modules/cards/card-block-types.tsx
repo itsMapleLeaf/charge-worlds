@@ -9,7 +9,10 @@ export type CardBlockType<Input = any, Output = any> = {
   icon: LucideIcon
   schema: z.ZodSchema<Output, ZodTypeDef, Input>
   initialData: Input
-  StaticComponent: (props: { data: Output }) => ReactElement
+  StaticComponent: (props: {
+    data: Output
+    onChange: (data: Input) => void
+  }) => ReactElement
   EditorComponent: (props: {
     data: Output
     onChange: (data: Input) => void

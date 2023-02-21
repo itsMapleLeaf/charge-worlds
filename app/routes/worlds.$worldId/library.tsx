@@ -54,6 +54,17 @@ export default function LibraryPage() {
     }),
   )
 
+  function handleBlockDataChange(
+    card: Card,
+    cardIndex: number,
+    blockId: string,
+    data: any,
+  ) {
+    mutations.update(cardIndex, {
+      blocks: card.blocks.map((b) => (b.id === blockId ? { ...b, data } : b)),
+    })
+  }
+
   return (
     <section className="grid gap-4" aria-label="Library">
       {isOwner && (
@@ -96,12 +107,24 @@ export default function LibraryPage() {
                   controls={<CardEditorButton card={card} index={index} />}
                 >
                   <DragSortable id={card.id}>
-                    <CardPanel key={card.id} card={card} />
+                    <CardPanel
+                      key={card.id}
+                      card={card}
+                      onBlockDataChange={(blockId, data) => {
+                        handleBlockDataChange(card, index, blockId, data)
+                      }}
+                    />
                   </DragSortable>
                 </ControlsOverlay>
               ) : (
                 <motion.div layoutId={card.id}>
-                  <CardPanel key={card.id} card={card} />
+                  <CardPanel
+                    key={card.id}
+                    card={card}
+                    onBlockDataChange={(blockId, data) => {
+                      handleBlockDataChange(card, index, blockId, data)
+                    }}
+                  />
                 </motion.div>
               )
             }
@@ -114,7 +137,13 @@ export default function LibraryPage() {
   )
 }
 
-function CardPanel({ card }: { card: Card }) {
+function CardPanel({
+  card,
+  onBlockDataChange,
+}: {
+  card: Card
+  onBlockDataChange: (blockId: string, data: any) => void
+}) {
   const { isOwner } = WorldContext.useValue()
 
   const blocks = isOwner
@@ -141,7 +170,12 @@ function CardPanel({ card }: { card: Card }) {
                 return <p>Invalid block data: {result.error.message}</p>
               }
 
-              return <blockType.StaticComponent data={result.data} />
+              return (
+                <blockType.StaticComponent
+                  data={result.data}
+                  onChange={(data) => onBlockDataChange(block.id, data)}
+                />
+              )
             })()
 
             return (
