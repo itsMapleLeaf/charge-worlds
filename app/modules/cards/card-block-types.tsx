@@ -1,9 +1,10 @@
 import type { LucideIcon } from "lucide-react"
-import { Image, Type } from "lucide-react"
+import { Clock, Image, Type } from "lucide-react"
 import type { ReactElement } from "react"
 import TextArea from "react-expanding-textarea"
 import type { ZodTypeDef } from "zod"
 import { z } from "zod"
+import { ClockCardBlock, clockSchema } from "../clocks/clock-card-block"
 
 export type CardBlockType<Input = any, Output = any> = {
   icon: LucideIcon
@@ -65,6 +66,14 @@ export const cardBlockTypes: Record<string, CardBlockType> = {
       </>
     ),
   }),
+
+  clock: {
+    icon: Clock,
+    schema: clockSchema,
+    initialData: { name: "", progress: 0, maxProgress: 4 },
+    StaticComponent: ClockCardBlock,
+    EditorComponent: ClockCardBlock,
+  },
 }
 
 function ImageBlockPreview(props: { src: string }) {
