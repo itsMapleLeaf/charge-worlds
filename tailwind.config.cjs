@@ -33,25 +33,6 @@ module.exports = {
     // @ts-expect-error
     require("@tailwindcss/container-queries"),
 
-    plugin(function thinScrollbar({ addComponents, theme }) {
-      addComponents({
-        ".thin-scrollbar": {
-          "&::-webkit-scrollbar": {
-            width: theme("width.1"),
-            height: theme("width.1"),
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "rgba(255, 255, 255, 0.25)",
-            borderRadius: theme("borderRadius.full"),
-          },
-          "&::-webkit-scrollbar-track-piece:start, &::-webkit-scrollbar-track-piece:end, &::-webkit-scrollbar-corner":
-            {
-              backgroundColor: theme("colors.transparent"),
-            },
-        },
-      })
-    }),
-
     // adds a can-hover: variant, which applies if the device has pointer hovering capabilities
     plugin(function canHover({ addVariant }) {
       addVariant("can-hover", "@media (hover: hover)")

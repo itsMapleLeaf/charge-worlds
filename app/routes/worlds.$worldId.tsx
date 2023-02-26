@@ -91,7 +91,7 @@ export default function WorldPage() {
           <div className="flex flex-1 items-start gap-4">
             <aside
               className={cx(
-                "w-48 hidden md:block lg:w-64 overflow-y-auto thin-scrollbar sticky top-8",
+                "w-48 hidden md:block lg:w-64 overflow-y-auto sticky top-8",
                 panel(),
               )}
             >

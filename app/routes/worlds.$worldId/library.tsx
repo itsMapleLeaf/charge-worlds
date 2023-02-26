@@ -260,7 +260,7 @@ function CardEditorButton({ card, index }: { card: Card; index: number }) {
             className="w-full bg-transparent p-2 text-2xl font-light transition focus:text-foreground-8 focus:ring-0"
           />
 
-          <div className="thin-scrollbar min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}

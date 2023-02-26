@@ -187,7 +187,7 @@ function DashboardWindowContent({ windowId }: { windowId: string }) {
   const module = moduleId ? modules[moduleId] : undefined
 
   return (
-    <section className="thin-scrollbar h-full w-full overflow-y-auto bg-slate-800">
+    <section className="h-full w-full overflow-y-auto bg-slate-800">
       {module && moduleId ? (
         <module.config.component />
       ) : (

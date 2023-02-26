@@ -98,7 +98,7 @@ function Document({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className="thin-scrollbar break-words bg-neutral-1 font-body text-foreground-1 [word-break:break-word]"
+      className="break-words bg-neutral-1 font-body text-foreground-1 [word-break:break-word]"
     >
       <head>
         <Meta />

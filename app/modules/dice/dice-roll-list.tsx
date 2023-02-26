@@ -6,7 +6,6 @@ import type { DiceRoll } from "./collections"
 export function DiceRollList({ rolls }: { rolls: DiceRoll[] }) {
   return (
     <Virtuoso
-      className="thin-scrollbar"
       data={rolls}
       itemContent={(index, roll) => (
         <div
