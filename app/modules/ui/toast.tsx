@@ -1,8 +1,8 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react"
-import { Portal } from "@radix-ui/react-portal"
 import { AlertTriangle, CheckCircle2, Info, XOctagon } from "lucide-react"
 import type { ContextType } from "react"
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { Portal } from "../react/portal"
 
 type Toast = {
   id: string
