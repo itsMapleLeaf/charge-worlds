@@ -29,6 +29,10 @@ module.exports = {
     "tailwindcss/migration-from-tailwind-2": "off",
     "unicorn/no-null": "off",
     "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/consistent-type-imports": [
+      "warn",
+      { fixStyle: "inline-type-imports" },
+    ],
   },
   overrides: [
     {
