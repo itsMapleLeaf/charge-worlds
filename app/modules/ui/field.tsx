@@ -9,14 +9,14 @@ export function Field({
   label: React.ReactNode
   children: React.ReactNode
   className?: string
-  errors?: string[]
+  errors?: string | string[]
 }) {
   return (
     <label className={className}>
       <div className={labelTextClass}>{label}</div>
       {!!errors?.length && (
         <div className="mt-2">
-          {errors.map((error, i) => (
+          {[errors].flat().map((error, i) => (
             <p key={i} className={errorTextClass}>
               {error}
             </p>

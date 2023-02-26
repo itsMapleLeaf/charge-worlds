@@ -1,19 +1,20 @@
 import type { ActionArgs, LoaderArgs } from "@remix-run/node"
 import { json } from "@remix-run/node"
-import { Form, useActionData, useLoaderData } from "@remix-run/react"
+import { useActionData, useLoaderData } from "@remix-run/react"
+import { withZod } from "@remix-validated-form/with-zod"
 import { cx } from "class-variance-authority"
 import { CheckCircle } from "lucide-react"
+import { ValidatedForm, validationError } from "remix-validated-form"
 import { z } from "zod"
-import { zfd } from "zod-form-data"
+import { FormButton } from "~/modules/forms/form-button"
+import { FormInput } from "~/modules/forms/form-input"
 import { button } from "~/modules/ui/button"
-import { input } from "~/modules/ui/input"
 import { panel } from "~/modules/ui/panel"
+import { errorTextClass } from "~/modules/ui/styles"
 import { assert } from "../../helpers/assert"
 import { db } from "../../modules/app/db.server"
 import { requireWorldOwner } from "../../modules/auth/membership.server"
 import { requireSessionUser } from "../../modules/auth/session.server"
-import { Field } from "../../modules/ui/field"
-import { errorTextClass } from "../../modules/ui/styles"
 import { getWorld } from "../../modules/world/world-db.server"
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -30,6 +31,12 @@ export async function loader({ request, params }: LoaderArgs) {
   })
 }
 
+const validator = withZod(
+  z.object({
+    name: z.string().min(1).max(256),
+  }),
+)
+
 export async function action({ request, params }: ActionArgs) {
   assert(params.worldId, "worldId is required")
 
@@ -39,14 +46,9 @@ export async function action({ request, params }: ActionArgs) {
   ])
   await requireWorldOwner(user, world)
 
-  const result = zfd
-    .formData({
-      name: zfd.text(z.string().min(1).max(256)),
-    })
-    .safeParse(await request.formData())
-
-  if (!result.success) {
-    return json(result.error.formErrors, { status: 400 })
+  const result = await validator.validate(await request.formData())
+  if (result.error) {
+    return validationError(result.error)
   }
 
   try {
@@ -56,13 +58,10 @@ export async function action({ request, params }: ActionArgs) {
     })
   } catch (error) {
     console.error(error)
-    return json(
-      { formErrors: ["Something went wrong. Try again?"], fieldErrors: null },
-      { status: 500 },
-    )
+    return json({ error: "Failed to update world, try again?" }, 500)
   }
 
-  return json(null)
+  return json({ ok: true })
 }
 
 export default function SettingsPage() {
@@ -72,30 +71,21 @@ export default function SettingsPage() {
   return (
     <div className={cx(panel(), "p-4 grid gap-4")}>
       <h1 className="text-3xl font-light">World Details</h1>
-
-      <Form method="post" className="contents">
-        <Field label="Name" errors={actionData?.fieldErrors?.name}>
-          <input
-            name="name"
-            required
-            defaultValue={data.world.name}
-            placeholder="A Brand New World"
-            className={input()}
-          />
-        </Field>
-
-        <div>
-          <button type="submit" className={button()}>
-            <CheckCircle size={20} /> Save
-          </button>
-        </div>
-      </Form>
-
-      {actionData?.formErrors?.map((error, index) => (
-        <p key={index} className={errorTextClass}>
-          {error}
-        </p>
-      ))}
+      {actionData && "error" in actionData && (
+        <p className={errorTextClass}>{actionData.error}</p>
+      )}
+      <ValidatedForm method="post" validator={validator} className="contents">
+        <FormInput
+          name="name"
+          label="Name"
+          required
+          defaultValue={data.world.name}
+          placeholder="A Brand New World"
+        />
+        <FormButton className={cx(button(), "justify-self-start")}>
+          <CheckCircle size={20} /> Save
+        </FormButton>
+      </ValidatedForm>
     </div>
   )
 }
