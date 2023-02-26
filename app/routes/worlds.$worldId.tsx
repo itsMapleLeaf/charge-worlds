@@ -17,7 +17,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react"
-import { useLayoutEffect, useState } from "react"
+import { useRef } from "react"
 import { route } from "routes-gen"
 import { AppHeader } from "~/modules/app/app-header"
 import { db } from "~/modules/app/db.server"
@@ -28,6 +28,8 @@ import {
 import type { Character } from "~/modules/characters/collections"
 import { CharacterCollection } from "~/modules/characters/collections"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
+import { extractRef, type MaybeRef } from "~/modules/react/maybe-ref"
+import { useIsomorphicLayoutEffect } from "~/modules/react/use-isomorphic-layout-effect"
 import { button, circleButton } from "~/modules/ui/button"
 import {
   Dialog,
@@ -198,9 +200,10 @@ function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
 }
 
 function CharacterListDetails(props: { children: React.ReactNode }) {
-  const persistenceRef = useDetailsPersistence("world-nav-characters")
+  const ref = useRef<HTMLDetailsElement>(null)
+  useDetailsPersistence(ref, "world-nav-characters")
   return (
-    <details className="group" ref={persistenceRef}>
+    <details className="group" ref={ref}>
       {props.children}
     </details>
   )
@@ -312,10 +315,9 @@ function CharacterLink({
   )
 }
 
-function useDetailsPersistence(key: string) {
-  const [element, ref] = useState<HTMLDetailsElement | null>()
-
-  useLayoutEffect(() => {
+function useDetailsPersistence(ref: MaybeRef<HTMLDetailsElement>, key: string) {
+  useIsomorphicLayoutEffect(() => {
+    const element = extractRef(ref)
     if (!element) return
 
     element.open = localStorage.getItem(key) === "true"
@@ -327,7 +329,5 @@ function useDetailsPersistence(key: string) {
     return () => {
       element.removeEventListener("toggle", handleToggle)
     }
-  }, [element, key])
-
-  return ref
+  }, [ref, key])
 }
