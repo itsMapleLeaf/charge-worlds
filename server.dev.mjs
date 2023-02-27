@@ -1,3 +1,4 @@
+// @ts-check
 import { createRequestHandler } from "@remix-run/express"
 import express from "express"
 import build from "./build/index.js"
