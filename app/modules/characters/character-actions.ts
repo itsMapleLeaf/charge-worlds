@@ -33,7 +33,7 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
     },
     {
       name: "Tinker",
-      description: "Repair or build complex mechanisms",
+      description: "Create and/or repair items",
     },
     {
       name: "Interpret",
