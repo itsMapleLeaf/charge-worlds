@@ -11,15 +11,15 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
     },
     {
       name: "Travel",
-      description: "Quickly move from your current position to someplace else",
+      description: "Run, climb, or swim somewhere",
     },
     {
       name: "Dodge",
-      description: "Anticipate an attack and dextrously avoid it",
+      description: "Anticipate an attack and avoid it",
     },
     {
       name: "Misdirect",
-      description: "Employ subtle misdirection and/or slight of hand",
+      description: "Employ subtle misdirection, slight of hand",
     },
     {
       name: "Sneak",
@@ -29,20 +29,19 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
   Insight: [
     {
       name: "Shoot",
-      description: "Track and shoot at a target, including throwing",
+      description: "Track and shoot or throw at a target",
     },
     {
       name: "Tinker",
-      description: "Create and/or repair items",
+      description: "Create or repair items",
     },
     {
       name: "Interpret",
-      description:
-        "Gather and distil information, or read a person's emotions and statements",
+      description: "Distil information, detect lies, or intuit emotions",
     },
     {
       name: "Notice",
-      description: "Pick up on important details, anticipate danger",
+      description: "Pick up on important details or anticipate danger",
     },
     {
       name: "Recall",
@@ -52,7 +51,7 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
   Resolve: [
     {
       name: "Focus",
-      description: "Maintain concentration in the face of distraction",
+      description: "Maintain concentration",
     },
     {
       name: "Persuade",
@@ -60,7 +59,7 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
     },
     {
       name: "Charm",
-      description: "Butter up to someone to get on their good side",
+      description: "Influence with flattery, charisma, or admiration",
     },
     {
       name: "Comfort",
