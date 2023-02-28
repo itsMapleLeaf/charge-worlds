@@ -6,11 +6,11 @@ import { DashboardModule } from "../dashboard/dashboard-module"
 import {
   clearButtonClass,
   dividerClass,
-  labelTextClass,
   maxWidthContainerClass,
   navLinkClass,
 } from "../ui/styles"
 import { CharacterActionLevelsEditor } from "./character-action-levels-editor"
+import { characterActionLibrary } from "./character-actions"
 import { CharacterColorButton } from "./character-color-button"
 import { characterColors, defaultCharacterColor } from "./character-colors"
 import { CharacterDeleteButton } from "./character-delete-button"
@@ -45,6 +45,11 @@ export const charactersModule = new DashboardModule({
     const colorClasses =
       characterColors[currentCharacter?.color ?? "gray"] ??
       defaultCharacterColor
+
+    let totalLevels = 0
+    for (const action of Object.values(characterActionLibrary).flat()) {
+      totalLevels += currentCharacter?.actionLevels[action.name] ?? 0
+    }
 
     return (
       <div
@@ -99,7 +104,7 @@ export const charactersModule = new DashboardModule({
                   <hr className={dividerClass} />
 
                   <section className="grid gap-2">
-                    <h3 className={labelTextClass}>Actions</h3>
+                    <h3 className="font-medium">Actions ({totalLevels})</h3>
                     <CharacterActionLevelsEditor
                       character={currentCharacter}
                       onCharacterChange={(data) => {
