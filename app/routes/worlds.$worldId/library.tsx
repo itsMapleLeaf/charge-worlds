@@ -20,7 +20,7 @@ import { cx } from "class-variance-authority"
 import { AnimatePresence, motion } from "framer-motion"
 import type { LucideIcon } from "lucide-react"
 import { Edit, Eye, EyeOff, Grip, PlusSquare, Trash } from "lucide-react"
-import type { ReactNode } from "react"
+import { useState, type ReactNode } from "react"
 import { cardBlockTypes } from "~/modules/cards/card-block-types"
 import { CardCollection } from "~/modules/cards/card-collection"
 import type { Card, CardBlock } from "~/modules/cards/card-schema"
@@ -32,6 +32,7 @@ import {
   DialogModalPanel,
   DialogOverlay,
   DialogTitle,
+  type DialogProps,
 } from "~/modules/ui/dialog"
 import { Masonry } from "~/modules/ui/masonry"
 import { panel } from "~/modules/ui/panel"
@@ -39,13 +40,13 @@ import { WorldContext } from "~/modules/world/world-context"
 
 export default function LibraryPage() {
   const { isOwner } = WorldContext.useValue()
+  const mutations = CardCollection.useMutations()
+  const [currentDialogCardId, setCurrentDialogCardId] = useState<string>()
 
   let cards = CardCollection.useItems()
   if (!isOwner) {
     cards = cards.filter((card) => !card.hidden)
   }
-
-  const mutations = CardCollection.useMutations()
 
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -73,11 +74,13 @@ export default function LibraryPage() {
           <button
             className={button({ shadow: "default" })}
             onClick={() => {
+              const id = crypto.randomUUID()
               mutations.append({
-                id: crypto.randomUUID(),
+                id,
                 title: "New Card",
                 hidden: true,
               })
+              setCurrentDialogCardId(id)
             }}
           >
             <PlusSquare aria-hidden /> Add Card
@@ -105,7 +108,16 @@ export default function LibraryPage() {
             renderItem={(card, index) =>
               isOwner ? (
                 <ControlsOverlay
-                  controls={<CardEditorButton card={card} index={index} />}
+                  controls={
+                    <CardEditorDialog
+                      open={currentDialogCardId === card.id}
+                      onOpenChange={(open) => {
+                        setCurrentDialogCardId(open ? card.id : undefined)
+                      }}
+                    >
+                      <CardEditor card={card} index={index} />
+                    </CardEditorDialog>
+                  }
                 >
                   <DragSortable id={card.id}>
                     <CardPanel
@@ -202,7 +214,25 @@ function CardPanel({
   )
 }
 
-function CardEditorButton({ card, index }: { card: Card; index: number }) {
+function CardEditorDialog({ children, ...props }: DialogProps) {
+  return (
+    <Dialog {...props}>
+      <DialogButton title="Edit" className={button()}>
+        <Edit aria-hidden />
+      </DialogButton>
+      <DialogOverlay>
+        <DialogModalPanel>
+          <DialogTitle className="p-3 text-center text-3xl font-light">
+            Edit Card
+          </DialogTitle>
+          {children}
+        </DialogModalPanel>
+      </DialogOverlay>
+    </Dialog>
+  )
+}
+
+function CardEditor({ card, index }: { card: Card; index: number }) {
   const mutations = CardCollection.useMutations()
 
   const sensors = useSensors(
@@ -240,126 +270,115 @@ function CardEditorButton({ card, index }: { card: Card; index: number }) {
   }
 
   return (
-    <Dialog>
-      <DialogButton title="Edit" className={button()}>
-        <Edit aria-hidden />
-      </DialogButton>
-      <DialogOverlay>
-        <DialogModalPanel>
-          <DialogTitle className="p-3 text-center text-3xl font-light">
-            Edit Card
-          </DialogTitle>
+    <>
+      <input
+        title="Card Title"
+        placeholder="Card Title"
+        value={card.title}
+        onChange={(event) => {
+          mutations.update(index, { title: event.target.value })
+        }}
+        className="w-full bg-transparent p-2 text-2xl font-light transition focus:text-foreground-8 focus:ring-0"
+      />
 
-          <input
-            title="Card Title"
-            placeholder="Card Title"
-            value={card.title}
-            onChange={(event) => {
-              mutations.update(index, { title: event.target.value })
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={card.blocks}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="grid gap-2 p-2">
+              {card.blocks.map((block) => {
+                const content = (() => {
+                  const blockType = cardBlockTypes[block.type]
+                  if (!blockType) {
+                    return <p>Unknown block type: {block.type}</p>
+                  }
+
+                  const result = blockType.schema.safeParse(block.data)
+                  if (!result.success) {
+                    return <p>Invalid block data: {result.error.message}</p>
+                  }
+
+                  return (
+                    <section aria-label={`${block.type} block`}>
+                      <blockType.EditorComponent
+                        data={result.data}
+                        onChange={(data) => {
+                          updateBlock(block.id, { data })
+                        }}
+                      />
+                    </section>
+                  )
+                })()
+
+                return (
+                  <DragSortableWithHandle id={block.id} key={block.id}>
+                    {({ handle }) => (
+                      <CardBlockControls
+                        block={block}
+                        dragHandle={handle}
+                        onDelete={() => {
+                          deleteBlock(block.id)
+                        }}
+                        onToggleHidden={() => {
+                          updateBlock(block.id, {
+                            hidden: !block.hidden,
+                          })
+                        }}
+                      >
+                        {content}
+                      </CardBlockControls>
+                    )}
+                  </DragSortableWithHandle>
+                )
+              })}
+            </div>
+          </SortableContext>
+        </DndContext>
+      </div>
+
+      <Toolbar>
+        {Object.entries(cardBlockTypes).map(([name, type]) => (
+          <ToolbarButton
+            key={name}
+            label={`Add ${name} block`}
+            icon={type.icon}
+            onClick={() => {
+              mutations.update(index, {
+                blocks: [
+                  ...card.blocks,
+                  {
+                    id: crypto.randomUUID(),
+                    type: name,
+                    hidden: false,
+                    data: type.initialData,
+                  },
+                ],
+              })
             }}
-            className="w-full bg-transparent p-2 text-2xl font-light transition focus:text-foreground-8 focus:ring-0"
           />
-
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
-              <SortableContext
-                items={card.blocks}
-                strategy={verticalListSortingStrategy}
-              >
-                <div className="grid gap-2 p-2">
-                  {card.blocks.map((block) => {
-                    const content = (() => {
-                      const blockType = cardBlockTypes[block.type]
-                      if (!blockType) {
-                        return <p>Unknown block type: {block.type}</p>
-                      }
-
-                      const result = blockType.schema.safeParse(block.data)
-                      if (!result.success) {
-                        return <p>Invalid block data: {result.error.message}</p>
-                      }
-
-                      return (
-                        <section aria-label={`${block.type} block`}>
-                          <blockType.EditorComponent
-                            data={result.data}
-                            onChange={(data) => {
-                              updateBlock(block.id, { data })
-                            }}
-                          />
-                        </section>
-                      )
-                    })()
-
-                    return (
-                      <DragSortableWithHandle id={block.id} key={block.id}>
-                        {({ handle }) => (
-                          <CardBlockControls
-                            block={block}
-                            dragHandle={handle}
-                            onDelete={() => {
-                              deleteBlock(block.id)
-                            }}
-                            onToggleHidden={() => {
-                              updateBlock(block.id, {
-                                hidden: !block.hidden,
-                              })
-                            }}
-                          >
-                            {content}
-                          </CardBlockControls>
-                        )}
-                      </DragSortableWithHandle>
-                    )
-                  })}
-                </div>
-              </SortableContext>
-            </DndContext>
-          </div>
-
-          <Toolbar>
-            {Object.entries(cardBlockTypes).map(([name, type]) => (
-              <ToolbarButton
-                key={name}
-                label={`Add ${name} block`}
-                icon={type.icon}
-                onClick={() => {
-                  mutations.update(index, {
-                    blocks: [
-                      ...card.blocks,
-                      {
-                        id: crypto.randomUUID(),
-                        type: name,
-                        hidden: false,
-                        data: type.initialData,
-                      },
-                    ],
-                  })
-                }}
-              />
-            ))}
-            <ToolbarButton
-              label={card.hidden ? "Show card" : "Hide card"}
-              icon={card.hidden ? EyeOff : Eye}
-              onClick={() => {
-                mutations.update(index, { hidden: !card.hidden })
-              }}
-            />
-            <ToolbarButton
-              label="Delete card"
-              icon={Trash}
-              onClick={() => {
-                mutations.remove(index)
-              }}
-            />
-          </Toolbar>
-        </DialogModalPanel>
-      </DialogOverlay>
-    </Dialog>
+        ))}
+        <ToolbarButton
+          label={card.hidden ? "Show card" : "Hide card"}
+          icon={card.hidden ? EyeOff : Eye}
+          onClick={() => {
+            mutations.update(index, { hidden: !card.hidden })
+          }}
+        />
+        <ToolbarButton
+          label="Delete card"
+          icon={Trash}
+          onClick={() => {
+            mutations.remove(index)
+          }}
+        />
+      </Toolbar>
+    </>
   )
 }
 

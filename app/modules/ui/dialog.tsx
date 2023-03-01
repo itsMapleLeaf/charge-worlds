@@ -3,8 +3,14 @@ import clsx from "clsx"
 import { SidebarClose } from "lucide-react"
 import { circleButton } from "~/modules/ui/button"
 
-export function Dialog(props: { children: React.ReactNode }) {
-  return <RadixDialog.Root>{props.children}</RadixDialog.Root>
+export type DialogProps = {
+  children: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+export function Dialog(props: DialogProps) {
+  return <RadixDialog.Root {...props} />
 }
 
 export function DialogButton(props: RadixDialog.DialogTriggerProps) {
