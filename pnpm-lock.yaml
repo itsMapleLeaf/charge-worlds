@@ -10,7 +10,7 @@ specifiers:
   '@liveblocks/client': ^1.0.1
   '@liveblocks/node': ^1.0.1
   '@liveblocks/react': ^1.0.1
-  '@prisma/client': ^4.10.1
+  '@prisma/client': ^4.11.0
   '@radix-ui/colors': ^0.1.8
   '@radix-ui/react-dialog': ^1.0.2
   '@radix-ui/react-dropdown-menu': ^2.0.3
@@ -27,10 +27,10 @@ specifiers:
   '@tailwindcss/container-queries': ^0.1.0
   '@types/eslint': ^8.21.1
   '@types/express': ^4.17.17
-  '@types/node': ^18.14.1
+  '@types/node': ^18.14.2
   '@types/react': ^18.0.28
   '@types/react-dom': ^18.0.11
-  '@vercel/node': ^2.9.8
+  '@vercel/node': ^2.9.10
   class-variance-authority: ^0.4.0
   clsx: ^1.2.1
   cross-env: ^7.0.3
@@ -39,16 +39,16 @@ specifiers:
   del-cli: ^5.0.0
   depcheck: ^1.4.3
   eslint: ^8.35.0
-  eslint-plugin-tailwindcss: ^3.9.0
+  eslint-plugin-tailwindcss: ^3.10.0
   express: ^4.18.2
-  framer-motion: ^10.0.0
-  inngest: ^1.2.0
-  lucide-react: ^0.115.0
+  framer-motion: ^10.0.1
+  inngest: ^1.3.1
+  lucide-react: ^0.118.0
   nodemon: ^2.0.20
   npm-run-all: ^4.1.5
   prettier: ^2.8.4
   pretty-bytes: ^6.1.0
-  prisma: ^4.10.1
+  prisma: ^4.11.0
   react: ^18.2.0
   react-dom: ^18.2.0
   react-expanding-textarea: ^2.3.6
@@ -73,28 +73,28 @@ dependencies:
   '@liveblocks/client': 1.0.1
   '@liveblocks/node': 1.0.1
   '@liveblocks/react': 1.0.1_react@18.2.0
-  '@prisma/client': 4.10.1_prisma@4.10.1
+  '@prisma/client': 4.11.0_prisma@4.11.0
   '@radix-ui/colors': 0.1.8
   '@radix-ui/react-dialog': 1.0.2_zula6vjvt3wdocc4mwcxqa6nzi
   '@radix-ui/react-dropdown-menu': 2.0.3_zula6vjvt3wdocc4mwcxqa6nzi
   '@radix-ui/react-popover': 1.0.4_zula6vjvt3wdocc4mwcxqa6nzi
   '@remix-run/node': 0.0.0-nightly-dc98a6b-20230223
   '@remix-run/react': 0.0.0-nightly-dc98a6b-20230223_biqbaboplfbrettd7655fr4n2y
-  '@remix-run/vercel': 0.0.0-nightly-dc98a6b-20230223_@vercel+node@2.9.8
+  '@remix-run/vercel': 0.0.0-nightly-dc98a6b-20230223_@vercel+node@2.9.10
   '@remix-validated-form/with-zod': 2.0.5_grxkjfxs3e3daiuanhp5hez2mu
-  '@vercel/node': 2.9.8
+  '@vercel/node': 2.9.10
   class-variance-authority: 0.4.0_typescript@4.9.5
   clsx: 1.2.1
   cuid: 3.0.0
   date-fns: 2.29.3
-  framer-motion: 10.0.0_biqbaboplfbrettd7655fr4n2y
-  inngest: 1.2.0
-  lucide-react: 0.115.0_react@18.2.0
+  framer-motion: 10.0.1_biqbaboplfbrettd7655fr4n2y
+  inngest: 1.3.1
+  lucide-react: 0.118.0_react@18.2.0
   pretty-bytes: 6.1.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-expanding-textarea: 2.3.6_react@18.2.0
-  react-mosaic-component: 5.3.0_jdmknfcuij4xh2pddlsdu6a6a4
+  react-mosaic-component: 5.3.0_fx7evwqt5b6hurxdpivmogqdby
   react-virtuoso: 4.1.0_biqbaboplfbrettd7655fr4n2y
   remix-validated-form: 4.6.9_pjddaxyxaxs57i4zavkq26la6u
   routes-gen: 0.6.0
@@ -111,19 +111,19 @@ devDependencies:
   '@tailwindcss/container-queries': 0.1.0_tailwindcss@3.2.7
   '@types/eslint': 8.21.1
   '@types/express': 4.17.17
-  '@types/node': 18.14.1
+  '@types/node': 18.14.2
   '@types/react': 18.0.28
   '@types/react-dom': 18.0.11
   cross-env: 7.0.3
   del-cli: 5.0.0
   depcheck: 1.4.3
   eslint: 8.35.0
-  eslint-plugin-tailwindcss: 3.9.0_tailwindcss@3.2.7
+  eslint-plugin-tailwindcss: 3.10.0_tailwindcss@3.2.7
   express: 4.18.2
   nodemon: 2.0.20
   npm-run-all: 4.1.5
   prettier: 2.8.4
-  prisma: 4.10.1
+  prisma: 4.11.0
   react-refresh: 0.14.0
   tailwindcss: 3.2.7
   tsx: 3.12.3
@@ -2081,8 +2081,8 @@ packages:
       json-parse-even-better-errors: 2.3.1
     dev: true
 
-  /@prisma/client/4.10.1_prisma@4.10.1:
-    resolution: {integrity: sha512-VonXLJZybdt8e5XZH5vnIGCRNnIh6OMX1FS3H/yzMGLT3STj5TJ/OkMcednrvELgk8PK89Vo3aSh51MWNO0axA==}
+  /@prisma/client/4.11.0_prisma@4.11.0:
+    resolution: {integrity: sha512-0INHYkQIqgAjrt7NzhYpeDQi8x3Nvylc2uDngKyFDDj1tTRQ4uV1HnVmd1sQEraeVAN63SOK0dgCKQHlvjL0KA==}
     engines: {node: '>=14.17'}
     requiresBuild: true
     peerDependencies:
@@ -2091,16 +2091,16 @@ packages:
       prisma:
         optional: true
     dependencies:
-      '@prisma/engines-version': 4.10.1-2.aead147aa326ccb985dcfed5b065b4fdabd44b19
-      prisma: 4.10.1
+      '@prisma/engines-version': 4.11.0-57.8fde8fef4033376662cad983758335009d522acb
+      prisma: 4.11.0
     dev: false
 
-  /@prisma/engines-version/4.10.1-2.aead147aa326ccb985dcfed5b065b4fdabd44b19:
-    resolution: {integrity: sha512-tsjTho7laDhf9EJ9EnDxAPEf7yrigSMDhniXeU4YoWc7azHAs4GPxRi2P9LTFonmHkJLMOLjR77J1oIP8Ife1w==}
+  /@prisma/engines-version/4.11.0-57.8fde8fef4033376662cad983758335009d522acb:
+    resolution: {integrity: sha512-3Vd8Qq06d5xD8Ch5WauWcUUrsVPdMC6Ge8ILji8RFfyhUpqon6qSyGM0apvr1O8n8qH8cKkEFqRPsYjuz5r83g==}
     dev: false
 
-  /@prisma/engines/4.10.1:
-    resolution: {integrity: sha512-B3tcTxjx196nuAu1GOTKO9cGPUgTFHYRdkPkTS4m5ptb2cejyBlH9X7GOfSt3xlI7p4zAJDshJP4JJivCg9ouA==}
+  /@prisma/engines/4.11.0:
+    resolution: {integrity: sha512-0AEBi2HXGV02cf6ASsBPhfsVIbVSDC9nbQed4iiY5eHttW9ZtMxHThuKZE1pnESbr8HRdgmFSa/Kn4OSNYuibg==}
     requiresBuild: true
 
   /@radix-ui/colors/0.1.8:
@@ -2627,14 +2627,14 @@ packages:
       set-cookie-parser: 2.5.1
       source-map: 0.7.4
 
-  /@remix-run/vercel/0.0.0-nightly-dc98a6b-20230223_@vercel+node@2.9.8:
+  /@remix-run/vercel/0.0.0-nightly-dc98a6b-20230223_@vercel+node@2.9.10:
     resolution: {integrity: sha512-TH8iqhz4dzfQR6JMl2sLbOxPMnOuKcx2lTTPt/7wDak0F1EFKWqlsrOvtkQ1PiLfJpVEssVm1Fzy3gmFOaCkug==}
     engines: {node: '>=14'}
     peerDependencies:
       '@vercel/node': ^1.8.3 || ^2.4.0
     dependencies:
       '@remix-run/node': 0.0.0-nightly-dc98a6b-20230223
-      '@vercel/node': 2.9.8
+      '@vercel/node': 2.9.10
     dev: false
 
   /@remix-run/web-blob/3.0.4:
@@ -2775,7 +2775,7 @@ packages:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
     dependencies:
       '@types/connect': 3.4.35
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
     dev: true
 
   /@types/cacheable-request/6.0.3:
@@ -2783,14 +2783,14 @@ packages:
     dependencies:
       '@types/http-cache-semantics': 4.0.1
       '@types/keyv': 3.1.4
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
       '@types/responselike': 1.0.0
     dev: true
 
   /@types/connect/3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
     dev: true
 
   /@types/cookie/0.4.1:
@@ -2828,7 +2828,7 @@ packages:
   /@types/express-serve-static-core/4.17.33:
     resolution: {integrity: sha512-TPBqmR/HRYI3eC2E5hmiivIzv+bidAfXofM+sbonAGvyDhySGw9/PQZFt2BLOrjUUR++4eJVpx6KnLQK1Fk9tA==}
     dependencies:
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
     dev: true
@@ -2846,7 +2846,7 @@ packages:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
     dev: true
 
   /@types/hast/2.3.4:
@@ -2876,7 +2876,7 @@ packages:
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
     dev: true
 
   /@types/mdast/3.0.10:
@@ -2912,8 +2912,8 @@ packages:
     resolution: {integrity: sha512-qelS/Ra6sacc4loe/3MSjXNL1dNQ/GjxNHVzuChwMfmk7HuycRLVQN2qNY3XahK+fZc5E2szqQSKUyAF0E+2bg==}
     dev: false
 
-  /@types/node/18.14.1:
-    resolution: {integrity: sha512-QH+37Qds3E0eDlReeboBxfHbX9omAcBCXEzswCu6jySP642jiM3cYSIkU/REqwhCUqXdonHFuBfJDiAJxMNhaQ==}
+  /@types/node/18.14.2:
+    resolution: {integrity: sha512-1uEQxww3DaghA0RxqHx0O0ppVlo43pJhepY51OxuQIKHpjbnYLA7vcdwioNPzIqmC2u3I/dmylcqjlh0e7AyUA==}
 
   /@types/normalize-package-data/2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -2949,7 +2949,7 @@ packages:
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
     dev: true
 
   /@types/scheduler/0.16.2:
@@ -2963,13 +2963,13 @@ packages:
     resolution: {integrity: sha512-NUo5XNiAdULrJENtJXZZ3fHtfMolzZwczzBbnAeBbqBwG+LaG6YaJtuwzwGSQZ2wsCrxjEhNNjAkKigy3n8teQ==}
     dependencies:
       '@types/mime': 3.0.1
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
     dev: true
 
   /@types/through/0.0.30:
     resolution: {integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==}
     dependencies:
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
     dev: true
 
   /@types/unist/2.0.6:
@@ -3152,21 +3152,21 @@ packages:
     resolution: {integrity: sha512-17kVyLq3ePTKOkveHxXuIJZtGYs+cSoev7BlP+Lf4916qfDhk/HBjvlYDe8egrea7LNPHKwSZJK/bzZC+Q6AwQ==}
     dev: true
 
-  /@vercel/build-utils/6.3.1:
-    resolution: {integrity: sha512-mFd6QZJX1SaweTa9BB+zO6OyGeQWsk+z0LFhsSblnWue2wjmeZ3z3TBt8V/Wlae5NMg4+E2AFcDf/lr3ENeCfg==}
+  /@vercel/build-utils/6.3.2:
+    resolution: {integrity: sha512-wUYa8eUyTg1jPGRCrjpIxJm1r6hQE7ccbECWzDCAikuWG4iadS2zWrF7bsAcuUj7fTMf8sNFhmsknTJgyN3B3g==}
     dev: false
 
-  /@vercel/node-bridge/3.1.12:
-    resolution: {integrity: sha512-RYMYzyR/QyT+1JeOHBtBxwDc8XszYbChq0b18uqt4/PQ8rUWdcHMUkUoNjScB6RmqScX+vTzYj8eLS8UfHxnaQ==}
+  /@vercel/node-bridge/3.1.14:
+    resolution: {integrity: sha512-TAbo0rwBenmWywcEup+5lZgr6ILPPq55P33JRX+oJJuTxYib0NqVj47gEvLTxaj3MoJFgp0iDlC9A0uAf4ykxQ==}
     dev: false
 
-  /@vercel/node/2.9.8:
-    resolution: {integrity: sha512-GqRqUmdT5/l8XY68ulUJKgijCrWw/p2sgxzrq5Mj40B2nOC5CQa0HLLiNd/Q+jnIrrJkdBpB1xeVkebEv1mgng==}
+  /@vercel/node/2.9.10:
+    resolution: {integrity: sha512-rpl0dkJVQpPgIPvAG2hIuxwIIUoxRFqGwMVqqsp6r9sr2Y03q+t2UtPSGOyBRpE+0JdYV2GzcRcgiPQi3Udi7w==}
     dependencies:
       '@edge-runtime/vm': 2.0.0
       '@types/node': 14.18.33
-      '@vercel/build-utils': 6.3.1
-      '@vercel/node-bridge': 3.1.12
+      '@vercel/build-utils': 6.3.2
+      '@vercel/node-bridge': 3.1.14
       '@vercel/static-config': 2.0.13
       edge-runtime: 2.0.0
       esbuild: 0.14.47
@@ -3788,6 +3788,10 @@ packages:
   /caniuse-lite/1.0.30001458:
     resolution: {integrity: sha512-lQ1VlUUq5q9ro9X+5gOEyH7i3vm+AYVT1WDCVB69XOZ17KZRhnZ9J0Sqz7wTHQaLBJccNCHq8/Ww5LlOIZbB0w==}
     dev: true
+
+  /canonicalize/1.0.8:
+    resolution: {integrity: sha512-0CNTVCLZggSh7bc5VkX5WWPWO+cyZbNd07IHIsSXLia/eAq+r836hgk+8BKoEh7949Mda87VUOitx5OddVj64A==}
+    dev: false
 
   /chalk/2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
@@ -4994,8 +4998,8 @@ packages:
       string.prototype.matchall: 4.0.8
     dev: true
 
-  /eslint-plugin-tailwindcss/3.9.0_tailwindcss@3.2.7:
-    resolution: {integrity: sha512-uA2/Q0g22i1uGFI/FTBkLCvpc5VpzMZjAJn3/hPqhongG0V7aaRHrFx4LyfOje/b9Q/t9iarx40InrXKf2jC6w==}
+  /eslint-plugin-tailwindcss/3.10.0_tailwindcss@3.2.7:
+    resolution: {integrity: sha512-6fqvo9Dp3BqGntQoMHH3ri/nWKwUnYDqx67eKUgNPscaNxqjDEJvV6Cj8zgmCjJBAMrU+Cu6Eh4INKsgEwEbDQ==}
     engines: {node: '>=12.13.0'}
     peerDependencies:
       tailwindcss: ^3.2.2
@@ -5462,8 +5466,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
-  /framer-motion/10.0.0_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-qVmndcu4Z3q5ftqcbUCvVewHc5yiw4uIZyM0uvJ0/spj9lza/FnWywUUc8DNIZTG1my6nFsNLRPGDruP4o6eIw==}
+  /framer-motion/10.0.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-/N7gBA9gH8PkStyNQ67P/lx8UhL/7Y8z9Ku7FfgOF77sSG8wu8781kX7I5ZUgflRRtQXo8qH4Rev23004G1zcQ==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
@@ -5674,7 +5678,7 @@ packages:
       '@types/glob': 7.2.0
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.2.11
+      fast-glob: 3.2.12
       glob: 7.2.3
       ignore: 5.2.4
       merge2: 1.4.1
@@ -5987,15 +5991,15 @@ packages:
     resolution: {integrity: sha512-7NXolsK4CAS5+xvdj5OMMbI962hU/wvwoxk+LWR9Ek9bVtyuuYScDN6eS0rUm6TxApFpw7CX1o4uJzcd4AyD3Q==}
     dev: true
 
-  /inngest/1.2.0:
-    resolution: {integrity: sha512-IBagpcMl9f/KWdhkHgK6zLYp9G0KZ+SNvN5OTAXsYNmNgJyb3NQihhZy4os7YLAta7psIIue7IRb6TNDdY89Hg==}
+  /inngest/1.3.1:
+    resolution: {integrity: sha512-iCRMkWfHSEAn5G3tJvqtl1l2wD93KQP3uYYDvWCF6SmgACktVD4U+IvpnOOmmmHp4kvobYO/IcJEZuix15egfw==}
     hasBin: true
     dependencies:
       buffer: 6.0.3
+      canonicalize: 1.0.8
       cross-fetch: 3.1.5
       h3: 1.5.0
       hash.js: 1.1.7
-      json-stringify-deterministic: 1.0.8
       ms: 2.1.3
       serialize-error-cjs: 0.1.3
       type-fest: 3.6.1
@@ -6451,11 +6455,6 @@ packages:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
     dev: true
 
-  /json-stringify-deterministic/1.0.8:
-    resolution: {integrity: sha512-rkJID3qeigo3VCrEcxX1333fTBBxW89YrdYcZexMnL/WdB8u0zctyG63e/DpahRJyrWCDhh7IQhiR7u2XEDQ4Q==}
-    engines: {node: '>= 4'}
-    dev: false
-
   /json5/1.0.2:
     resolution: {integrity: sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA==}
     hasBin: true
@@ -6661,8 +6660,8 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /lucide-react/0.115.0_react@18.2.0:
-    resolution: {integrity: sha512-VGL7jBKN6pEXi6peXoyn9t9O7olvinaAonnoe+iFi/F2q7/yQzAFM5KR1OY15u9PlrB3scI9HvcTFoOrIjUaVQ==}
+  /lucide-react/0.118.0_react@18.2.0:
+    resolution: {integrity: sha512-1EeHaj9EN0wHGzA/s6fx4tI4YMzYTdQsKQvUXI23BVUnha5K/8v2pvEMJHfPDKd9POuflHwujo8jHYjh1Nduxw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
@@ -8108,13 +8107,13 @@ packages:
     dependencies:
       parse-ms: 2.1.0
 
-  /prisma/4.10.1:
-    resolution: {integrity: sha512-0jDxgg+DruB1kHVNlcspXQB9au62IFfVg9drkhzXudszHNUAQn0lVuu+T8np0uC2z1nKD5S3qPeCyR8u5YFLnA==}
+  /prisma/4.11.0:
+    resolution: {integrity: sha512-4zZmBXssPUEiX+GeL0MUq/Yyie4ltiKmGu7jCJFnYMamNrrulTBc+D+QwAQSJ01tyzeGHlD13kOnqPwRipnlNw==}
     engines: {node: '>=14.17'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@prisma/engines': 4.10.1
+      '@prisma/engines': 4.11.0
 
   /process-nextick-args/2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
@@ -8298,7 +8297,7 @@ packages:
     dependencies:
       prop-types: 15.8.1
       react: 18.2.0
-      react-dnd: 14.0.5_zl22asvypxggh3scymcj3sfsam
+      react-dnd: 14.0.5_uqw6rmshllsnsa7jjbo2hvworm
     dev: false
 
   /react-dnd-touch-backend/14.1.1:
@@ -8308,7 +8307,7 @@ packages:
       dnd-core: 14.0.1
     dev: false
 
-  /react-dnd/14.0.5_zl22asvypxggh3scymcj3sfsam:
+  /react-dnd/14.0.5_uqw6rmshllsnsa7jjbo2hvworm:
     resolution: {integrity: sha512-9i1jSgbyVw0ELlEVt/NkCUkxy1hmhJOkePoCH713u75vzHGyXhPDm28oLfc2NMSBjZRM1Y+wRjHXJT3sPrTy+A==}
     peerDependencies:
       '@types/hoist-non-react-statics': '>= 3.3.1'
@@ -8325,7 +8324,7 @@ packages:
     dependencies:
       '@react-dnd/invariant': 2.0.0
       '@react-dnd/shallowequal': 2.0.0
-      '@types/node': 18.14.1
+      '@types/node': 18.14.2
       '@types/react': 18.0.28
       dnd-core: 14.0.1
       fast-deep-equal: 3.1.3
@@ -8357,7 +8356,7 @@ packages:
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
-  /react-mosaic-component/5.3.0_jdmknfcuij4xh2pddlsdu6a6a4:
+  /react-mosaic-component/5.3.0_fx7evwqt5b6hurxdpivmogqdby:
     resolution: {integrity: sha512-lw5l86+BHJQUysZ5zOT+ssZh6V7fe+ZGNpYU3tmC2LhjoljbY5WniRRtjZDJf/UyqxdArjxUAB9rAlm4JpBNwA==}
     peerDependencies:
       react: 16 - 18
@@ -8367,7 +8366,7 @@ packages:
       lodash: 4.17.21
       prop-types: 15.8.1
       react: 18.2.0
-      react-dnd: 14.0.5_zl22asvypxggh3scymcj3sfsam
+      react-dnd: 14.0.5_uqw6rmshllsnsa7jjbo2hvworm
       react-dnd-html5-backend: 14.1.0
       react-dnd-multi-backend: 6.0.2_cvk6mmi3rck7pmgaskmwta5j6y
       react-dnd-touch-backend: 14.1.1
