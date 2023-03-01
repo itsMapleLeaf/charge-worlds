@@ -23,7 +23,7 @@ export function DialogOverlay(props: { children: React.ReactNode }) {
 
 export function DialogModalPanel(props: { children: React.ReactNode }) {
   return (
-    <RadixDialog.Content className="panel m-auto flex w-full max-w-lg flex-col divide-y divide-white/10 animate-from-scale-x-95 animation-duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out">
+    <RadixDialog.Content className="panel m-auto flex max-h-full w-full max-w-lg flex-col divide-y divide-white/10 overflow-y-auto animate-from-scale-95 animation-duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out">
       {props.children}
     </RadixDialog.Content>
   )
