@@ -8,7 +8,7 @@
   }
 
   :focus-visible {
-    @apply ring-2 ring-foreground-8/75;
+    @apply ring-2 ring-foreground-8/75 ring-inset;
   }
 
   ::-webkit-scrollbar {

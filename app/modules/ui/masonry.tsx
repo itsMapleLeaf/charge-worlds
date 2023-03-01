@@ -1,4 +1,4 @@
-import type { Key, ReactElement } from "react"
+import type { Key, ReactNode } from "react"
 import { Fragment, useRef, useState } from "react"
 import { range } from "~/helpers/range"
 import { useSizeCallback } from "~/helpers/use-size"
@@ -14,7 +14,7 @@ export function Masonry<T>({
   itemKey: (item: T) => Key
   columnWidth: number
   gap?: number | string
-  renderItem: (item: T, index: number) => ReactElement
+  renderItem: (item: T, index: number) => ReactNode
 }) {
   const ref = useRef<HTMLDivElement>(null)
 
