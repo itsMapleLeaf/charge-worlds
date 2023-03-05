@@ -16,7 +16,6 @@ import {
   useLoaderData,
 } from "@remix-run/react"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
-import reactMosaicCss from "react-mosaic-component/react-mosaic-component.css"
 import background from "./assets/bg-witch.png"
 import favicon from "./assets/favicon.svg"
 import { pick } from "./helpers/pick"
@@ -34,7 +33,6 @@ export const meta = (): HtmlMetaDescriptor => getAppMeta()
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: rubik },
-  { rel: "stylesheet", href: reactMosaicCss },
   { rel: "stylesheet", href: tailwind },
   { rel: "icon", href: favicon },
 ]
