@@ -204,6 +204,7 @@ function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
           active: isActive,
         })
       }
+      prefetch="intent"
     >
       <props.icon aria-hidden /> {props.label}
     </NavLink>
