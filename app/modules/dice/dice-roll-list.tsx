@@ -6,6 +6,7 @@ import type { DiceRoll } from "./collections"
 export function DiceRollList({ rolls }: { rolls: DiceRoll[] }) {
   return (
     <Virtuoso
+      className="[transform:translateZ(0)]"
       data={rolls}
       itemContent={(index, roll) => (
         <div className={index === 0 ? "" : "border-t border-white/10"}>
@@ -35,7 +36,7 @@ function DiceRollItem({ roll }: { roll: DiceRoll }) {
       : "text-rose-400 drop-shadow-[0_0_4px_theme(colors.rose.400)]"
 
   return (
-    <div className="panel panel-border-none grid gap-2 p-3 shadow-none">
+    <div className="grid gap-2 p-3">
       {roll.intent && <p className="leading-snug">{roll.intent}</p>}
 
       <ul className="flex flex-wrap gap-1">
