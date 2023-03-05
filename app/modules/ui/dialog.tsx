@@ -41,8 +41,9 @@ export function DialogDrawerPanel(props: {
 }) {
   return (
     <RadixDialog.Content
+      data-side={props.side}
       className={clsx(
-        "panel fixed inset-y-0 flex w-64 flex-col overflow-y-scroll animation-duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:animation-ease-in",
+        "panel group fixed inset-y-0 flex w-64 flex-col overflow-y-scroll animation-duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:animation-ease-in",
         props.side === "left" &&
           "panel-border-right left-0 animate-from-translate-x-[-100%]",
         props.side === "right" &&
@@ -50,9 +51,9 @@ export function DialogDrawerPanel(props: {
       )}
     >
       <div className="flex-1">{props.children}</div>
-      <div className="sticky bottom-0 p-4">
+      <div className="sticky bottom-0 p-4 group-data-[side=right]:self-end">
         <DialogClose className={circleButton} title="Dismiss">
-          <SidebarClose />
+          <SidebarClose className="group-data-[side=right]:-scale-x-100" />
         </DialogClose>
       </div>
     </RadixDialog.Content>
