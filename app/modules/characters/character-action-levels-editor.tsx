@@ -29,7 +29,7 @@ export function CharacterActionLevelsEditor({
   }
 
   return (
-    <div className="flex flex-wrap gap-4 [&>*]:flex-1 [&>*]:basis-52">
+    <div className="grid grid-cols-3 gap-2">
       {entriesTyped(characterActionLibrary).map(([category, actions]) => (
         <section
           key={category}
@@ -46,22 +46,24 @@ export function CharacterActionLevelsEditor({
                   {action.description}
                 </p>
 
-                <div className="flex items-center gap-1">
-                  <DotCounter
-                    value={actionLevels[action.name] ?? 0}
-                    max={4}
-                    onChange={(level) => {
-                      if (readOnly) return
-                      onCharacterChange({
-                        actionLevels: {
-                          ...actionLevels,
-                          [action.name]: level,
-                        },
-                      })
-                    }}
-                  />
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex-1">
+                    <DotCounter
+                      value={actionLevels[action.name] ?? 0}
+                      max={4}
+                      onChange={(level) => {
+                        if (readOnly) return
+                        onCharacterChange({
+                          actionLevels: {
+                            ...actionLevels,
+                            [action.name]: level,
+                          },
+                        })
+                      }}
+                    />
+                  </div>
                   {!readOnly && (
-                    <div className="relative row-span-2 flex flex-1 justify-end gap-2">
+                    <div className="flex gap-2">
                       <CharacterActionRollButton
                         title={`Roll ${action}`}
                         intent={`${character.name}: ${action.name}`}

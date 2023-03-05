@@ -1,4 +1,4 @@
-import { setRoll } from "../dice/dice-module"
+import { setRoll } from "../dice/dice-panel"
 import { clearButton } from "../ui/button"
 
 export function CharacterActionRollButton({

@@ -2,6 +2,7 @@ import { createContext, useContext } from "react"
 import type { Nullish } from "~/helpers/types"
 
 export type AuthContextUser = {
+  id: string
   name: string
   avatarUrl?: Nullish<string>
 }

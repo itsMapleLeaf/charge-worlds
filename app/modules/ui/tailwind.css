@@ -30,8 +30,11 @@
   .panel {
     @apply bg-black/75 backdrop-blur-md border border-white/10 rounded-md shadow-md shadow-black/25;
   }
+  .panel-border-none {
+    @apply rounded-none border-0;
+  }
   .panel-border-left {
-    @apply rounded-none border-0 border-r;
+    @apply rounded-none border-0 border-l;
   }
   .panel-border-right {
     @apply rounded-none border-0 border-r;

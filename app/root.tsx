@@ -42,7 +42,7 @@ export const links: LinksFunction = () => [
 export async function loader({ request }: LoaderArgs) {
   const user = await getSessionUser(request)
   return json({
-    user: user && pick(user, ["name", "avatarUrl"]),
+    user: user && pick(user, ["id", "name", "avatarUrl"]),
   })
 }
 
@@ -109,7 +109,7 @@ function Document({ children }: { children: ReactNode }) {
         style={{ backgroundImage: `url(${background})` }}
       >
         <div className="flex min-h-screen flex-col bg-black/50">
-          <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col p-4 md:px-8">
+          <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col p-4 lg:px-8">
             <ToastProvider>{children}</ToastProvider>
           </div>
           <footer className="p-2 text-center text-xs opacity-60">

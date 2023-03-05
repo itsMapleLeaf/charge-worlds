@@ -42,5 +42,7 @@ export const interactable = ({ cursor, active }: InteractableProps = {}) =>
     active ? "border-foreground-8/50 text-foreground-7" : "",
   )
 
-export const interactivePanel = (props?: PanelProps & InteractableProps) =>
+export type InteractivePanelProps = PanelProps & InteractableProps
+
+export const interactivePanel = (props?: InteractivePanelProps) =>
   cx(panel(props), interactable(props))

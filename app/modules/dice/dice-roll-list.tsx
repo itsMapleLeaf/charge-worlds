@@ -8,9 +8,7 @@ export function DiceRollList({ rolls }: { rolls: DiceRoll[] }) {
     <Virtuoso
       data={rolls}
       itemContent={(index, roll) => (
-        <div
-          className={clsx("px-4 pt-4", index === rolls.length - 1 && "pb-4")}
-        >
+        <div className={index === 0 ? "" : "border-t border-white/10"}>
           <DiceRollItem roll={roll} />
         </div>
       )}
@@ -37,7 +35,7 @@ function DiceRollItem({ roll }: { roll: DiceRoll }) {
       : "text-rose-400 drop-shadow-[0_0_4px_theme(colors.rose.400)]"
 
   return (
-    <div className="grid gap-2 rounded-md bg-black/25 p-3">
+    <div className="panel panel-border-none grid gap-2 p-3 shadow-none">
       {roll.intent && <p className="leading-snug">{roll.intent}</p>}
 
       <ul className="flex flex-wrap gap-1">

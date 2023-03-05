@@ -4,9 +4,9 @@ import { json } from "@remix-run/node"
 import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react"
 
 import { cx } from "class-variance-authority"
-import type { LucideIcon } from "lucide-react"
 import {
   ChevronUp,
+  Dices,
   EyeOff,
   Gamepad2,
   Globe,
@@ -16,6 +16,7 @@ import {
   SidebarOpen,
   UserPlus,
   Users,
+  type LucideIcon,
 } from "lucide-react"
 import { useRef } from "react"
 import { route } from "routes-gen"
@@ -27,6 +28,7 @@ import {
 } from "~/modules/characters/character-colors"
 import type { Character } from "~/modules/characters/collections"
 import { CharacterCollection } from "~/modules/characters/collections"
+import { DicePanel } from "~/modules/dice/dice-panel"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
 import { extractRef, type MaybeRef } from "~/modules/react/maybe-ref"
 import { useIsomorphicLayoutEffect } from "~/modules/react/use-isomorphic-layout-effect"
@@ -38,7 +40,6 @@ import {
   DialogOverlay,
 } from "~/modules/ui/dialog"
 import { LoadingPlaceholder } from "~/modules/ui/loading"
-import { panel } from "~/modules/ui/panel"
 import { WorldContext } from "~/modules/world/world-context"
 import { pick } from "../helpers/pick"
 import { getAppMeta } from "../modules/app/meta"
@@ -90,23 +91,33 @@ export default function WorldPage() {
             title={data.world.name}
             breadcrumbs={[{ label: "Your Worlds", to: route("/") }]}
           />
-          <div className="flex flex-1 items-start gap-4">
-            <aside
-              className={cx(
-                "w-48 hidden md:block lg:w-64 overflow-y-auto sticky top-8",
-                panel(),
-              )}
-            >
+
+          <div className="flex flex-1 items-start gap-2">
+            <aside className="panel sticky top-8 hidden w-56 overflow-y-auto lg:block xl:w-64">
               <WorldNav />
             </aside>
+
             <div className="flex-1">
-              <ClientSideSuspense fallback={<LoadingPlaceholder />}>
-                {() => <Outlet />}
-              </ClientSideSuspense>
+              <ClientSideLoadingSuspense>
+                <Outlet />
+              </ClientSideLoadingSuspense>
             </div>
+
+            <aside className="panel sticky top-8 hidden h-[calc(100vh-8rem)] w-56 overflow-y-auto md:block xl:w-64">
+              <ClientSideLoadingSuspense>
+                <DicePanel />
+              </ClientSideLoadingSuspense>
+            </aside>
           </div>
-          <div className="sticky bottom-4 md:hidden">
-            <DrawerButton />
+
+          <div className="sticky bottom-4 flex justify-between">
+            <div className="lg:hidden">
+              <MenuDrawerButton />
+            </div>
+            <div className="flex-1" />
+            <div className="md:hidden">
+              <DiceDrawerButton />
+            </div>
           </div>
         </div>
       </RoomContext.RoomProvider>
@@ -114,7 +125,7 @@ export default function WorldPage() {
   )
 }
 
-function DrawerButton() {
+function MenuDrawerButton() {
   return (
     <Dialog>
       <DialogButton className={circleButton} title="Open drawer">
@@ -330,4 +341,33 @@ function useDetailsPersistence(ref: MaybeRef<HTMLDetailsElement>, key: string) {
       element.removeEventListener("toggle", handleToggle)
     }
   }, [ref, key])
+}
+
+function DiceDrawerButton() {
+  return (
+    <Dialog>
+      <DialogButton className={circleButton} title="Show dice rolls">
+        <Dices />
+      </DialogButton>
+      <DialogOverlay>
+        <DialogDrawerPanel side="right">
+          <ClientSideLoadingSuspense>
+            <DicePanel />
+          </ClientSideLoadingSuspense>
+        </DialogDrawerPanel>
+      </DialogOverlay>
+    </Dialog>
+  )
+}
+
+function ClientSideLoadingSuspense({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <ClientSideSuspense fallback={<LoadingPlaceholder />}>
+      {() => children}
+    </ClientSideSuspense>
+  )
 }

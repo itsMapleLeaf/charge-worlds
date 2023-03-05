@@ -1,13 +1,16 @@
 import { cx } from "class-variance-authority"
-import { interactivePanel } from "~/modules/ui/panel"
+import {
+  interactivePanel,
+  type InteractivePanelProps,
+} from "~/modules/ui/panel"
 
 const inputFocusRing = cx("ring-inset focus:ring-1 focus:ring-foreground-8/75")
 
-export const input = () =>
+export const input = (props?: InteractivePanelProps) =>
   cx(
     "px-3 h-12 block w-full",
     inputFocusRing,
-    interactivePanel({ shadow: "none", cursor: "unset" }),
+    interactivePanel({ shadow: "none", cursor: "unset", ...props }),
   )
 
 export const textArea = () =>

@@ -22,4 +22,5 @@ export const circleButton = cx(
   "inline-flex items-center justify-center s-12",
 )
 
-export const clearButton = () => cx(interactable())
+export const clearButton = () =>
+  cx("inline-flex items-center gap-2 [&>svg]:s-5", interactable())
