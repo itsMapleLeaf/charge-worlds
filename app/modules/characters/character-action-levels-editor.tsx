@@ -29,63 +29,65 @@ export function CharacterActionLevelsEditor({
   }
 
   return (
-    <div className="grid grid-cols-3 gap-2">
-      {entriesTyped(characterActionLibrary).map(([category, actions]) => (
-        <section
-          key={category}
-          className={cx(panel({ shadow: "none" }), "flex flex-col p-4")}
-        >
-          <h4 className="mb-4 text-center text-xl leading-tight tracking-wide">
-            {category}
-          </h4>
-          <div className="grid w-full flex-1 content-between gap-4">
-            {actions.map((action) => (
-              <section key={action.name}>
-                <h5>{action.name}</h5>
-                <p className="mb-1.5 text-sm opacity-75">
-                  {action.description}
-                </p>
+    <div className="@container">
+      <div className="grid gap-2 @lg:grid-cols-3">
+        {entriesTyped(characterActionLibrary).map(([category, actions]) => (
+          <section
+            key={category}
+            className={cx(panel({ shadow: "none" }), "flex flex-col p-4")}
+          >
+            <h4 className="mb-4 text-center text-xl leading-tight tracking-wide">
+              {category}
+            </h4>
+            <div className="grid w-full flex-1 content-between gap-4">
+              {actions.map((action) => (
+                <section key={action.name}>
+                  <h5>{action.name}</h5>
+                  <p className="mb-1.5 text-sm opacity-75">
+                    {action.description}
+                  </p>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="flex-1">
-                    <DotCounter
-                      value={actionLevels[action.name] ?? 0}
-                      max={4}
-                      onChange={(level) => {
-                        if (readOnly) return
-                        onCharacterChange({
-                          actionLevels: {
-                            ...actionLevels,
-                            [action.name]: level,
-                          },
-                        })
-                      }}
-                    />
-                  </div>
-                  {!readOnly && (
-                    <div className="flex gap-2">
-                      <CharacterActionRollButton
-                        title={`Roll ${action}`}
-                        intent={`${character.name}: ${action.name}`}
-                        poolSize={(actionLevels[action.name] ?? 0) + 1}
-                      >
-                        <Dices />
-                      </CharacterActionRollButton>
-                      <CharacterActionRollButton
-                        title={`Roll ${action} with momentum`}
-                        intent={`${character.name}: ${action.name} (+1)`}
-                        poolSize={(actionLevels[action.name] ?? 0) + 2}
-                      >
-                        <ChevronsRight />
-                      </CharacterActionRollButton>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex-1">
+                      <DotCounter
+                        value={actionLevels[action.name] ?? 0}
+                        max={4}
+                        onChange={(level) => {
+                          if (readOnly) return
+                          onCharacterChange({
+                            actionLevels: {
+                              ...actionLevels,
+                              [action.name]: level,
+                            },
+                          })
+                        }}
+                      />
                     </div>
-                  )}
-                </div>
-              </section>
-            ))}
-          </div>
-        </section>
-      ))}
+                    {!readOnly && (
+                      <div className="flex gap-2">
+                        <CharacterActionRollButton
+                          title={`Roll ${action}`}
+                          intent={`${character.name}: ${action.name}`}
+                          poolSize={(actionLevels[action.name] ?? 0) + 1}
+                        >
+                          <Dices />
+                        </CharacterActionRollButton>
+                        <CharacterActionRollButton
+                          title={`Roll ${action} with momentum`}
+                          intent={`${character.name}: ${action.name} (+1)`}
+                          poolSize={(actionLevels[action.name] ?? 0) + 2}
+                        >
+                          <ChevronsRight />
+                        </CharacterActionRollButton>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
   )
 }
