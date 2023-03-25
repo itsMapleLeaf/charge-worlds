@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react"
 
 const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect
+  typeof window === "undefined" ? useEffect : useLayoutEffect
 
 export function useHydrated() {
   const [hydrated, setHydrated] = useState(false)

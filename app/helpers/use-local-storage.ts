@@ -3,7 +3,7 @@ import type { ZodType } from "zod"
 import { useLatestRef } from "./react"
 
 const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect
+  typeof window === "undefined" ? useEffect : useLayoutEffect
 
 export function useLocalStorage<T>({
   key,
