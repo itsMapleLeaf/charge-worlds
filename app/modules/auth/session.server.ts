@@ -1,5 +1,5 @@
 import type { User } from "@prisma/client"
-import { createCookie } from "@remix-run/node"
+import { createCookie } from "@vercel/remix"
 import cuid from "cuid"
 import { z } from "zod"
 import { raise } from "../../helpers/errors"

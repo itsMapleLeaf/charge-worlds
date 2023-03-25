@@ -1,5 +1,5 @@
 import { authorize } from "@liveblocks/node"
-import type { ActionArgs } from "@remix-run/node"
+import type { ActionArgs } from "@vercel/remix"
 import { z } from "zod"
 import { raise } from "~/helpers/errors"
 import { notFound } from "~/helpers/responses"

@@ -1,5 +1,5 @@
-import type { ActionArgs, TypedResponse } from "@remix-run/node"
 import * as RemixReact from "@remix-run/react"
+import type { ActionArgs, TypedResponse } from "@vercel/remix"
 import type { ComponentProps } from "react"
 import { useMemo } from "react"
 import type * as z from "zod"
@@ -59,7 +59,7 @@ export class ActionRoute<
     context: Context,
     redirectTo: string | undefined,
   ): Promise<TypedResponse<ActionRouteData<Output>> | undefined> {
-    const { json, redirect } = await import("@remix-run/node")
+    const { json, redirect } = await import("@vercel/remix")
 
     const formData = await args.request.clone().formData()
     const actionName = formData.get("actionName")

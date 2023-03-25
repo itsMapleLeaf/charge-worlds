@@ -1,4 +1,4 @@
-import type { HtmlMetaDescriptor } from "@remix-run/node"
+import type { HtmlMetaDescriptor } from "@vercel/remix"
 import { truthyJoin } from "../../helpers/truthy-join"
 
 const siteUrl = "https://charge-worlds.mapleleaf.dev"

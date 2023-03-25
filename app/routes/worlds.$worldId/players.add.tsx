@@ -1,5 +1,5 @@
-import { json, type ActionArgs, type SerializeFrom } from "@remix-run/node"
 import { useFetcher } from "@remix-run/react"
+import { json, type ActionArgs, type SerializeFrom } from "@vercel/remix"
 import { cx } from "class-variance-authority"
 import { Plus } from "lucide-react"
 import { useEffect, useRef } from "react"

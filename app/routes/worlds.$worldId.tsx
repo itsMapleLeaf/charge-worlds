@@ -1,7 +1,7 @@
 import { ClientSideSuspense } from "@liveblocks/react"
-import type { LoaderArgs, MetaFunction } from "@remix-run/node"
-import { json } from "@remix-run/node"
 import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react"
+import type { LoaderArgs, MetaFunction } from "@vercel/remix"
+import { json } from "@vercel/remix"
 
 import { cx } from "class-variance-authority"
 import {

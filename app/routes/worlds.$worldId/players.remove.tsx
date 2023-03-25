@@ -1,5 +1,5 @@
-import { json, type ActionArgs } from "@remix-run/node"
 import { useFetcher } from "@remix-run/react"
+import { json, type ActionArgs } from "@vercel/remix"
 import { Minus } from "lucide-react"
 import { route } from "routes-gen"
 import { z } from "zod"

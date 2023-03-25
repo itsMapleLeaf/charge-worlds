@@ -1,4 +1,4 @@
-import { redirect } from "@remix-run/node"
+import { redirect } from "@vercel/remix"
 import { createLogoutCookie } from "../../modules/auth/session.server"
 
 export async function loader() {

@@ -1,4 +1,4 @@
-import type { TypedResponse } from "@remix-run/node"
+import type { TypedResponse } from "@vercel/remix"
 
 export function notFound(statusText?: string) {
   return new Response(undefined, {

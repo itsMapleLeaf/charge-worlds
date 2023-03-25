@@ -1,11 +1,4 @@
 import rubik from "@fontsource/rubik/variable.css"
-import type {
-  ErrorBoundaryComponent,
-  HtmlMetaDescriptor,
-  LinksFunction,
-  LoaderArgs,
-} from "@remix-run/node"
-import { json } from "@remix-run/node"
 import type { ShouldRevalidateFunction } from "@remix-run/react"
 import {
   Links,
@@ -15,6 +8,13 @@ import {
   Scripts,
   useLoaderData,
 } from "@remix-run/react"
+import type {
+  ErrorBoundaryComponent,
+  HtmlMetaDescriptor,
+  LinksFunction,
+  LoaderArgs,
+} from "@vercel/remix"
+import { json } from "@vercel/remix"
 import type { ComponentPropsWithoutRef, ReactNode } from "react"
 import background from "./assets/bg-witch.png"
 import favicon from "./assets/favicon.svg"

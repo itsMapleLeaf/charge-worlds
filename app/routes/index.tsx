@@ -1,6 +1,6 @@
-import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node"
-import { json, redirect } from "@remix-run/node"
 import { Form, Link, useLoaderData, useTransition } from "@remix-run/react"
+import type { ActionArgs, LoaderArgs, MetaFunction } from "@vercel/remix"
+import { json, redirect } from "@vercel/remix"
 import clsx from "clsx"
 import { Wand2 } from "lucide-react"
 import { route } from "routes-gen"

@@ -1,5 +1,5 @@
-import type { LoaderArgs } from "@remix-run/node"
-import { redirect } from "@remix-run/node"
+import type { LoaderArgs } from "@vercel/remix"
+import { redirect } from "@vercel/remix"
 import { createSessionCookie } from "../../modules/auth/session.server"
 
 export async function loader({ request }: LoaderArgs) {

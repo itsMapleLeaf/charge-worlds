@@ -1,6 +1,6 @@
-import type { LoaderArgs } from "@remix-run/node"
-import { json } from "@remix-run/node"
 import { useLoaderData } from "@remix-run/react"
+import type { LoaderArgs } from "@vercel/remix"
+import { json } from "@vercel/remix"
 import { cx } from "class-variance-authority"
 import { assert } from "~/helpers/assert"
 import { db } from "~/modules/app/db.server"
