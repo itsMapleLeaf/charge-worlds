@@ -46,7 +46,7 @@ export const inputBaseClass = clsx(
 
 export const inputClass = clsx(
   inputBaseClass,
-  "inline-flex min-h-[3rem] flex-wrap items-center p-3 leading-tight",
+  "inline-flex min-h-[theme(spacing.12)] flex-wrap items-center p-3 leading-tight",
   "border-red-400 [&:not(:placeholder-shown)]:invalid:border",
 )
 

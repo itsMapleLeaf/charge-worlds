@@ -24,9 +24,6 @@ module.exports = {
       fontFamily: {
         body: ["RubikVariable", "sans-serif"],
       },
-      minHeight: (utils) => ({
-        ...utils.theme("width"),
-      }),
     },
   },
   plugins: [

@@ -103,10 +103,10 @@ function Document({ children }: { children: ReactNode }) {
         <Links />
       </head>
       <body
-        className="bg-contain bg-top bg-no-repeat"
+        className="bg-[length:100%_auto] bg-top bg-no-repeat"
         style={{ backgroundImage: `url(${background})` }}
       >
-        <div className="flex min-h-screen flex-col bg-black/50">
+        <div className="flex min-h-[100vh] flex-col bg-black/50">
           <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col p-4 lg:px-8">
             <ToastProvider>{children}</ToastProvider>
           </div>

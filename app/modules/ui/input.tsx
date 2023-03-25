@@ -15,7 +15,7 @@ export const input = (props?: InteractivePanelProps) =>
 
 export const textArea = () =>
   cx(
-    "p-3 leading-[22px] min-h-12 block w-full resize-none",
+    "p-3 leading-[22px] min-h-[theme(spacing.16)] block w-full resize-none",
     inputFocusRing,
     interactivePanel({ shadow: "none", cursor: "unset" }),
   )

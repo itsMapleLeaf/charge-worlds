@@ -103,7 +103,7 @@ export default function WorldPage() {
               </ClientSideLoadingSuspense>
             </div>
 
-            <aside className="panel sticky top-8 hidden h-[calc(100vh-8rem)] w-56 overflow-y-auto md:block xl:w-64">
+            <aside className="panel sticky top-8 hidden h-[calc(100vh-12rem)] w-56 overflow-y-auto md:block xl:w-64">
               <ClientSideLoadingSuspense>
                 <DicePanel />
               </ClientSideLoadingSuspense>
