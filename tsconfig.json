@@ -22,7 +22,6 @@
     "**/dist/**",
     "**/.cache/**",
     "api",
-    "generated",
-    "server.dev.mjs"
+    "generated"
   ]
 }
