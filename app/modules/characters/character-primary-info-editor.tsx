@@ -6,8 +6,8 @@ import { Counter } from "../ui/counter"
 import { Field } from "../ui/field"
 import { input, textArea } from "../ui/input"
 import { panel } from "../ui/panel"
+import { RichImage } from "../ui/rich-image"
 import { labelTextClass } from "../ui/styles"
-import { CharacterImage } from "./character-image"
 import type { Character } from "./collections"
 
 export function CharacterPrimaryInfoEditor({
@@ -26,7 +26,7 @@ export function CharacterPrimaryInfoEditor({
       <div
         className={cx(panel({ shadow: "none" }), "min-h-[theme(spacing.16)]")}
       >
-        <CharacterImage src={character.imageUrl ?? undefined} />
+        <RichImage src={character.imageUrl ?? undefined} />
       </div>
 
       <div className="grid content-between gap-4">
