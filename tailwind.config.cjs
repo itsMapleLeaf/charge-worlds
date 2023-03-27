@@ -164,6 +164,14 @@ module.exports = {
 
       api.matchUtilities(
         {
+          "animate-from-scale": (value) => ({
+            "--tw-animate-from-scale-x": value,
+            "--tw-animate-from-scale-y": value,
+          }),
+          "animate-to-scale": (value) => ({
+            "--tw-animate-to-scale-x": value,
+            "--tw-animate-to-scale-y": value,
+          }),
           "animate-from-scale-x": (value) => ({
             "--tw-animate-from-scale-x": value,
           }),
@@ -174,14 +182,6 @@ module.exports = {
             "--tw-animate-from-scale-y": value,
           }),
           "animate-to-scale-y": (value) => ({
-            "--tw-animate-to-scale-y": value,
-          }),
-          "animate-from-scale": (value) => ({
-            "--tw-animate-from-scale-x": value,
-            "--tw-animate-from-scale-y": value,
-          }),
-          "animate-to-scale": (value) => ({
-            "--tw-animate-to-scale-x": value,
             "--tw-animate-to-scale-y": value,
           }),
         },
