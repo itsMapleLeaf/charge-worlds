@@ -552,7 +552,7 @@ function DragSortable({
           ? {
               x: sortable.transform.x,
               y: sortable.transform.y,
-              opacity: 1,
+              opacity: 0.75,
             }
           : {
               x: 0,
