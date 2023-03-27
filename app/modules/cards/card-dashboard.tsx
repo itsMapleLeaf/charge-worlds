@@ -169,14 +169,14 @@ export function CardDashboard(props: { visibleCardIds?: string[] }) {
               }
 
               return (
-                <ControlsOverlay
-                  controls={
-                    <CardEditorDialog cardId={card.id}>
-                      <CardEditor card={card} index={index} />
-                    </CardEditorDialog>
-                  }
-                >
-                  <DragSortable id={card.id}>
+                <DragSortable id={card.id}>
+                  <ControlsOverlay
+                    controls={
+                      <CardEditorDialog cardId={card.id}>
+                        <CardEditor card={card} index={index} />
+                      </CardEditorDialog>
+                    }
+                  >
                     <CardPanel
                       key={card.id}
                       card={card}
@@ -184,8 +184,8 @@ export function CardDashboard(props: { visibleCardIds?: string[] }) {
                         handleBlockDataChange(card, index, blockId, data)
                       }}
                     />
-                  </DragSortable>
-                </ControlsOverlay>
+                  </ControlsOverlay>
+                </DragSortable>
               )
             }}
           />
