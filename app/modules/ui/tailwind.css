@@ -42,11 +42,11 @@
   }
 }
 
-.mosaic-window-toolbar {
-  background: theme("colors.slate.700") !important;
-  box-shadow: none !important;
-  height: 40px !important;
-}
-.mosaic-window-body {
-  background: transparent !important;
+@layer utilities {
+  .animate-radix[data-state="open"] {
+    @apply animate-in;
+  }
+  .animate-radix[data-state="closed"] {
+    @apply animate-out;
+  }
 }
