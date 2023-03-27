@@ -1,16 +1,16 @@
 import {
-  closestCenter,
   DndContext,
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
+  closestCenter,
   useSensor,
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core"
 import {
-  arrayMove,
   SortableContext,
+  arrayMove,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
@@ -214,7 +214,7 @@ function CardPanel({
         <h3 className="flex-1 text-2xl font-light">{card.title}</h3>
         {card.hidden && <EyeOff aria-label="Hidden" className="opacity-50" />}
       </header>
-      <main className="grid gap-3 p-3">
+      <main className="grid max-h-[360px] gap-3 overflow-y-auto p-3">
         <AnimatePresence initial={false}>
           {blocks.map((block) => {
             const content = (() => {
