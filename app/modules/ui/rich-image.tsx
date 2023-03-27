@@ -114,7 +114,7 @@ function LargePreview({ src }: { src: string }) {
 
   useWindowEvent("wheel", (event) => {
     if (event.deltaY > 0) {
-      zoomBy(1 / wheelScaleStep, "cursor")
+      zoomBy(1 / wheelScaleStep, "viewport")
     } else {
       zoomBy(wheelScaleStep, "cursor")
     }
