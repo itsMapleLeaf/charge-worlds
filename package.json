@@ -6,10 +6,9 @@
   },
   "scripts": {
     "prepare": "prisma generate",
-    "clean": "del-cli build public/build .cache",
-    "dev": "cross-env NODE_ENV=development run-p --race dev:*",
+    "dev": "del-cli build/index.js && cross-env NODE_ENV=development run-p --race dev:*",
     "dev:remix": "remix dev",
-    "dev:server": "wait-on file:build && cross-env NODE_ENV=development nodemon -w build server.dev.mjs",
+    "dev:server": "wait-on file:build/index.js && cross-env NODE_ENV=development nodemon -w build server.dev.mjs",
     "dev:routes": "pnpm run routes --watch",
     "build": "remix build",
     "start": "remix-serve build",
