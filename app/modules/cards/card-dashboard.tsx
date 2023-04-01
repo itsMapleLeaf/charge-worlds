@@ -289,13 +289,7 @@ function CardEditorDialog(props: {
 function CardEditor({ card, index }: { card: Card; index: number }) {
   const mutations = CardCollection.useMutations()
 
-  const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  )
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
 
   function updateBlock(id: string, props: Partial<CardBlock>) {
     mutations.update(index, {
