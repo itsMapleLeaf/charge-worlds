@@ -27,6 +27,7 @@ module.exports = {
   },
   rules: {
     "tailwindcss/migration-from-tailwind-2": "off",
+    "tailwindcss/classnames-order": "off",
     "unicorn/no-null": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/consistent-type-imports": [

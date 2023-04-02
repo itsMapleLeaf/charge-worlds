@@ -46,7 +46,7 @@ export default function CharacterPage() {
   return (
     <div
       className={cx(
-        "grid gap-4 p-4 shadow-md backdrop-blur-md rounded-md border backdrop-brightness-50",
+        "grid gap-4 rounded-md border p-4 shadow-md backdrop-blur-md backdrop-brightness-50",
         colorClasses.background,
         colorClasses.border,
       )}

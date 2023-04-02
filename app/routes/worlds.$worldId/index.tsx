@@ -131,7 +131,7 @@ function AddCardButton() {
           <input
             className={cx(
               interactable(),
-              "px-3 py-2 bg-transparent border-b border-white/10 min-w-0 w-full",
+              "w-full min-w-0 border-b border-white/10 bg-transparent px-3 py-2",
             )}
             placeholder="Search..."
             value={query}
@@ -152,7 +152,7 @@ function AddCardButton() {
                   key={item.id}
                   className={cx(
                     interactable(),
-                    "px-3 py-2 whitespace-nowrap text-ellipsis text-left w-full",
+                    "w-full text-ellipsis whitespace-nowrap px-3 py-2 text-left",
                   )}
                   onClick={() => {
                     addCard(item.id)

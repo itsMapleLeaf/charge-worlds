@@ -312,7 +312,7 @@ function CharacterLink({
           borderColor: colors.border,
         }}
         className={cx(
-          "relative -top-px rounded-full border s-5 brightness-150",
+          "relative -top-px rounded-full border brightness-150 s-5",
           colors.background,
           colors.border,
         )}

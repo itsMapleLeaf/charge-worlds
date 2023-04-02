@@ -480,7 +480,7 @@ function ToolbarButton(props: {
       title={props.label}
       className={cx(
         button({ border: "none", background: "none" }),
-        "block justify-center !h-10",
+        "block !h-10 justify-center",
       )}
       onClick={props.onClick}
     >

@@ -15,7 +15,7 @@ export default function CharacterFieldsPage() {
   const [autoAnimateRef] = useAutoAnimate()
   return (
     <section>
-      <div className={cx(panel(), "p-4 grid gap-4 mb-4")} ref={autoAnimateRef}>
+      <div className={cx(panel(), "mb-4 grid gap-4 p-4")} ref={autoAnimateRef}>
         <h2 className="text-3xl font-light">Character Fields</h2>
         {fields.map((field, index) => (
           <div key={field.id} className="border-b border-white/10">

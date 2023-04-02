@@ -69,7 +69,7 @@ export default function SettingsPage() {
   const actionData = useActionData<typeof action>()
 
   return (
-    <div className={cx(panel(), "p-4 grid gap-4")}>
+    <div className={cx(panel(), "grid gap-4 p-4")}>
       <h1 className="text-3xl font-light">World Details</h1>
       {actionData && "error" in actionData && (
         <p className={errorTextClass}>{actionData.error}</p>

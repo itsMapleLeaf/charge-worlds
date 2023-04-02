@@ -8,7 +8,7 @@
   }
 
   :focus-visible {
-    @apply ring-2 ring-foreground-8/75 ring-inset;
+    @apply ring-2 ring-inset ring-foreground-8/75;
   }
 
   ::-webkit-scrollbar {
@@ -29,7 +29,7 @@
 
 @layer components {
   .panel {
-    @apply bg-black/75 backdrop-blur-md border border-white/10 rounded-md shadow-md shadow-black/25;
+    @apply rounded-md border border-white/10 bg-black/75 shadow-md shadow-black/25 backdrop-blur-md;
   }
   .panel-border-none {
     @apply rounded-none border-0;
