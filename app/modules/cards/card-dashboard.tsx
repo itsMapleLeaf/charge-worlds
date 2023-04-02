@@ -1,6 +1,5 @@
 import {
   DndContext,
-  KeyboardSensor,
   MouseSensor,
   TouchSensor,
   closestCenter,
@@ -11,7 +10,6 @@ import {
 import {
   SortableContext,
   arrayMove,
-  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
@@ -111,9 +109,6 @@ export function CardDashboard(props: { visibleCardIds?: string[] }) {
         delay: 500,
         tolerance: 5,
       },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
     }),
   )
 
