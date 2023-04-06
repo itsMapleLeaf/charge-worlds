@@ -66,14 +66,14 @@ export function CharacterActionLevelsEditor({
                     {!readOnly && (
                       <div className="flex gap-2">
                         <CharacterActionRollButton
-                          title={`Roll ${action}`}
+                          title={`Roll ${action.name}`}
                           intent={`${character.name}: ${action.name}`}
                           poolSize={(actionLevels[action.name] ?? 0) + 1}
                         >
                           <Dices />
                         </CharacterActionRollButton>
                         <CharacterActionRollButton
-                          title={`Roll ${action} with momentum`}
+                          title={`Roll ${action.name} with momentum`}
                           intent={`${character.name}: ${action.name} (+1)`}
                           poolSize={(actionLevels[action.name] ?? 0) + 2}
                         >
