@@ -98,7 +98,12 @@ export function CardDashboard(props: { visibleCardIds?: string[] }) {
   const visibleCardIds = props.visibleCardIds && new Set(props.visibleCardIds)
 
   const sensors = useSensors(
-    useSensor(MouseSensor),
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        delay: 300,
+        tolerance: 5,
+      },
+    }),
     useSensor(TouchSensor, {
       activationConstraint: {
         delay: 500,
