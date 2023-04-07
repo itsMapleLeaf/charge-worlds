@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const plugin = require("tailwindcss/plugin")
 const colors = require("@radix-ui/colors")
 
@@ -27,7 +28,6 @@ module.exports = {
     },
   },
   plugins: [
-    // @ts-expect-error
     require("@tailwindcss/container-queries"),
 
     // adds a can-hover: variant, which applies if the device has pointer hovering capabilities

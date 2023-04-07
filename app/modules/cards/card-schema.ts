@@ -1,10 +1,19 @@
 import { z } from "zod"
 
+const jsonSchema: z.ZodType<Json> = z.union([
+  z.string(),
+  z.number(),
+  z.boolean(),
+  z.null(),
+  z.lazy(() => z.array(jsonSchema)),
+  z.lazy(() => z.record(jsonSchema)),
+])
+
 export const cardBlockSchema = z.object({
   id: z.string(),
   type: z.string(),
   hidden: z.boolean().default(true),
-  data: z.record(z.any()).default({}),
+  data: z.record(jsonSchema).default({}),
 })
 export type CardBlock = z.output<typeof cardBlockSchema>
 

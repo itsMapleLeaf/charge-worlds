@@ -1,3 +1,4 @@
+import { type LoaderFunction } from "@remix-run/server-runtime"
 import { Inngest } from "inngest"
 import { serve } from "inngest/remix"
 import prettyBytes from "pretty-bytes"
@@ -29,7 +30,7 @@ const sendWorldSnapshotEvents = inngest.createFunction(
     })
     await inngest.send(
       worlds.map((world) => ({
-        name: "world/create-snapshot",
+        name: "world/create-snapshot" as const,
         data: { world },
       })),
     )
@@ -57,5 +58,5 @@ const createWorldSnapshotFunction = inngest.createFunction(
 const handle = serve(inngest, [
   sendWorldSnapshotEvents,
   createWorldSnapshotFunction,
-])
+]) as LoaderFunction
 export { handle as loader, handle as action }

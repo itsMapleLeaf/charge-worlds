@@ -1,6 +1,7 @@
 import clsx from "clsx"
 import { X } from "lucide-react"
 import { useEffect, useRef } from "react"
+import { raise } from "../../helpers/errors"
 import { Counter } from "./counter"
 import { activePressClass } from "./styles"
 
@@ -32,7 +33,7 @@ export function ClockInput({
     { toggleSlice = false } = {},
   ) => {
     const { offsetX, offsetY } = event.nativeEvent
-    const { width, height } = canvasRef.current!
+    const { width, height } = canvasRef.current ?? raise("canvas not found")
 
     const x = offsetX - width / 2
     const y = offsetY - height / 2
@@ -60,8 +61,8 @@ export function ClockInput({
   }
 
   useEffect(() => {
-    const canvas = canvasRef.current!
-    const context = canvas.getContext("2d")!
+    const canvas = canvasRef.current ?? raise("canvas not found")
+    const context = canvas.getContext("2d") ?? raise("context not found")
 
     const centerX = canvas.width / 2
     const centerY = canvas.height / 2
@@ -171,7 +172,7 @@ export function ClockInput({
       {onRemove && (
         <button
           className={clsx(
-            "absolute top-0 right-0 rounded-md p-2 opacity-0 ring-blue-500 transition focus:opacity-75 focus:outline-none focus:ring-2 group-hover:opacity-75",
+            "absolute right-0 top-0 rounded-md p-2 opacity-0 ring-blue-500 transition focus:opacity-75 focus:outline-none focus:ring-2 group-hover:opacity-75",
             activePressClass,
           )}
           type="button"

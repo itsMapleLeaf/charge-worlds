@@ -116,7 +116,7 @@ export function CardDashboard(props: { visibleCardIds?: string[] }) {
     card: Card,
     cardIndex: number,
     blockId: string,
-    data: any,
+    data: JsonObject,
   ) {
     mutations.update(cardIndex, {
       blocks: card.blocks.map((b) => (b.id === blockId ? { ...b, data } : b)),
@@ -195,7 +195,7 @@ function CardPanel({
   onBlockDataChange,
 }: {
   card: Card
-  onBlockDataChange: (blockId: string, data: any) => void
+  onBlockDataChange: (blockId: string, data: JsonObject) => void
 }) {
   const { isOwner } = WorldContext.useValue()
 
@@ -218,14 +218,9 @@ function CardPanel({
                 return <p>Unknown block type: {block.type}</p>
               }
 
-              const result = blockType.schema.safeParse(block.data)
-              if (!result.success) {
-                return <p>Invalid block data: {result.error.message}</p>
-              }
-
               return (
                 <blockType.StaticComponent
-                  data={result.data}
+                  data={block.data}
                   onChange={(data) => onBlockDataChange(block.id, data)}
                 />
               )
@@ -289,7 +284,7 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
   function updateBlock(id: string, props: Partial<CardBlock>) {
     mutations.update(index, {
       blocks: card.blocks.map((block) =>
-        block.id === id ? { ...block, ...(props as {}) } : block,
+        block.id === id ? { ...block, ...props } : block,
       ),
     })
   }
@@ -342,18 +337,11 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
                     return <p>Unknown block type: {block.type}</p>
                   }
 
-                  const result = blockType.schema.safeParse(block.data)
-                  if (!result.success) {
-                    return <p>Invalid block data: {result.error.message}</p>
-                  }
-
                   return (
                     <section aria-label={`${block.type} block`}>
                       <blockType.EditorComponent
-                        data={result.data}
-                        onChange={(data) => {
-                          updateBlock(block.id, { data })
-                        }}
+                        data={block.data}
+                        onChange={(data) => updateBlock(block.id, { data })}
                       />
                     </section>
                   )

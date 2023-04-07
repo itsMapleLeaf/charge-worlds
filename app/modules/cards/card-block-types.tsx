@@ -2,83 +2,94 @@ import type { LucideIcon } from "lucide-react"
 import { Clock, Image, Type } from "lucide-react"
 import type { ReactElement } from "react"
 import TextArea from "react-expanding-textarea"
-import type { ZodTypeDef } from "zod"
-import { z } from "zod"
-import { ClockCardBlock, clockSchema } from "../clocks/clock-card-block"
+import { ClockInput as ClockInputComponent } from "../ui/clock-input"
 import { RichImage } from "../ui/rich-image"
 
-export type CardBlockType<Input = any, Output = any> = {
-  icon: LucideIcon
-  schema: z.ZodSchema<Output, ZodTypeDef, Input>
-  initialData: Input
-  StaticComponent: (props: {
-    data: Output
-    onChange: (data: Input) => void
-  }) => ReactElement
-  EditorComponent: (props: {
-    data: Output
-    onChange: (data: Input) => void
-  }) => ReactElement
+export type CardBlockComponentProps<DataKeys extends string = never> = {
+  data: { [K in DataKeys]?: Json }
+  onChange: (data: { [K in DataKeys]?: Json }) => void
 }
 
-const defineCardBlockType = <Input, Output>(
-  props: CardBlockType<Input, Output>,
-) => props
+export type CardBlockType<DataKeys extends string = never> = {
+  icon: LucideIcon
+  initialData: { [K in DataKeys]?: Json }
+  StaticComponent: (props: CardBlockComponentProps<DataKeys>) => ReactElement
+  EditorComponent: (props: CardBlockComponentProps<DataKeys>) => ReactElement
+}
+
+const defineCardBlockType = <Keys extends string>(
+  options: CardBlockType<Keys>,
+) => options
 
 export const cardBlockTypes: Record<string, CardBlockType> = {
   text: defineCardBlockType({
     icon: Type,
-    schema: z.object({
-      text: z.string().default(""),
-    }),
     initialData: { text: "" },
-    StaticComponent: ({ data }) => (
-      <p className="whitespace-pre-line">{data.text}</p>
+    StaticComponent: (props) => (
+      <p className="whitespace-pre-line">{String(props.data.text)}</p>
     ),
-    EditorComponent: ({ data, onChange }) => (
+    EditorComponent: (props) => (
       <TextArea
         aria-label="Content"
         placeholder="Write something interesting!"
         className="block w-full resize-none bg-transparent p-2 transition focus:text-foreground-8 focus:ring-0"
-        value={data.text}
-        onChange={(e) => onChange({ text: e.target.value })}
+        value={String(props.data.text)}
+        onChange={(e) => props.onChange({ text: e.target.value })}
       />
     ),
   }),
 
   image: defineCardBlockType({
     icon: Image,
-    schema: z.object({
-      src: z.string().default(""),
-    }),
     initialData: { src: "" },
-    StaticComponent: ({ data }) => (
+    StaticComponent: (props) => (
       <div className="aspect-square">
-        <RichImage src={data.src} />
+        <RichImage src={String(props.data.src)} />
       </div>
     ),
-    EditorComponent: ({ data, onChange }) => (
+    EditorComponent: (props) => (
       <>
         <input
           type="text"
           aria-label="Image URL"
-          value={data.src}
+          value={String(props.data.src)}
           placeholder="https://example.com/image.png"
           className="w-full min-w-0 flex-1 bg-transparent p-2 transition focus:text-foreground-8 focus:ring-0"
-          onChange={(e) => onChange({ src: e.target.value })}
+          onChange={(e) => props.onChange({ src: e.target.value })}
         />
         <div className="aspect-square">
-          <RichImage src={data.src} />
+          <RichImage src={String(props.data.src)} />
         </div>
       </>
     ),
   }),
 
-  clock: {
+  clock: defineCardBlockType({
     icon: Clock,
-    schema: clockSchema,
     initialData: { name: "", progress: 0, maxProgress: 4 },
     StaticComponent: ClockCardBlock,
     EditorComponent: ClockCardBlock,
-  },
+  }),
+}
+
+function ClockCardBlock({
+  data,
+  onChange,
+}: CardBlockComponentProps<"name" | "progress" | "maxProgress">) {
+  return (
+    <div className="flex flex-col items-center p-2">
+      <ClockInputComponent
+        name={String(data.name)}
+        progress={typeof data.progress === "number" ? data.progress : 0}
+        maxProgress={
+          typeof data.maxProgress === "number" ? data.maxProgress : 4
+        }
+        onNameChange={(name) => onChange({ ...data, name })}
+        onProgressChange={(progress) => onChange({ ...data, progress })}
+        onMaxProgressChange={(maxProgress) =>
+          onChange({ ...data, maxProgress })
+        }
+      />
+    </div>
+  )
 }

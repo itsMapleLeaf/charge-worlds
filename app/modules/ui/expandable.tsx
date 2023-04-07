@@ -16,7 +16,8 @@ export function Expandable({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     if (!innerContainerRef.current) return
     const observer = new ResizeObserver(([info]) => {
-      setInnerHeight(info!.contentRect.height)
+      if (!info) throw new Error("ResizeObserver info not found")
+      setInnerHeight(info.contentRect.height)
     })
     observer.observe(innerContainerRef.current)
     return () => observer.disconnect()

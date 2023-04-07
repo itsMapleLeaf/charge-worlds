@@ -6,6 +6,7 @@ export type RequiredKeys<T, K extends keyof T> = Simplify<
   RequiredNonNullable<Pick<T, K>> & Omit<T, K>
 >
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type Simplify<T> = { [K in keyof T]: T[K] } & {}
 
 export type RequiredNonNullable<T> = {

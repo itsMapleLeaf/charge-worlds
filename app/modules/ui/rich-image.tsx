@@ -6,6 +6,7 @@ import { clamp, lerp } from "~/helpers/math"
 import { type Nullish } from "~/helpers/types"
 import { useAnimationLoop } from "~/helpers/use-animation-loop"
 import { useWindowEvent } from "~/helpers/use-window-event"
+import { raise } from "../../helpers/errors"
 import { extractRef, type MaybeRef } from "../react/maybe-ref"
 import { button } from "./button"
 
@@ -96,7 +97,8 @@ function LargePreview({ src }: { src: string }) {
   useWindowEvent("pointerup", () => (isDown.current = false))
   useWindowEvent("pointerleave", () => (isDown.current = false))
   useWindowEvent("pointerdown", (event) => {
-    if (containerRef.current!.contains(event.target as Node)) {
+    const container = containerRef.current ?? raise("Container not assigned")
+    if (container.contains(event.target as Node)) {
       event.preventDefault()
       isDown.current = true
     }
@@ -245,8 +247,9 @@ function useRectRef(elementRef: MaybeRef<Element>) {
     const element = extractRef(elementRef)
     if (!element) return
 
-    const observer = new ResizeObserver((entries) => {
-      rectRef.current = entries[0]!.contentRect
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry) throw new Error("ResizeObserver entry not found")
+      rectRef.current = entry.contentRect
     })
 
     observer.observe(element)

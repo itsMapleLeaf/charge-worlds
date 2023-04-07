@@ -52,7 +52,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) =>
 
 export async function loader({ request, params }: LoaderArgs) {
   const [world, user, memberships] = await Promise.all([
-    getWorld(params.worldId!),
+    getWorld(params.worldId as string),
     getSessionUser(request),
     db.membership.findMany({
       where: { worldId: params.worldId },

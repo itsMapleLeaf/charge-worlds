@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { useFetcher } from "@remix-run/react"
 import { json, type ActionArgs, type SerializeFrom } from "@vercel/remix"
 import { cx } from "class-variance-authority"
@@ -67,7 +70,7 @@ export function AddPlayerForm() {
 
   useEffect(() => {
     if (fetcher.state === "idle" && !fetcher.data?.errors) {
-      formRef.current!.reset()
+      formRef.current?.reset()
     }
   }, [fetcher.data?.errors, fetcher.state])
 

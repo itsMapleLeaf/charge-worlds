@@ -3,7 +3,7 @@ import type { ActionArgs, TypedResponse } from "@vercel/remix"
 import type { ComponentProps } from "react"
 import { useMemo } from "react"
 import type * as z from "zod"
-import type { ZodRawShape, ZodType } from "zod"
+import type { ZodRawShape } from "zod"
 import { ZodEffects, ZodObject, ZodString } from "zod"
 import { autoRef } from "./react"
 
@@ -21,7 +21,7 @@ export class ActionRouter<Context> {
     },
   ) {
     const route = new ActionRoute(name, config)
-    this.routes.push(route as any)
+    this.routes.push(route as unknown as ActionRoute<Context>)
     return route
   }
 
@@ -74,7 +74,10 @@ export class ActionRoute<
       )
     }
 
-    const data = await this.config.callback(inputResult?.data as any, context)
+    const data = await this.config.callback(
+      inputResult?.data as FormParsed,
+      context,
+    )
     if (redirectTo === undefined) {
       return json({ __actionName: this.name, data })
     }
@@ -91,7 +94,7 @@ type ActionRouteData<Data> = {
 }
 
 export function useActionUi<FormInput extends object, Data>(
-  route: ActionRoute<any, FormInput, any, Data>,
+  route: ActionRoute<unknown, FormInput, unknown, Data>,
   actionData: ActionRouteData<unknown> | undefined,
 ) {
   const Form = useMemo(() => {
@@ -179,14 +182,18 @@ export function useActionUi<FormInput extends object, Data>(
   }
 }
 
-function extractZodString(schema: ZodType): ZodString | undefined {
+function extractZodString(schema: z.ZodTypeAny): ZodString | undefined {
   if (schema instanceof ZodString) return schema
-  if (schema instanceof ZodEffects) return extractZodString(schema.innerType())
+  if (schema instanceof ZodEffects)
+    return extractZodString(schema.innerType() as z.ZodTypeAny)
   return undefined
 }
 
-function extractZodObject(schema: ZodType): ZodObject<ZodRawShape> | undefined {
+function extractZodObject(
+  schema: z.ZodTypeAny,
+): ZodObject<ZodRawShape> | undefined {
   if (schema instanceof ZodObject) return schema
-  if (schema instanceof ZodEffects) return extractZodObject(schema.innerType())
+  if (schema instanceof ZodEffects)
+    return extractZodObject(schema.innerType() as z.ZodTypeAny)
   return undefined
 }

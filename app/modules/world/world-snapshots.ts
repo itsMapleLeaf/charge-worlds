@@ -19,6 +19,9 @@ export async function createWorldSnapshot(world: { id: string; name: string }) {
 
   const dataText = await response.text()
   const data = JSON.parse(dataText)
+  if (data == null) {
+    throw new Error("Received null data from Liveblocks")
+  }
 
   await db.worldSnapshot.create({
     data: {

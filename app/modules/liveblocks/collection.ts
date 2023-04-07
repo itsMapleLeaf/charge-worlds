@@ -27,7 +27,7 @@ export function defineLiveblocksMapCollection<
         return undefined
       }
 
-      const item = collectionMap.get(id)
+      const item = collectionMap.get(id) as Lson | undefined
       if (item == null) return undefined
 
       const result = schema.safeParse(item)
@@ -59,7 +59,7 @@ export function defineLiveblocksMapCollection<
           continue
         }
 
-        items.push({ ...result.data, _id: id })
+        items.push({ ...result.data, _id: id as string })
       }
 
       return items

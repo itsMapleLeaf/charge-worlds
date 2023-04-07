@@ -27,7 +27,7 @@ function useAsync<T>(callback: () => T | PromiseLike<T>) {
     setState({ status: "loading" })
     Promise.resolve(callback()).then(
       (value) => !cancelled && setState({ status: "success", value }),
-      (error) => !cancelled && setState({ status: "error", error }),
+      (error: unknown) => !cancelled && setState({ status: "error", error }),
     )
 
     return () => {
