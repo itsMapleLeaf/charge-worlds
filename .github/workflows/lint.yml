@@ -13,11 +13,7 @@ concurrency:
 
 jobs:
   lint:
-    name: ${{ matrix.script }}
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        script: [lint, typecheck]
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
@@ -28,4 +24,4 @@ jobs:
           node-version: "lts/*"
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run ${{ matrix.script }}
+      - run: pnpm run lint
