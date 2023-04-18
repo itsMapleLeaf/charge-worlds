@@ -1,6 +1,6 @@
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { Form } from "@remix-run/react"
 import { LogOut, User } from "lucide-react"
+import { Button, Dialog, DialogTrigger, Popover } from "react-aria-components"
 import { route } from "routes-gen"
 import type { AuthContextUser } from "../app/auth"
 
@@ -10,8 +10,8 @@ export type UserMenuButtonProps = {
 
 export function UserMenuButton({ user }: UserMenuButtonProps) {
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger className="block" title="Account actions">
+    <DialogTrigger>
+      <Button className="block focus:ring-0 data-[focus-visible]:ring-2">
         {user.avatarUrl ? (
           <img
             src={user.avatarUrl}
@@ -21,27 +21,25 @@ export function UserMenuButton({ user }: UserMenuButtonProps) {
         ) : (
           <User />
         )}
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className="panel origin-[var(--radix-dropdown-menu-content-transform-origin)] animate-from-opacity-0 animate-to-opacity-100 animate-from-scale-95 animate-to-scale-100 data-[state=open]:animate-in data-[state=closed]:animate-out"
-          align="end"
-          sideOffset={16}
-        >
+        <span className="sr-only">User menu</span>
+      </Button>
+      <Popover
+        className="animate-from-opacity-0 animate-from-scale-95 data-[entering]:animate-in data-[exiting]:animate-out"
+        placement="bottom end"
+      >
+        <Dialog className="panel origin-top-right focus:ring-0 data-[focus-visible]:ring-2">
           <Form
             method="post"
             action={route("/auth/logout")}
             reloadDocument
             className="contents"
           >
-            <DropdownMenu.Item className="block p-3 transition data-[highlighted]:bg-black/25">
-              <div className="flex items-center gap-2 leading-none">
-                <LogOut /> Sign out
-              </div>
-            </DropdownMenu.Item>
+            <button className="flex items-center gap-2 p-3 leading-none transition data-[highlighted]:bg-black/25">
+              <LogOut /> Sign out
+            </button>
           </Form>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+        </Dialog>
+      </Popover>
+    </DialogTrigger>
   )
 }
