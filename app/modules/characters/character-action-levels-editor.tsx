@@ -41,7 +41,7 @@ export function CharacterActionLevelsEditor({
             </h4>
             <div className="grid w-full flex-1 content-between gap-4">
               {actions.map((action) => (
-                <section key={action.name}>
+                <section key={action.id}>
                   <h5>{action.name}</h5>
                   <p className="mb-1.5 text-sm opacity-75">
                     {action.description}
@@ -50,14 +50,14 @@ export function CharacterActionLevelsEditor({
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="flex-1">
                       <DotCounter
-                        value={actionLevels[action.name] ?? 0}
+                        value={actionLevels[action.id] ?? 0}
                         max={4}
                         onChange={(level) => {
                           if (readOnly) return
                           onCharacterChange({
                             actionLevels: {
                               ...actionLevels,
-                              [action.name]: level,
+                              [action.id]: level,
                             },
                           })
                         }}
@@ -68,14 +68,14 @@ export function CharacterActionLevelsEditor({
                         <CharacterActionRollButton
                           title={`Roll ${action.name}`}
                           intent={`${character.name}: ${action.name}`}
-                          poolSize={(actionLevels[action.name] ?? 0) + 1}
+                          poolSize={(actionLevels[action.id] ?? 0) + 1}
                         >
                           <Dices />
                         </CharacterActionRollButton>
                         <CharacterActionRollButton
                           title={`Roll ${action.name} with momentum`}
                           intent={`${character.name}: ${action.name} (+1)`}
-                          poolSize={(actionLevels[action.name] ?? 0) + 2}
+                          poolSize={(actionLevels[action.id] ?? 0) + 2}
                         >
                           <ChevronsRight />
                         </CharacterActionRollButton>
