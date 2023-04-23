@@ -4,7 +4,7 @@ import { entriesTyped } from "../../helpers/entries-typed"
 import { DotCounter } from "../ui/counter"
 import { panel } from "../ui/panel"
 import { CharacterActionRollButton } from "./character-action-roll-button"
-import { characterActionLibrary } from "./character-actions"
+import { type ActionDetails, characterActionLibrary } from "./character-actions"
 import type { Character } from "./collections"
 
 export function CharacterActionLevelsEditor({
@@ -16,18 +16,6 @@ export function CharacterActionLevelsEditor({
   character: Character
   onCharacterChange: (character: Partial<Character>) => void
 }) {
-  const actionLevels: Record<string, number> = {}
-  if (
-    typeof character.actionLevels === "object" &&
-    character.actionLevels !== null
-  ) {
-    for (const [key, value] of Object.entries(character.actionLevels)) {
-      if (typeof value === "number") {
-        actionLevels[key] = value
-      }
-    }
-  }
-
   return (
     <div className="@container">
       <div className="grid gap-2 @lg:grid-cols-3">
@@ -41,53 +29,72 @@ export function CharacterActionLevelsEditor({
             </h4>
             <div className="grid w-full flex-1 content-between gap-4">
               {actions.map((action) => (
-                <section key={action.id}>
-                  <h5>{action.name}</h5>
-                  <p className="mb-1.5 text-sm opacity-75">
-                    {action.description}
-                  </p>
-
-                  <div className="flex flex-wrap items-center gap-2">
-                    <div className="flex-1">
-                      <DotCounter
-                        value={actionLevels[action.id] ?? 0}
-                        max={4}
-                        onChange={(level) => {
-                          if (readOnly) return
-                          onCharacterChange({
-                            actionLevels: {
-                              ...actionLevels,
-                              [action.id]: level,
-                            },
-                          })
-                        }}
-                      />
-                    </div>
-                    {!readOnly && (
-                      <div className="flex gap-2">
-                        <CharacterActionRollButton
-                          title={`Roll ${action.name}`}
-                          intent={`${character.name}: ${action.name}`}
-                          poolSize={actionLevels[action.id] ?? 0}
-                        >
-                          <Dices />
-                        </CharacterActionRollButton>
-                        <CharacterActionRollButton
-                          title={`Roll ${action.name} with momentum`}
-                          intent={`${character.name}: ${action.name} (+1)`}
-                          poolSize={(actionLevels[action.id] ?? 0) + 1}
-                        >
-                          <ChevronsRight />
-                        </CharacterActionRollButton>
-                      </div>
-                    )}
-                  </div>
-                </section>
+                <ActionEditor
+                  key={action.id}
+                  character={character}
+                  action={action}
+                  level={character.actionLevels[action.id] ?? 0}
+                  diceButtonsVisible={!readOnly}
+                  onLevelChange={(level) => {
+                    if (readOnly) return
+                    onCharacterChange({
+                      actionLevels: {
+                        ...character.actionLevels,
+                        [action.id]: level,
+                      },
+                    })
+                  }}
+                />
               ))}
             </div>
           </section>
         ))}
       </div>
     </div>
+  )
+}
+
+function ActionEditor({
+  character,
+  action,
+  level,
+  onLevelChange,
+  diceButtonsVisible,
+}: {
+  character: { name: string }
+  action: ActionDetails
+  level: number
+  onLevelChange: (level: number) => void
+  diceButtonsVisible: boolean
+}) {
+  return (
+    <section>
+      <h5>{action.name}</h5>
+      <p className="mb-1.5 text-sm opacity-75">{action.description}</p>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex-1">
+          <DotCounter value={level} max={4} onChange={onLevelChange} />
+        </div>
+        {diceButtonsVisible && (
+          <div className="flex gap-2">
+            <CharacterActionRollButton
+              title={`Roll ${action.name}`}
+              intent={`${character.name}: ${action.name}`}
+              poolSize={level}
+            >
+              <Dices />
+            </CharacterActionRollButton>
+            <CharacterActionRollButton
+              title={`Roll ${action.name} with momentum`}
+              intent={`${character.name}: ${action.name} (+1)`}
+              poolSize={level + 1}
+            >
+              <ChevronsRight />
+            </CharacterActionRollButton>
+          </div>
+        )}
+      </div>
+    </section>
   )
 }

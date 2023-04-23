@@ -1,4 +1,4 @@
-type ActionDetails = {
+export type ActionDetails = {
   id: string
   name: string
   description: string
@@ -22,7 +22,7 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
       description: "Move swiftly",
     },
     {
-      id: "Misdirect",
+      id: "Misdirect", // renamed action
       name: "Endure",
       description: "Employ strength of will or body",
     },
