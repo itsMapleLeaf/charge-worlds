@@ -68,14 +68,14 @@ export function CharacterActionLevelsEditor({
                         <CharacterActionRollButton
                           title={`Roll ${action.name}`}
                           intent={`${character.name}: ${action.name}`}
-                          poolSize={(actionLevels[action.id] ?? 0) + 1}
+                          poolSize={actionLevels[action.id] ?? 0}
                         >
                           <Dices />
                         </CharacterActionRollButton>
                         <CharacterActionRollButton
                           title={`Roll ${action.name} with momentum`}
                           intent={`${character.name}: ${action.name} (+1)`}
-                          poolSize={(actionLevels[action.id] ?? 0) + 2}
+                          poolSize={(actionLevels[action.id] ?? 0) + 1}
                         >
                           <ChevronsRight />
                         </CharacterActionRollButton>
