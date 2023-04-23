@@ -56,7 +56,7 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
     {
       id: "Recall",
       name: "Recall",
-      description: "Dredge information from memory",
+      description: "Bring up information from memory",
     },
   ],
   Social: [
