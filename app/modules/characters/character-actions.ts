@@ -32,7 +32,12 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
       description: "Traverse quietly without detection",
     },
   ],
-  Insight: [
+  Mental: [
+    {
+      id: "Focus",
+      name: "Focus",
+      description: "Employ strength of mind",
+    },
     {
       id: "Shoot",
       name: "Shoot",
@@ -42,11 +47,6 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
       id: "Tinker",
       name: "Tinker",
       description: "Carry out a dexterous task",
-    },
-    {
-      id: "Interpret",
-      name: "Interpret",
-      description: "Distil information, detect lies, or intuit emotions",
     },
     {
       id: "Notice",
@@ -59,11 +59,11 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
       description: "Recall information from memory",
     },
   ],
-  Resolve: [
+  Social: [
     {
-      id: "Focus",
-      name: "Focus",
-      description: "Employ strength of mind",
+      id: "Interpret",
+      name: "Interpret",
+      description: "Distil information, detect lies, or intuit emotions",
     },
     {
       id: "Persuade",
