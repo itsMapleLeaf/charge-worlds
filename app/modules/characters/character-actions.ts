@@ -22,7 +22,7 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
       description: "Move swiftly",
     },
     {
-      id: "Misdirect", // renamed action
+      id: "Endure",
       name: "Endure",
       description: "Employ strength of will or body",
     },
