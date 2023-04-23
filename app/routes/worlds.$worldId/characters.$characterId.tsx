@@ -2,6 +2,7 @@ import { useParams } from "@remix-run/react"
 import { cx } from "class-variance-authority"
 import { assert } from "~/helpers/assert"
 import { CharacterActionLevelsEditor } from "~/modules/characters/character-action-levels-editor"
+import { characterActionLibrary } from "~/modules/characters/character-actions"
 import { CharacterColorButton } from "~/modules/characters/character-color-button"
 import {
   characterColors,
@@ -42,6 +43,11 @@ export default function CharacterPage() {
   if (currentCharacter == null) {
     return <p>No characters found</p>
   }
+
+  const actionLevelTotal = Object.values(characterActionLibrary)
+    .flat()
+    .map((action) => currentCharacter.actionLevels[action.id] ?? 0)
+    .reduce((total, next) => next + total)
 
   return (
     <div
@@ -92,7 +98,7 @@ export default function CharacterPage() {
       <hr className={dividerClass} />
 
       <section className="grid gap-2">
-        <h3 className={labelTextClass}>Actions</h3>
+        <h3 className={labelTextClass}>Actions ({actionLevelTotal})</h3>
         <CharacterActionLevelsEditor
           character={currentCharacter}
           onCharacterChange={(data) => {
