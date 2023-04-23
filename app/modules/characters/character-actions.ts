@@ -5,7 +5,7 @@ export type ActionDetails = {
 }
 
 export const characterActionLibrary: Record<string, ActionDetails[]> = {
-  Physique: [
+  Physical: [
     {
       id: "Muscle",
       name: "Muscle",
