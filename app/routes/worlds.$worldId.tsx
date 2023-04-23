@@ -2,10 +2,8 @@ import { ClientSideSuspense } from "@liveblocks/react"
 import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react"
 import type { LoaderArgs, MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
-
 import { cx } from "class-variance-authority"
 import {
-  ChevronUp,
   Dices,
   EyeOff,
   Gamepad2,
@@ -15,10 +13,8 @@ import {
   Mountain,
   SidebarOpen,
   UserPlus,
-  Users,
   type LucideIcon,
 } from "lucide-react"
-import { useRef } from "react"
 import { route } from "routes-gen"
 import { AppHeader } from "~/modules/app/app-header"
 import { db } from "~/modules/app/db.server"
@@ -30,8 +26,6 @@ import type { Character } from "~/modules/characters/collections"
 import { CharacterCollection } from "~/modules/characters/collections"
 import { DicePanel } from "~/modules/dice/dice-panel"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
-import { extractRef, type MaybeRef } from "~/modules/react/maybe-ref"
-import { useIsomorphicLayoutEffect } from "~/modules/react/use-isomorphic-layout-effect"
 import { button, circleButton } from "~/modules/ui/button"
 import {
   Dialog,
@@ -151,14 +145,11 @@ function WorldNav() {
         label="Scene"
       />
 
-      <CharacterListDetails>
-        <CharacterListSummary />
-        <div className="border-y border-white/10">
-          <ClientSideSuspense fallback={<LoadingPlaceholder />}>
-            {() => <CharacterList />}
-          </ClientSideSuspense>
-        </div>
-      </CharacterListDetails>
+      <div className="border-y border-white/10">
+        <ClientSideLoadingSuspense>
+          <CharacterList />
+        </ClientSideLoadingSuspense>
+      </div>
 
       <WorldNavLink
         to={route("/worlds/:worldId/library", { worldId: world.id })}
@@ -208,31 +199,6 @@ function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
     >
       <props.icon aria-hidden /> {props.label}
     </NavLink>
-  )
-}
-
-function CharacterListDetails(props: { children: React.ReactNode }) {
-  const ref = useRef<HTMLDetailsElement>(null)
-  useDetailsPersistence(ref, "world-nav-characters")
-  return (
-    <details className="group" ref={ref}>
-      {props.children}
-    </details>
-  )
-}
-
-function CharacterListSummary() {
-  return (
-    <summary
-      className={cx(
-        button({ border: "none", shadow: "none", background: "none" }),
-        "w-full",
-      )}
-    >
-      <Users aria-hidden />
-      <span className="flex-1">Characters</span>
-      <ChevronUp aria-hidden className="transition group-open:rotate-180" />
-    </summary>
   )
 }
 
@@ -325,23 +291,6 @@ function CharacterLink({
       )}
     </NavLink>
   )
-}
-
-function useDetailsPersistence(ref: MaybeRef<HTMLDetailsElement>, key: string) {
-  useIsomorphicLayoutEffect(() => {
-    const element = extractRef(ref)
-    if (!element) return
-
-    element.open = localStorage.getItem(key) === "true"
-
-    const handleToggle = () => {
-      localStorage.setItem(key, String(element.open))
-    }
-    element.addEventListener("toggle", handleToggle)
-    return () => {
-      element.removeEventListener("toggle", handleToggle)
-    }
-  }, [ref, key])
 }
 
 function DiceDrawerButton() {
