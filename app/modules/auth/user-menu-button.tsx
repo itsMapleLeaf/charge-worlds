@@ -29,7 +29,7 @@ export function UserMenuButton({ user }: UserMenuButtonProps) {
       >
         <Dialog className="panel origin-top-right focus:ring-0 data-[focus-visible]:ring-2">
           <Form
-            method="post"
+            method="POST"
             action={route("/auth/logout")}
             reloadDocument
             className="contents"

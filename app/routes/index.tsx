@@ -98,7 +98,7 @@ function CreateWorldButton() {
     transition.submission.method === "POST"
 
   return (
-    <Form method="post">
+    <Form method="POST">
       <button className={button()}>
         {pending ? <LoadingSpinner size="small" /> : <Wand2 />}
         Create a new world

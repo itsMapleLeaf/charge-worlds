@@ -103,7 +103,7 @@ export function useActionUi<FormInput extends object, Data>(
       ...props
     }: Partial<RemixReact.FormProps>) {
       return (
-        <RemixReact.Form method="post" {...props}>
+        <RemixReact.Form method="POST" {...props}>
           <input type="hidden" name="actionName" value={route.name} />
           {children}
         </RemixReact.Form>

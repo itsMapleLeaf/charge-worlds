@@ -63,7 +63,7 @@ export function RemovePlayerForm({
             discordId: player.userDiscordId,
           }
           fetcher.submit(body, {
-            method: "post",
+            method: "POST",
             action: route("/worlds/:worldId/players/remove", {
               worldId: world.id,
             }),

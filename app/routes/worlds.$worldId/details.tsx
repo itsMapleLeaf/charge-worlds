@@ -74,7 +74,7 @@ export default function SettingsPage() {
       {actionData && "error" in actionData && (
         <p className={errorTextClass}>{actionData.error}</p>
       )}
-      <ValidatedForm method="post" validator={validator} className="contents">
+      <ValidatedForm method="POST" validator={validator} className="contents">
         <FormInput
           name="name"
           label="Name"

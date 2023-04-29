@@ -5,6 +5,7 @@ const config = {
   future: {
     v2_errorBoundary: true,
     v2_meta: true,
+    v2_normalizeFormMethod: true,
     unstable_tailwind: true,
     unstable_cssSideEffectImports: true,
     unstable_dev: true,

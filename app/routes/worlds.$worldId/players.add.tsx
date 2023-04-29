@@ -76,7 +76,7 @@ export function AddPlayerForm() {
 
   return (
     <fetcher.Form
-      method="post"
+      method="POST"
       action={route("/worlds/:worldId/players/add", { worldId: world.id })}
       ref={formRef}
     >
