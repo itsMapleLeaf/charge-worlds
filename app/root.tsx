@@ -1,5 +1,4 @@
 import rubik from "@fontsource/rubik/variable.css"
-import type { ShouldRevalidateFunction } from "@remix-run/react"
 import {
   Links,
   LiveReload,
@@ -7,15 +6,17 @@ import {
   Outlet,
   Scripts,
   useLoaderData,
+  useRouteError,
+  type ShouldRevalidateFunction,
 } from "@remix-run/react"
+import { isErrorResponse } from "@remix-run/react/dist/data"
 import type {
-  ErrorBoundaryComponent,
   HtmlMetaDescriptor,
   LinksFunction,
   LoaderArgs,
 } from "@vercel/remix"
 import { json } from "@vercel/remix"
-import type { ComponentPropsWithoutRef, ReactNode } from "react"
+import type { ReactNode } from "react"
 import background from "./assets/bg-witch.png"
 import favicon from "./assets/favicon.svg"
 import { pick } from "./helpers/pick"
@@ -46,7 +47,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false
 
-export default function App() {
+export default function Root() {
   const data = useLoaderData<typeof loader>()
   return (
     <Document>
@@ -57,21 +58,21 @@ export default function App() {
   )
 }
 
-export function CatchBoundary() {
-  return (
-    <Document>
-      <div className={maxWidthContainerClass}>
-        <div className="py-8">
-          <CatchBoundaryMessage />
-        </div>
-      </div>
-    </Document>
-  )
-}
+export function ErrorBoundary() {
+  const error = useRouteError()
 
-export function ErrorBoundary({
-  error,
-}: ComponentPropsWithoutRef<ErrorBoundaryComponent>) {
+  if (isErrorResponse(error)) {
+    return (
+      <Document>
+        <div className={maxWidthContainerClass}>
+          <div className="py-8">
+            <CatchBoundaryMessage />
+          </div>
+        </div>
+      </Document>
+    )
+  }
+
   const message =
     error instanceof Error ? error.stack || error.message : String(error)
 
