@@ -27,10 +27,10 @@ export function UserMenuButton({ user }: UserMenuButtonProps) {
         className="animate-from-opacity-0 animate-from-scale-95 data-[entering]:animate-in data-[exiting]:animate-out"
         placement="bottom end"
       >
-        <Dialog className="panel min-w-[12rem] origin-top-right focus:ring-0 data-[focus-visible]:ring-2">
+        <Dialog className="panel flex min-w-[12rem] origin-top-right flex-col focus:ring-0 data-[focus-visible]:ring-2">
           <Link
             to="/settings"
-            className="flex items-center gap-2 p-3 leading-none transition data-[highlighted]:bg-black/25"
+            className="flex items-center gap-2 p-3 leading-none transition hover:text-foreground-8 data-[highlighted]:bg-black/25"
           >
             <Settings /> Settings
           </Link>
@@ -40,7 +40,7 @@ export function UserMenuButton({ user }: UserMenuButtonProps) {
             reloadDocument
             className="contents"
           >
-            <button className="flex items-center gap-2 p-3 leading-none transition data-[highlighted]:bg-black/25">
+            <button className="flex items-center gap-2 p-3 leading-none transition hover:text-foreground-8 data-[highlighted]:bg-black/25">
               <LogOut /> Sign out
             </button>
           </Form>
