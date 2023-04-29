@@ -8,8 +8,8 @@ import { requireWorldOwner } from "~/modules/auth/membership.server"
 import { requireSessionUser } from "~/modules/auth/session.server"
 import { panel } from "~/modules/ui/panel"
 import { getWorld } from "~/modules/world/world-db.server"
-import { AddPlayerForm } from "./players.add"
-import { RemovePlayerForm } from "./players.remove"
+import { AddPlayerForm } from "./worlds.$worldId.players.add"
+import { RemovePlayerForm } from "./worlds.$worldId.players.remove"
 
 export async function loader({ request, params }: LoaderArgs) {
   assert(params.worldId, "worldId is required")

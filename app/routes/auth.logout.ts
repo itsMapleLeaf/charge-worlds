@@ -1,5 +1,5 @@
 import { redirect } from "@vercel/remix"
-import { createLogoutCookie } from "../../modules/auth/session.server"
+import { createLogoutCookie } from "~/modules/auth/session.server"
 
 export async function loader() {
   return redirect("/", {
