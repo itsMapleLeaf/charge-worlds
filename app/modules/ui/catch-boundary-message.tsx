@@ -1,10 +1,13 @@
-import { Link, useCatch } from "@remix-run/react"
+import { Link } from "@remix-run/react"
+import { type ErrorResponse } from "@remix-run/router"
 import { route } from "routes-gen"
 import { SystemMessage } from "./system-message"
 
-export function CatchBoundaryMessage() {
-  const response = useCatch()
-
+export function CatchBoundaryMessage({
+  response,
+}: {
+  response: ErrorResponse
+}) {
   if (response.status === 401) {
     return (
       <SystemMessage>
@@ -31,9 +34,23 @@ export function CatchBoundaryMessage() {
     )
   }
 
+  if (response.status === 404) {
+    return (
+      <SystemMessage>
+        <p>{`Couldn't find what you were looking for.`}</p>
+        <Link to={route("/")} className="underline">
+          Go home
+        </Link>
+      </SystemMessage>
+    )
+  }
+
   return (
     <SystemMessage>
       <p>Oops! Something went wrong.</p>
+      <Link to={route("/")} className="underline">
+        Go home
+      </Link>
     </SystemMessage>
   )
 }

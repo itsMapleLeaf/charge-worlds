@@ -46,6 +46,9 @@ dependencies:
   '@remix-run/react':
     specifier: ^1.15.0
     version: 1.15.0(react-dom@18.2.0)(react@18.2.0)
+  '@remix-run/router':
+    specifier: ^1.6.0
+    version: 1.6.0
   '@remix-run/server-runtime':
     specifier: ^1.15.0
     version: 1.15.0
@@ -4125,6 +4128,11 @@ packages:
   /@remix-run/router@1.5.0:
     resolution: {integrity: sha512-bkUDCp8o1MvFO+qxkODcbhSqRa6P2GXgrGZVpt0dCXNW2HCSCqYI0ZoAqEOSAjRWmmlKcYgFvN4B4S+zo/f8kg==}
     engines: {node: '>=14'}
+
+  /@remix-run/router@1.6.0:
+    resolution: {integrity: sha512-N13NRw3T2+6Xi9J//3CGLsK2OqC8NMme3d/YX+nh05K9YHWGcv8DycHJrqGScSP4T75o8IN6nqIMhVFU8ohg8w==}
+    engines: {node: '>=14'}
+    dev: false
 
   /@remix-run/serve@1.15.0:
     resolution: {integrity: sha512-j06vKhxtLSR3JpkcoBMPb1EeM6QrbbuTdDh4m0eY/D4QgUzba4ws6r3OzEGc5FMe5xSULO0YVd2QWlyqBlMIWQ==}

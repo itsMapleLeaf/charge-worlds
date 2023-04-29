@@ -5,11 +5,11 @@ import {
   Meta,
   Outlet,
   Scripts,
+  isRouteErrorResponse,
   useLoaderData,
   useRouteError,
   type ShouldRevalidateFunction,
 } from "@remix-run/react"
-import { isErrorResponse } from "@remix-run/react/dist/data"
 import type { LinksFunction, LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
 import type { ReactNode } from "react"
@@ -57,12 +57,12 @@ export default function Root() {
 export function ErrorBoundary() {
   const error = useRouteError()
 
-  if (isErrorResponse(error)) {
+  if (isRouteErrorResponse(error)) {
     return (
       <Document>
         <div className={maxWidthContainerClass}>
           <div className="py-8">
-            <CatchBoundaryMessage />
+            <CatchBoundaryMessage response={error} />
           </div>
         </div>
       </Document>
