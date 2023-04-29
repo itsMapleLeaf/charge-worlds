@@ -8,7 +8,6 @@ import {
   isRouteErrorResponse,
   useLoaderData,
   useRouteError,
-  type ShouldRevalidateFunction,
 } from "@remix-run/react"
 import type { LinksFunction, LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
@@ -25,6 +24,7 @@ import { linkClass } from "./modules/ui/link"
 import { maxWidthContainerClass } from "./modules/ui/styles"
 import tailwind from "./modules/ui/tailwind.css"
 import { ToastProvider } from "./modules/ui/toast"
+import { Settings, getSettings } from "./settings"
 
 export const meta: V2_MetaFunction = () => getAppMeta()
 
@@ -36,17 +36,17 @@ export const links: LinksFunction = () => [
 
 export async function loader({ request }: LoaderArgs) {
   const user = await getSessionUser(request)
+  const settings = await getSettings(request)
   return json({
     user: user && pick(user, ["id", "name", "avatarUrl"]),
+    settings,
   })
 }
-
-export const shouldRevalidate: ShouldRevalidateFunction = () => false
 
 export default function Root() {
   const data = useLoaderData<typeof loader>()
   return (
-    <Document>
+    <Document settings={data.settings}>
       <AuthProvider user={data.user}>
         <Outlet />
       </AuthProvider>
@@ -57,9 +57,13 @@ export default function Root() {
 export function ErrorBoundary() {
   const error = useRouteError()
 
+  const settings: Settings = {
+    fancyMode: false,
+  }
+
   if (isRouteErrorResponse(error)) {
     return (
-      <Document>
+      <Document settings={settings}>
         <div className={maxWidthContainerClass}>
           <div className="py-8">
             <CatchBoundaryMessage response={error} />
@@ -73,7 +77,7 @@ export function ErrorBoundary() {
     error instanceof Error ? error.stack || error.message : String(error)
 
   return (
-    <Document>
+    <Document settings={settings}>
       <div className={maxWidthContainerClass}>
         <div className="grid gap-4 py-4">
           <h1 className="text-4xl font-light">Oops! Something went wrong.</h1>
@@ -89,11 +93,18 @@ export function ErrorBoundary() {
   )
 }
 
-function Document({ children }: { children: ReactNode }) {
+function Document({
+  children,
+  settings,
+}: {
+  children: ReactNode
+  settings: Settings
+}) {
   return (
     <html
       lang="en"
       className="break-words bg-black font-body text-foreground-1 [word-break:break-word]"
+      data-fancy-mode={settings.fancyMode || undefined}
     >
       <head>
         <Meta />

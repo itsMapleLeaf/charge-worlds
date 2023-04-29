@@ -29,7 +29,7 @@
 
 @layer components {
   .panel {
-    @apply rounded-md border border-white/10 bg-black/75 shadow-md shadow-black/25 backdrop-blur-md;
+    @apply rounded-md border border-white/10 bg-black;
   }
   .panel-border-none {
     @apply rounded-none border-0;
@@ -39,6 +39,10 @@
   }
   .panel-border-right {
     @apply rounded-none border-0 border-r;
+  }
+
+  [data-fancy-mode] .panel {
+    @apply border-white/10 bg-black/75 shadow-md shadow-black/25 backdrop-blur-md;
   }
 }
 

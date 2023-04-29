@@ -1,5 +1,5 @@
-import { Form } from "@remix-run/react"
-import { LogOut, User } from "lucide-react"
+import { Form, Link } from "@remix-run/react"
+import { LogOut, Settings, User } from "lucide-react"
 import { Button, Dialog, DialogTrigger, Popover } from "react-aria-components"
 import { route } from "routes-gen"
 import type { AuthContextUser } from "../app/auth"
@@ -27,7 +27,13 @@ export function UserMenuButton({ user }: UserMenuButtonProps) {
         className="animate-from-opacity-0 animate-from-scale-95 data-[entering]:animate-in data-[exiting]:animate-out"
         placement="bottom end"
       >
-        <Dialog className="panel origin-top-right focus:ring-0 data-[focus-visible]:ring-2">
+        <Dialog className="panel min-w-[12rem] origin-top-right focus:ring-0 data-[focus-visible]:ring-2">
+          <Link
+            to="/settings"
+            className="flex items-center gap-2 p-3 leading-none transition data-[highlighted]:bg-black/25"
+          >
+            <Settings /> Settings
+          </Link>
           <Form
             method="POST"
             action={route("/auth/logout")}
