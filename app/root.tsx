@@ -10,11 +10,7 @@ import {
   type ShouldRevalidateFunction,
 } from "@remix-run/react"
 import { isErrorResponse } from "@remix-run/react/dist/data"
-import type {
-  HtmlMetaDescriptor,
-  LinksFunction,
-  LoaderArgs,
-} from "@vercel/remix"
+import type { LinksFunction, LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
 import type { ReactNode } from "react"
 import background from "./assets/bg-witch.png"
@@ -30,7 +26,7 @@ import { maxWidthContainerClass } from "./modules/ui/styles"
 import tailwind from "./modules/ui/tailwind.css"
 import { ToastProvider } from "./modules/ui/toast"
 
-export const meta = (): HtmlMetaDescriptor => getAppMeta()
+export const meta: V2_MetaFunction = () => getAppMeta()
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: rubik },

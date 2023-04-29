@@ -1,4 +1,4 @@
-import type { HtmlMetaDescriptor } from "@vercel/remix"
+import type { V2_MetaDescriptor } from "@vercel/remix"
 import { truthyJoin } from "../../helpers/truthy-join"
 
 const siteUrl = "https://charge-worlds.mapleleaf.dev"
@@ -6,29 +6,29 @@ const siteUrl = "https://charge-worlds.mapleleaf.dev"
 export function getAppMeta({
   title: titleArg = "",
   description: descriptionArg = "",
-} = {}): HtmlMetaDescriptor {
+} = {}): V2_MetaDescriptor[] {
   const title = truthyJoin(" | ", [titleArg, "Charge Worlds"])
 
   const description =
     descriptionArg || "Virtual environment for the Charge RPG system"
 
-  return {
+  return [
     // eslint-disable-next-line unicorn/text-encoding-identifier-case
-    "charset": "utf-8",
-    "viewport": "width=device-width,initial-scale=1",
+    { charSet: "utf-8" },
+    { name: "viewport", content: "width=device-width,initial-scale=1" },
 
-    title,
-    description,
-    "theme-color": "#1e293b",
+    { title },
+    { name: "description", content: description },
+    { name: "theme-color", content: "#1e293b" },
 
-    "og:type": "website",
-    "og:url": siteUrl,
-    "og:title": title,
-    "og:description": description,
+    { property: "og:type", content: "website" },
+    { property: "og:url", content: siteUrl },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
 
-    "twitter:card": "summary_large_image",
-    "twitter:url": siteUrl,
-    "twitter:title": title,
-    "twitter:description": description,
-  }
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:url", content: siteUrl },
+    { name: "twitter:title", content: title },
+    { name: "twitter:description", content: description },
+  ]
 }

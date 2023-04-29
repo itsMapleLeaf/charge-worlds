@@ -1,6 +1,6 @@
 import { ClientSideSuspense } from "@liveblocks/react"
 import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react"
-import type { LoaderArgs, MetaFunction } from "@vercel/remix"
+import type { LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
 import { cx } from "class-variance-authority"
 import {
@@ -41,7 +41,7 @@ import { getMembership } from "../modules/auth/membership.server"
 import { getSessionUser } from "../modules/auth/session.server"
 import { getWorld } from "../modules/world/world-db.server"
 
-export const meta: MetaFunction<typeof loader> = ({ data }) =>
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) =>
   getAppMeta({ title: data.world.name })
 
 export async function loader({ request, params }: LoaderArgs) {

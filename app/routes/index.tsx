@@ -1,5 +1,5 @@
 import { Form, Link, useLoaderData, useTransition } from "@remix-run/react"
-import type { ActionArgs, LoaderArgs, MetaFunction } from "@vercel/remix"
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json, redirect } from "@vercel/remix"
 import clsx from "clsx"
 import { Wand2 } from "lucide-react"
@@ -16,7 +16,7 @@ import { LoadingSpinner } from "~/modules/ui/loading"
 import { interactivePanel } from "~/modules/ui/panel"
 import { db } from "../modules/app/db.server"
 
-export const meta: MetaFunction<typeof loader> = () =>
+export const meta: V2_MetaFunction<typeof loader> = () =>
   getAppMeta({ title: "Your Worlds" })
 
 export async function loader({ request }: LoaderArgs) {
