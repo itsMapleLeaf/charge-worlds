@@ -40,8 +40,11 @@ dependencies:
   '@radix-ui/react-popover':
     specifier: ^1.0.5
     version: 1.0.5(@types/react@18.0.33)(react-dom@18.2.0)(react@18.2.0)
+  '@remix-run/node':
+    specifier: ^1.15.0
+    version: 1.15.0
   '@remix-run/react':
-    specifier: 1.15.0
+    specifier: ^1.15.0
     version: 1.15.0(react-dom@18.2.0)(react@18.2.0)
   '@remix-run/server-runtime':
     specifier: ^1.15.0
@@ -70,6 +73,9 @@ dependencies:
   inngest:
     specifier: ^1.6.0
     version: 1.6.0(typescript@5.0.3)
+  isbot:
+    specifier: latest
+    version: 3.6.10
   lucide-react:
     specifier: ^0.130.1
     version: 0.130.1(react@18.2.0)
@@ -109,13 +115,13 @@ devDependencies:
     specifier: ^2.0.0
     version: 2.0.0(eslint@8.37.0)(typescript@5.0.3)
   '@remix-run/dev':
-    specifier: 1.15.0
+    specifier: ^1.15.0
     version: 1.15.0(@remix-run/serve@1.15.0)(@types/node@18.15.11)
   '@remix-run/express':
-    specifier: 1.15.0
+    specifier: ^1.15.0
     version: 1.15.0(express@4.18.2)
   '@remix-run/serve':
-    specifier: 1.15.0
+    specifier: ^1.15.0
     version: 1.15.0
   '@routes-gen/remix':
     specifier: ^0.3.6
@@ -4636,7 +4642,7 @@ packages:
   /@vue/compiler-core@3.2.47:
     resolution: {integrity: sha512-p4D7FDnQb7+YJmO2iPEv0SQNeNzcbHdGByJDsT4lynf63AFkOTFN07HsiRSvjGo0QrxR/o3d0hUyNCUnBU2Tig==}
     dependencies:
-      '@babel/parser': 7.16.4
+      '@babel/parser': 7.21.4
       '@vue/shared': 3.2.47
       estree-walker: 2.0.2
       source-map: 0.6.1
@@ -4674,7 +4680,7 @@ packages:
   /@vue/reactivity-transform@3.2.47:
     resolution: {integrity: sha512-m8lGXw8rdnPVVIdIFhf0LeQ/ixyHkH5plYuS83yop5n7ggVJU+z5v0zecwEnX7fa7HNLBhh2qngJJkxpwEEmYA==}
     dependencies:
-      '@babel/parser': 7.16.4
+      '@babel/parser': 7.21.4
       '@vue/compiler-core': 3.2.47
       '@vue/shared': 3.2.47
       estree-walker: 2.0.2
@@ -6854,7 +6860,7 @@ packages:
       '@types/glob': 7.2.0
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.2.11
+      fast-glob: 3.2.12
       glob: 7.2.3
       ignore: 5.2.4
       merge2: 1.4.1
@@ -7509,6 +7515,11 @@ packages:
   /isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
     dev: true
+
+  /isbot@3.6.10:
+    resolution: {integrity: sha512-+I+2998oyP4oW9+OTQD8TS1r9P6wv10yejukj+Ksj3+UR5pUhsZN3f8W7ysq0p1qxpOVNbl5mCuv0bCaF8y5iQ==}
+    engines: {node: '>=12'}
+    dev: false
 
   /isbot@3.6.7:
     resolution: {integrity: sha512-SXNUQaNZlj/+9jdrGnAp6WW0YoHe3MIwwc6oRIYuhhERBUt7/L6I7JkMiA2sX9fcvS7gZ2C7GWgmDZfOOU4I5g==}
@@ -11095,7 +11106,7 @@ packages:
         optional: true
     dependencies:
       '@types/node': 18.15.11
-      esbuild: 0.17.6
+      esbuild: 0.17.15
       postcss: 8.4.21
       resolve: 1.22.2
       rollup: 3.20.2
