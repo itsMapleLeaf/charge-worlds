@@ -1,7 +1,6 @@
 import { Form, Link, useLoaderData, useTransition } from "@remix-run/react"
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json, redirect } from "@vercel/remix"
-import clsx from "clsx"
 import { Wand2 } from "lucide-react"
 import { route } from "routes-gen"
 import { raise } from "~/helpers/errors"
@@ -13,7 +12,6 @@ import { RelativeTimestamp } from "~/modules/dom/relative-timestamp"
 import { button } from "~/modules/ui/button"
 import { linkClass } from "~/modules/ui/link"
 import { LoadingSpinner } from "~/modules/ui/loading"
-import { interactivePanel } from "~/modules/ui/panel"
 import { db } from "../modules/app/db.server"
 
 export const meta: V2_MetaFunction<typeof loader> = () =>
@@ -137,7 +135,7 @@ function WorldList({
         <Link
           key={world.id}
           to={route("/worlds/:worldId", { worldId: world.id })}
-          className={clsx(interactivePanel(), "flex flex-col p-4")}
+          className="panel panel-interactive flex flex-col p-4"
         >
           <h2 className="mb-2 text-2xl font-light">{world.name}</h2>
           <p className="mt-auto text-sm opacity-75">

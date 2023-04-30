@@ -24,7 +24,7 @@ import { linkClass } from "./modules/ui/link"
 import { maxWidthContainerClass } from "./modules/ui/styles"
 import tailwind from "./modules/ui/tailwind.css"
 import { ToastProvider } from "./modules/ui/toast"
-import { Settings, getSettings } from "./settings"
+import { type Settings, getSettings } from "./settings"
 
 export const meta: V2_MetaFunction = () => getAppMeta()
 

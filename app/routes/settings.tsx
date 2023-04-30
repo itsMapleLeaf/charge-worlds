@@ -13,7 +13,7 @@ import { AppHeader } from "~/modules/app/app-header"
 import { getAppMeta } from "~/modules/app/meta"
 import { button } from "~/modules/ui/button"
 import { LoadingSpinner } from "~/modules/ui/loading"
-import { Settings, getSettings, updateSettingsFromForm } from "~/settings"
+import { type Settings, getSettings, updateSettingsFromForm } from "~/settings"
 
 export const meta: V2_MetaFunction<typeof loader> = () =>
   getAppMeta({ title: "Settings" })

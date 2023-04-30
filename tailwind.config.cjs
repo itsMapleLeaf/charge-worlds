@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const plugin = require("tailwindcss/plugin")
+const tailwindColors = require("tailwindcss/colors")
 const colors = require("@radix-ui/colors")
 
 /** @type {import('tailwindcss').Config} */
@@ -8,6 +9,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        gray: tailwindColors.neutral,
         neutral: Object.fromEntries(
           Object.entries(colors.violetDark).map(([key, value]) => [
             key.replace("violet", ""),
@@ -247,6 +249,10 @@ module.exports = {
           "animation-iteration-count": "infinite",
         },
       })
+    }),
+
+    plugin(function fancyMode(api) {
+      api.addVariant("fancy", "[data-fancy-mode] &")
     }),
   ],
 }
