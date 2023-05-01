@@ -1,0 +1,13 @@
+@unocss;
+
+:root {
+  @apply font-sans;
+}
+
+:focus {
+  @apply outline-0;
+}
+
+:focus-visible {
+  @apply ring-2 ring-accent;
+}

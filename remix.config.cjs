@@ -7,10 +7,11 @@ const config = {
     v2_meta: true,
     v2_normalizeFormMethod: true,
     v2_routeConvention: true,
-    unstable_tailwind: true,
     unstable_cssSideEffectImports: true,
     unstable_dev: true,
+    unstable_postcss: true,
   },
+  watchPaths: ["./uno.config.ts"],
 }
 
 module.exports = config
