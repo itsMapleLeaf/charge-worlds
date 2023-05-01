@@ -316,7 +316,7 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
         onChange={(event) => {
           mutations.update(index, { title: event.target.value })
         }}
-        className="w-full bg-transparent p-2 text-2xl font-light transition focus:text-foreground-8 focus:ring-0"
+        className="focus:text-foreground-8 w-full bg-transparent p-2 text-2xl font-light transition focus:ring-0"
       />
 
       <div className="min-h-0 flex-1 overflow-y-auto">

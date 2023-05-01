@@ -87,7 +87,7 @@ export default function WorldPage() {
           />
 
           <div className="flex flex-1 items-start gap-2">
-            <aside className="panel sticky top-8 hidden w-56 overflow-y-auto lg:block xl:w-64">
+            <aside className="sticky top-8 hidden w-56 overflow-y-auto panel lg:block xl:w-64">
               <WorldNav />
             </aside>
 
@@ -97,7 +97,7 @@ export default function WorldPage() {
               </ClientSideLoadingSuspense>
             </div>
 
-            <aside className="panel sticky top-8 hidden h-[calc(100vh-12rem)] w-56 overflow-y-auto md:block xl:w-64">
+            <aside className="sticky top-8 hidden h-[calc(100vh-12rem)] w-56 overflow-y-auto panel md:block xl:w-64">
               <ClientSideLoadingSuspense>
                 <DicePanel />
               </ClientSideLoadingSuspense>

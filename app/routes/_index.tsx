@@ -109,7 +109,7 @@ function CreateWorldButton() {
 
 function WorldListCta() {
   return (
-    <div className="flex h-full flex-col items-center justify-center">
+    <div className="h-full flex flex-col items-center justify-center">
       <p className="text-gray-500">
         Please{" "}
         <a href="/auth/discord/login" className={linkClass}>

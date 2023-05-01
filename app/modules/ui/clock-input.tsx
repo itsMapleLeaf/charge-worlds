@@ -128,7 +128,7 @@ export function ClockInput({
     <div className="group relative flex flex-col items-center justify-center gap-3 text-center">
       {onNameChange ? (
         <input
-          className="-my-2 w-full rounded-md bg-transparent p-2 text-center text-xl leading-tight tracking-wide transition hover:bg-black/25 focus:bg-black/25 focus:outline-none"
+          className="w-full rounded-md bg-transparent p-2 text-center text-xl leading-tight tracking-wide transition -my-2 focus:bg-black/25 hover:bg-black/25 focus:outline-none"
           placeholder="Clock name"
           value={name}
           onChange={(event) => onNameChange(event.target.value)}

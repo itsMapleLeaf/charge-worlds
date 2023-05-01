@@ -26,7 +26,7 @@ export function Counter({
         <MinusCircle />
       </button>
 
-      <p className="min-w-[1rem] text-center tabular-nums leading-none">
+      <p className="min-w-[1rem] text-center leading-none tabular-nums">
         {value}
       </p>
 

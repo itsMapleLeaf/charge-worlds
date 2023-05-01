@@ -100,7 +100,7 @@ function AddCardButton() {
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className="panel w-64 animate-from-opacity-0 animate-from-scale-95 data-[state=open]:animate-in data-[state=closed]:animate-out"
+          className="animate-from-opacity-0 animate-from-scale-95 data-[state=open]:animate-in data-[state=closed]:animate-out w-64 panel"
           sideOffset={8}
           onKeyDown={(event) => {
             const focusTargets = [

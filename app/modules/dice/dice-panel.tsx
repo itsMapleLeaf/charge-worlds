@@ -25,7 +25,7 @@ export function DicePanel() {
   const rolls = DiceRollCollection.useItems()
   const { isSpectator } = WorldContext.useValue()
   return (
-    <div className="flex h-full flex-col divide-y divide-white/10">
+    <div className="h-full flex flex-col divide-y divide-white/10">
       <section className="min-h-0 flex-1">
         <DiceRollList rolls={rolls} />
       </section>

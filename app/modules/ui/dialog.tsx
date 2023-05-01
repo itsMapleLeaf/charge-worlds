@@ -20,7 +20,7 @@ export function DialogButton(props: RadixDialog.DialogTriggerProps) {
 export function DialogOverlay(props: { children: React.ReactNode }) {
   return (
     <RadixDialog.Portal>
-      <RadixDialog.Overlay className="fixed inset-0 flex flex-col bg-black/50 p-4 backdrop-blur-md animate-from-opacity-0 animation-duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out">
+      <RadixDialog.Overlay className="animate-from-opacity-0 data-[state=open]:animate-in data-[state=closed]:animate-out animation-duration-300 fixed inset-0 flex flex-col bg-black/50 p-4 backdrop-blur-md">
         {props.children}
       </RadixDialog.Overlay>
     </RadixDialog.Portal>
@@ -29,7 +29,7 @@ export function DialogOverlay(props: { children: React.ReactNode }) {
 
 export function DialogModalPanel(props: { children: React.ReactNode }) {
   return (
-    <RadixDialog.Content className="panel m-auto flex max-h-full w-full max-w-lg flex-col divide-y divide-white/10 overflow-y-auto animate-from-scale-95 animation-duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out">
+    <RadixDialog.Content className="animate-from-scale-95 animation-duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out m-auto max-h-full max-w-lg w-full flex flex-col overflow-y-auto panel divide-y divide-white/10">
       {props.children}
     </RadixDialog.Content>
   )
@@ -51,7 +51,7 @@ export function DialogDrawerPanel(props: {
       )}
     >
       <div className="flex-1">{props.children}</div>
-      <div className="sticky bottom-0 p-4 group-data-[side=right]:self-end">
+      <div className="group-data-[side=right]:self-end sticky bottom-0 p-4">
         <DialogClose className={circleButton} title="Dismiss">
           <SidebarClose className="group-data-[side=right]:-scale-x-100" />
         </DialogClose>

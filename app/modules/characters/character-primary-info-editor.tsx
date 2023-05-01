@@ -23,7 +23,7 @@ export function CharacterPrimaryInfoEditor({
 }) {
   return (
     <div className="flex flex-wrap gap-4 [&>*]:flex-1 [&>*]:basis-48">
-      <div className="panel min-h-[theme(height.64)]">
+      <div className="min-h-[theme(height.64)] panel">
         <RichImage src={character.imageUrl ?? undefined} />
       </div>
 

@@ -74,7 +74,7 @@ function ImagePreview({ src }: { src: string }) {
         />
         <div
           style={{ backgroundImage: `url(${src})` }}
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat "
+          className="absolute inset-0 bg-contain bg-center bg-no-repeat"
         />
       </div>
 
@@ -96,7 +96,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 
 function DropzonePlaceholder() {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
+    <div className="h-full flex flex-col items-center justify-center gap-4 text-center">
       <ImagePlus size={48} />
       <span>Add a reference image</span>
     </div>

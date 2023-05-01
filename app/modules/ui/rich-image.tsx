@@ -13,7 +13,7 @@ import { button } from "./button"
 export function RichImage(props: { src: Nullish<string> }) {
   if (!props.src) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 p-4 opacity-50 s-full">
+      <div className="s-full flex flex-col items-center justify-center gap-3 p-4 opacity-50">
         <Image className="s-32" aria-hidden />
         <p>No image provided</p>
       </div>
@@ -22,20 +22,20 @@ export function RichImage(props: { src: Nullish<string> }) {
 
   return (
     <Dialog.Root>
-      <Dialog.Trigger className="relative s-full" title="Show large preview">
+      <Dialog.Trigger className="s-full relative" title="Show large preview">
         <img
           src={props.src}
           alt=""
-          className="absolute inset-0 object-cover s-full"
+          className="s-full absolute inset-0 object-cover"
         />
         <img
           src={props.src}
           alt=""
-          className="absolute inset-0 object-contain backdrop-blur-md backdrop-brightness-50 s-full"
+          className="s-full absolute inset-0 object-contain backdrop-blur-md backdrop-brightness-50"
         />
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="animate-radix fixed inset-0 bg-black/75 backdrop-blur animate-from-opacity-0">
+        <Dialog.Overlay className="animate-from-opacity-0 animate-radix fixed inset-0 bg-black/75 backdrop-blur">
           <LargePreview src={props.src} />
         </Dialog.Overlay>
       </Dialog.Portal>
@@ -192,7 +192,7 @@ function LargePreview({ src }: { src: string }) {
   })
 
   return (
-    <Dialog.Content className="animate-radix flex flex-col gap-4 p-4 s-full animate-from-scale-95">
+    <Dialog.Content className="animate-radix s-full animate-from-scale-95 flex flex-col gap-4 p-4">
       <div
         className="min-h-0 flex-1 cursor-grab active:cursor-grabbing"
         ref={containerRef}

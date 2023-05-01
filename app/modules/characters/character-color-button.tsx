@@ -17,7 +17,7 @@ export function CharacterColorButton({
       </RadixPopover.Trigger>
       <RadixPopover.Portal>
         <RadixPopover.Content
-          className="panel w-64 origin-[var(--radix-popover-content-transform-origin)] scale-90 p-4 opacity-0 transition animate-from-opacity-0 animate-from-scale-90 data-[state=open]:animate-in data-[state=closed]:animate-out"
+          className="animate-from-opacity-0 animate-from-scale-90 data-[state=open]:animate-in data-[state=closed]:animate-out w-64 origin-[var(--radix-popover-content-transform-origin)] scale-90 panel p-4 opacity-0 transition"
           collisionPadding={8}
           sideOffset={8}
           align="start"

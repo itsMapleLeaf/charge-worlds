@@ -50,7 +50,7 @@ export function RemovePlayerForm({
   const { world } = WorldContext.useValue()
   return (
     <div className="flex items-start gap-2">
-      <p className="panel min-h-[theme(height.12)] flex-1 p-3 leading-[22px] shadow-none">
+      <p className="min-h-[theme(height.12)] flex-1 panel p-3 leading-[22px] shadow-none">
         <span>{player.user.name}</span>{" "}
         <span className="opacity-75">({player.userDiscordId})</span>
       </p>

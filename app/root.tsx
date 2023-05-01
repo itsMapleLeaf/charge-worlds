@@ -104,8 +104,8 @@ function Document({ children }: { children: ReactNode }) {
         className="bg-[length:100%_auto] bg-top bg-no-repeat"
         style={{ backgroundImage: `url(${background})` }}
       >
-        <div className="flex min-h-[100vh] flex-col bg-black/50">
-          <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col p-4 lg:px-8">
+        <div className="min-h-[100vh] flex flex-col bg-black/50">
+          <div className="mx-auto w-full max-w-screen-2xl flex flex-1 flex-col p-4 lg:px-8">
             <ToastProvider>{children}</ToastProvider>
           </div>
 
