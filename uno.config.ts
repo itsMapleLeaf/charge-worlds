@@ -33,7 +33,7 @@ export default defineConfig({
     [
       /^fluid-cols-(\d+)$/,
       ([, cols]) => ({
-        "grid-template-columns": `repeat(auto-fit, minmax(${
+        "grid-template-columns": `repeat(auto-fill, minmax(${
           Number(cols) / 4
         }rem, 1fr))`,
       }),
