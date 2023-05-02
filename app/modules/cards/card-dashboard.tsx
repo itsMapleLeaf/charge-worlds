@@ -69,7 +69,7 @@ export function CreateCardButton(props: { onCreate?: (id: string) => void }) {
   const { setCurrentDialogCardId } = Context.useValue()
   return (
     <button
-      className={button({ shadow: "default" })}
+      className="button"
       onClick={() => {
         const id = crypto.randomUUID()
         mutations.append({

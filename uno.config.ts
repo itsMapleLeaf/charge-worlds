@@ -16,6 +16,30 @@ export default defineConfig({
     fontFamily: {
       sans: `RubikVariable, sans-serif`,
     },
+    animation: {
+      keyframes: {
+        "zoom-fade-in": `{
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }`,
+        "zoom-fade-out": `{
+          from {
+            opacity: 1;
+            transform: scale(1);
+          }
+          to {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+        }`,
+      },
+    },
   },
 
   rules: [
@@ -43,13 +67,22 @@ export default defineConfig({
 
   shortcuts: {
     ":uno:": "", // no-op so uno doesn't complain
+
     "panel":
       ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md [.panel_&]:(bg-transparent shadow-none backdrop-blur-none)",
+
     "interactive-panel":
-      ":uno: transition active:(translate-y-0.5 shadow-none duration-0) panel [&.active,&:hover]:(border-indigo-300/40 text-indigo-300)",
+      ":uno: transition active:(translate-y-0.5 shadow-none duration-0) panel [&.active,&:hover]:(border-accent-300/40 text-accent-300)",
+
     "button":
       ":uno: h-12 inline-flex items-center gap-2 px-3 leading-none interactive-panel [&>svg]:s-5",
-    "anchor": ":uno: transition hover:text-indigo-300",
+
+    "anchor": ":uno: transition hover:text-accent-300",
     "anchor-underline": ":uno: underline anchor hover:no-underline",
+
+    "input": ":uno: block h-12 w-full px-3 leading-none transition panel",
+
+    "radix-transition":
+      "data-[state=closed]:(animate-zoom-fade-out animate-duration-150) data-[state=open]:(animate-zoom-fade-in animate-duration-150)",
   },
 })
