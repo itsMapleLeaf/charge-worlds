@@ -9,17 +9,15 @@ export function LoadingSpinner({
   return (
     <div
       className={clsx(
-        "grid w-fit animate-in animate-to-rotate-[360deg] animation-duration-1000 animation-ease-linear animate-infinite",
-        size === "small" &&
-          "grid-cols-[0.5rem,0.5rem] grid-rows-[0.5rem,0.5rem] gap-1",
-        size === "medium" &&
-          "grid-cols-[1rem,1rem] grid-rows-[1rem,1rem] gap-2",
+        "grid grid-cols-2 grid-rows-2 animate-spin",
+        size === "small" && "s-5 gap-0.5",
+        size === "medium" && "s-12 gap-1.5",
       )}
     >
-      <div className="rounded-full bg-blue-200" />
-      <div className="rounded-full bg-blue-400" />
-      <div className="rounded-full bg-blue-400" />
-      <div className="rounded-full bg-blue-200" />
+      <div className="rounded-full bg-accent-200" />
+      <div className="rounded-full bg-accent-400" />
+      <div className="rounded-full bg-accent-400" />
+      <div className="rounded-full bg-accent-200" />
     </div>
   )
 }
