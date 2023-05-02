@@ -68,6 +68,8 @@ export default defineConfig({
   shortcuts: {
     ":uno:": "", // no-op so uno doesn't complain
 
+    "s-full": "w-full h-full",
+
     "panel":
       ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md [.panel_&]:(bg-transparent shadow-none backdrop-blur-none)",
 

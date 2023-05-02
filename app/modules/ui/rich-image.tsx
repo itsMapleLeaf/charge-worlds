@@ -1,5 +1,4 @@
 import * as Dialog from "@radix-ui/react-dialog"
-import { cx } from "class-variance-authority"
 import { Image, Minus, Plus } from "lucide-react"
 import * as React from "react"
 import { clamp, lerp } from "~/helpers/math"
@@ -8,7 +7,6 @@ import { useAnimationLoop } from "~/helpers/use-animation-loop"
 import { useWindowEvent } from "~/helpers/use-window-event"
 import { raise } from "../../helpers/errors"
 import { extractRef, type MaybeRef } from "../react/maybe-ref"
-import { button } from "./button"
 
 export function RichImage(props: { src: Nullish<string> }) {
   if (!props.src) {
@@ -35,7 +33,7 @@ export function RichImage(props: { src: Nullish<string> }) {
         />
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="animate-from-opacity-0 animate-radix fixed inset-0 bg-black/75 backdrop-blur">
+        <Dialog.Overlay className="fixed inset-0 bg-black/75 backdrop-blur data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150! animate-ease!">
           <LargePreview src={props.src} />
         </Dialog.Overlay>
       </Dialog.Portal>
@@ -64,7 +62,8 @@ function LargePreview({ src }: { src: string }) {
   const zoomDisplayRef = React.useRef<HTMLButtonElement>(null)
 
   const zoomBy = (factor: number, origin: "cursor" | "viewport") => {
-    const newScale = targetTransform.current.scale * factor
+    const newScale = clamp(targetTransform.current.scale * factor, 1, 10)
+    if (newScale === targetTransform.current.scale) return
 
     const imageCenterX = targetTransform.current.x
     const imageCenterY = targetTransform.current.y
@@ -157,8 +156,6 @@ function LargePreview({ src }: { src: string }) {
       )
     }
 
-    targetTransform.current.scale = Math.max(1, targetTransform.current.scale)
-
     for (const key of ["x", "y", "scale"] as const) {
       const current = currentTransform.current[key]
       const target = targetTransform.current[key]
@@ -192,7 +189,7 @@ function LargePreview({ src }: { src: string }) {
   })
 
   return (
-    <Dialog.Content className="animate-radix s-full animate-from-scale-95 flex flex-col gap-4 p-4">
+    <Dialog.Content className="radix-transition s-full flex flex-col gap-4 p-4">
       <div
         className="min-h-0 flex-1 cursor-grab active:cursor-grabbing"
         ref={containerRef}
@@ -206,11 +203,11 @@ function LargePreview({ src }: { src: string }) {
         />
       </div>
       <div className="relative flex justify-center gap-4">
-        <Dialog.Close className={button()}>Close</Dialog.Close>
+        <Dialog.Close className="button">Close</Dialog.Close>
         <div className="h-full w-px bg-white/10" />
         <button
           type="button"
-          className={button()}
+          className="button"
           title="Zoom out"
           onClick={() => {
             zoomBy(1 / manualScaleStep, "viewport")
@@ -219,7 +216,7 @@ function LargePreview({ src }: { src: string }) {
           <Minus />
         </button>
         <button
-          className={cx(button(), "tabular-nums")}
+          className="tabular-nums button"
           onClick={() => {
             targetTransform.current.scale = 1
           }}
@@ -227,7 +224,7 @@ function LargePreview({ src }: { src: string }) {
         ></button>
         <button
           type="button"
-          className={button()}
+          className="button"
           title="Zoom in"
           onClick={() => {
             zoomBy(manualScaleStep, "viewport")
