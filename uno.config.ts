@@ -80,9 +80,12 @@ export default defineConfig({
     "anchor": ":uno: transition hover:text-accent-300",
     "anchor-underline": ":uno: underline anchor hover:no-underline",
 
-    "input": ":uno: block h-12 w-full px-3 leading-none transition panel",
+    "input":
+      ":uno: block h-12 w-full px-3 leading-none ring-2 ring-transparent transition panel",
+
+    "textarea": ":uno: input py-3 leading-normal",
 
     "radix-transition":
-      "data-[state=closed]:(animate-zoom-fade-out animate-duration-150) data-[state=open]:(animate-zoom-fade-in animate-duration-150)",
+      "data-[state=closed]:(animate-zoom-fade-out animate-duration-150 animate-ease) data-[state=open]:(animate-zoom-fade-in animate-duration-150 animate-ease)",
   },
 })

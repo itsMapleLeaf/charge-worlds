@@ -14,7 +14,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { cx } from "class-variance-authority"
 import { AnimatePresence, motion } from "framer-motion"
 import {
   Edit,
@@ -30,7 +29,6 @@ import { createContextWrapper } from "~/helpers/context"
 import { cardBlockTypes } from "~/modules/cards/card-block-types"
 import { CardCollection } from "~/modules/cards/card-collection"
 import { type Card, type CardBlock } from "~/modules/cards/card-schema"
-import { button } from "~/modules/ui/button"
 import { ControlsOverlay } from "~/modules/ui/controls-overlay"
 import {
   Dialog,
@@ -40,7 +38,6 @@ import {
   DialogTitle,
 } from "~/modules/ui/dialog"
 import { Masonry } from "~/modules/ui/masonry"
-import { panel } from "~/modules/ui/panel"
 import { WorldContext } from "~/modules/world/world-context"
 
 const Context = createContextWrapper(function useCardDashboardProvider() {
@@ -204,7 +201,7 @@ function CardPanel({
     : card.blocks.filter((block) => !block.hidden)
 
   return (
-    <article className={cx(panel(), "divide-y divide-white/10")}>
+    <article className="divide-y divide-white/10 panel">
       <header className="flex items-center gap-3 p-3">
         <h3 className="flex-1 text-2xl font-light">{card.title}</h3>
         {card.hidden && <EyeOff aria-label="Hidden" className="opacity-50" />}
@@ -261,7 +258,7 @@ function CardEditorDialog(props: {
         context.setCurrentDialogCardId(open ? props.cardId : undefined)
       }}
     >
-      <DialogButton title="Edit" className={button()}>
+      <DialogButton title="Edit" className="button">
         <Edit aria-hidden />
       </DialogButton>
       <DialogOverlay>
@@ -316,10 +313,10 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
         onChange={(event) => {
           mutations.update(index, { title: event.target.value })
         }}
-        className="focus:text-foreground-8 w-full bg-transparent p-2 text-2xl font-light transition focus:ring-0"
+        className="input border-0 border-y rounded-0 text-2xl font-light ring-inset"
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -421,12 +418,7 @@ function CardBlockControls(props: {
   onToggleHidden: () => void
 }) {
   return (
-    <div
-      className={cx(
-        panel({ shadow: "none" }),
-        "flex flex-col divide-y divide-white/10",
-      )}
-    >
+    <div className="flex flex-col divide-y divide-white/10 panel">
       {props.children}
       <Toolbar>
         {props.dragHandle}
@@ -446,11 +438,7 @@ function CardBlockControls(props: {
 }
 
 function Toolbar(props: { children: ReactNode }) {
-  return (
-    <div className="grid auto-cols-fr grid-flow-col divide-x divide-white/10">
-      {props.children}
-    </div>
-  )
+  return <div className="grid auto-cols-fr grid-flow-col">{props.children}</div>
 }
 
 function ToolbarButton(props: {
@@ -461,10 +449,7 @@ function ToolbarButton(props: {
   return (
     <button
       title={props.label}
-      className={cx(
-        button({ border: "none", background: "none" }),
-        "block !h-10 justify-center",
-      )}
+      className="h-10 justify-center border-none bg-transparent button"
       onClick={props.onClick}
     >
       <props.icon aria-hidden className="!s-4" />
@@ -486,10 +471,8 @@ function DragSortableWithHandle({
       {...sortable.attributes}
       {...sortable.listeners}
       ref={sortable.setActivatorNodeRef}
-      className={cx(
-        "px-1.5 text-center",
-        sortable.isDragging ? "cursor-grabbing" : "cursor-grab",
-      )}
+      data-dragging={sortable.isDragging || undefined}
+      className="cursor-grab px-1.5 text-center data-[dragging]:cursor-grabbing"
     >
       <Grip className="inline leading-4 s-4" aria-label="Drag to rearrange" />
     </button>

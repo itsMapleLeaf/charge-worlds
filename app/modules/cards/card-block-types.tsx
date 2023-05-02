@@ -32,7 +32,7 @@ export const cardBlockTypes: Record<string, CardBlockType> = {
       <TextArea
         aria-label="Content"
         placeholder="Write something interesting!"
-        className="focus:text-foreground-8 block w-full resize-none bg-transparent p-2 transition focus:ring-0"
+        className="textarea resize-none border-0 rounded-0 ring-inset"
         value={String(props.data.text)}
         onChange={(e) => props.onChange({ text: e.target.value })}
       />
@@ -54,7 +54,7 @@ export const cardBlockTypes: Record<string, CardBlockType> = {
           aria-label="Image URL"
           value={String(props.data.src)}
           placeholder="https://example.com/image.png"
-          className="focus:text-foreground-8 min-w-0 w-full flex-1 bg-transparent p-2 transition focus:ring-0"
+          className="input border-0 border-b rounded-0 ring-inset"
           onChange={(e) => props.onChange({ src: e.target.value })}
         />
         <div className="aspect-square">
