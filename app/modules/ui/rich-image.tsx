@@ -14,57 +14,56 @@ import { useAnimationLoop } from "~/helpers/use-animation-loop"
 import { useWindowEvent } from "~/helpers/use-window-event"
 import { raise } from "../../helpers/errors"
 import { extractRef, type MaybeRef } from "../react/maybe-ref"
-import { LoadingSpinner } from "./loading"
-import { SuspenseImage } from "./suspense-image"
-
-function createIsomorphicImageResource(src: string) {
-  if (typeof window === "undefined") {
-    return createSuspenseResource(src)
-  }
-  return createSuspenseResource(loadImage(src).then((img) => img.src))
-}
+import { LoadingPlaceholder, LoadingSpinner } from "./loading"
 
 export function RichImage(props: { src: Nullish<string> }) {
-  const imageResource = React.useMemo(() => {
+  const image = React.useMemo(() => {
     if (!props.src) return
-    return createIsomorphicImageResource(props.src)
+
+    if (typeof window === "undefined") {
+      return createSuspenseResource(props.src)
+    }
+
+    return createSuspenseResource(
+      loadImage(props.src).then((image) => image.src),
+    )
   }, [props.src])
 
-  if (!imageResource) {
-    return <ContentState text="No image provided" icon={lucide.ImageOff} />
+  if (!image) {
+    return <NoImageState text="No image provided" icon={lucide.ImageOff} />
   }
 
   return (
     <Dialog.Root>
-      <Dialog.Trigger
-        className="s-full relative flex items-center justify-center"
-        title="Show large preview"
+      <ErrorBoundary
+        fallback={
+          <NoImageState text="Image failed to load" icon={lucide.ImageOff} />
+        }
+        resetKeys={[props.src]}
       >
-        <ErrorBoundary
-          fallback={
-            <ContentState text="Image failed to load" icon={lucide.ImageOff} />
-          }
-          resetKeys={[props.src]}
-        >
-          <Suspense fallback={<LoadingSpinner />}>
-            <SuspenseImage
-              resource={imageResource}
-              alt=""
+        <Suspense fallback={<LoadingPlaceholder />}>
+          <Dialog.Trigger
+            className="s-full relative flex items-center justify-center"
+            title="Show large preview"
+          >
+            <Thumbnail
+              resource={image}
+              width={350}
               className="s-full absolute inset-0 object-cover"
             />
-            <SuspenseImage
-              resource={imageResource}
-              alt=""
+            <Thumbnail
+              resource={image}
+              width={350}
               className="s-full absolute inset-0 object-contain backdrop-blur-md backdrop-brightness-50"
             />
-          </Suspense>
-        </ErrorBoundary>
-      </Dialog.Trigger>
+          </Dialog.Trigger>
+        </Suspense>
+      </ErrorBoundary>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/75 backdrop-blur data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150! animate-ease!">
           <ErrorBoundary
             fallback={
-              <ContentState
+              <NoImageState
                 text="Image failed to load"
                 icon={lucide.ImageOff}
               />
@@ -72,7 +71,7 @@ export function RichImage(props: { src: Nullish<string> }) {
             resetKeys={[props.src]}
           >
             <Suspense fallback={<LoadingSpinner />}>
-              <LargePreview resource={imageResource} />
+              <LargePreview resource={image} />
             </Suspense>
           </ErrorBoundary>
         </Dialog.Overlay>
@@ -81,7 +80,35 @@ export function RichImage(props: { src: Nullish<string> }) {
   )
 }
 
-function ContentState(props: { text: string; icon: lucide.LucideIcon }) {
+function Thumbnail({
+  resource,
+  width,
+  ...props
+}: Omit<React.ComponentPropsWithoutRef<"canvas">, "resource"> & {
+  width: number
+  resource: SuspenseResource<string>
+}) {
+  const src = resource.read()
+  const canvasRef = React.useRef<HTMLCanvasElement>(null)
+
+  React.useEffect(() => {
+    const image = new Image()
+    image.src = src
+
+    const canvas = canvasRef.current ?? raise("Canvas ref not set")
+    canvas.width = Math.min(image.width, width)
+    canvas.height = image.height * (canvas.width / image.width)
+
+    const ctx = canvas.getContext("2d") ?? raise("Canvas context not found")
+
+    // we know the image is loaded because we're using a SuspenseResource
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
+  }, [src, width])
+
+  return <canvas ref={canvasRef} {...props} />
+}
+
+function NoImageState(props: { text: string; icon: lucide.LucideIcon }) {
   return (
     <div className="s-full flex flex-col items-center justify-center gap-3 p-4">
       <props.icon className="opacity-25 s-24" aria-hidden />
@@ -90,12 +117,12 @@ function ContentState(props: { text: string; icon: lucide.LucideIcon }) {
   )
 }
 
-const movementStiffness = 16
-const closenessThreshold = 0.001
-const wheelScaleStep = 1.2
-const manualScaleStep = 1.5
-
 function LargePreview({ resource }: { resource: SuspenseResource<string> }) {
+  const movementStiffness = 16
+  const closenessThreshold = 0.001
+  const wheelScaleStep = 1.2
+  const manualScaleStep = 1.5
+
   const src = resource.read()
 
   const currentTransform = React.useRef({ x: 0, y: 0, scale: 1 })
