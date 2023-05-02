@@ -1,36 +1,46 @@
 import * as Dialog from "@radix-ui/react-dialog"
-import { Image, Minus, Plus } from "lucide-react"
+import * as lucide from "lucide-react"
 import * as React from "react"
+import { Suspense } from "react"
+import { ErrorBoundary } from "react-error-boundary"
 import { clamp, lerp } from "~/helpers/math"
 import { type Nullish } from "~/helpers/types"
 import { useAnimationLoop } from "~/helpers/use-animation-loop"
 import { useWindowEvent } from "~/helpers/use-window-event"
 import { raise } from "../../helpers/errors"
 import { extractRef, type MaybeRef } from "../react/maybe-ref"
+import { LoadingSpinner } from "./loading"
 
 export function RichImage(props: { src: Nullish<string> }) {
   if (!props.src) {
-    return (
-      <div className="s-full flex flex-col items-center justify-center gap-3 p-4 opacity-50">
-        <Image className="s-32" aria-hidden />
-        <p>No image provided</p>
-      </div>
-    )
+    return <ContentState text="No image provided" icon={lucide.ImageOff} />
   }
 
   return (
     <Dialog.Root>
-      <Dialog.Trigger className="s-full relative" title="Show large preview">
-        <img
-          src={props.src}
-          alt=""
-          className="s-full absolute inset-0 object-cover"
-        />
-        <img
-          src={props.src}
-          alt=""
-          className="s-full absolute inset-0 object-contain backdrop-blur-md backdrop-brightness-50"
-        />
+      <Dialog.Trigger
+        className="s-full relative flex items-center justify-center"
+        title="Show large preview"
+      >
+        <ErrorBoundary
+          fallback={
+            <ContentState text="Image failed to load" icon={lucide.ImageOff} />
+          }
+          resetKeys={[props.src]}
+        >
+          <Suspense fallback={<LoadingSpinner />}>
+            <SuspenseImage
+              src={props.src}
+              alt=""
+              className="s-full absolute inset-0 object-cover"
+            />
+            <SuspenseImage
+              src={props.src}
+              alt=""
+              className="s-full absolute inset-0 object-contain backdrop-blur-md backdrop-brightness-50"
+            />
+          </Suspense>
+        </ErrorBoundary>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/75 backdrop-blur data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150! animate-ease!">
@@ -39,6 +49,62 @@ export function RichImage(props: { src: Nullish<string> }) {
       </Dialog.Portal>
     </Dialog.Root>
   )
+}
+
+function ContentState(props: { text: string; icon: lucide.LucideIcon }) {
+  return (
+    <div className="s-full flex flex-col items-center justify-center gap-3 p-4">
+      <props.icon className="opacity-25 s-24" aria-hidden />
+      <p className="opacity-75">{props.text}</p>
+    </div>
+  )
+}
+
+function loadImage(src: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image()
+    image.src = src
+    if (image.complete) {
+      resolve(image)
+    } else {
+      image.addEventListener("load", () => resolve(image))
+      image.addEventListener("error", reject)
+    }
+  })
+}
+
+function createImageResource(src: string) {
+  type State =
+    | { type: "loading" }
+    | { type: "loaded"; image: HTMLImageElement }
+    | { type: "error" }
+
+  let state: State = { type: "loading" }
+
+  const promise = loadImage(src).then(
+    (image) => (state = { type: "loaded", image }),
+    () => (state = { type: "error" }),
+  )
+
+  return {
+    read: () => {
+      if (state.type === "loading") throw promise
+      if (state.type === "error") throw new Error(`Image ${src} failed to load`)
+      return state.image
+    },
+  }
+}
+
+type ImageResource = ReturnType<typeof createImageResource>
+
+const resources: Record<string, ImageResource> = {}
+
+function SuspenseImage(
+  props: React.ComponentPropsWithoutRef<"img"> & { src: string },
+) {
+  const resource = (resources[props.src] ??= createImageResource(props.src))
+  const image = resource.read()
+  return <img {...props} src={image.src} alt={props.alt} />
 }
 
 const movementStiffness = 16
@@ -213,7 +279,7 @@ function LargePreview({ src }: { src: string }) {
             zoomBy(1 / manualScaleStep, "viewport")
           }}
         >
-          <Minus />
+          <lucide.Minus />
         </button>
         <button
           className="tabular-nums button"
@@ -230,7 +296,7 @@ function LargePreview({ src }: { src: string }) {
             zoomBy(manualScaleStep, "viewport")
           }}
         >
-          <Plus />
+          <lucide.Plus />
         </button>
       </div>
     </Dialog.Content>
