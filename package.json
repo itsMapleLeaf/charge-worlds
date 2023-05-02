@@ -91,5 +91,10 @@
     "typescript": "5.0.4",
     "unocss": "^0.51.8",
     "wait-on": "^7.0.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@unocss/eslint-plugin@0.51.8": "patches/@unocss__eslint-plugin@0.51.8.patch"
+    }
   }
 }

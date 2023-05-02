@@ -1,5 +1,10 @@
 lockfileVersion: '6.0'
 
+patchedDependencies:
+  '@unocss/eslint-plugin@0.51.8':
+    hash: njhicrny3hhyeqicm5zynwbfou
+    path: patches/@unocss__eslint-plugin@0.51.8.patch
+
 dependencies:
   '@dnd-kit/core':
     specifier: ^6.0.8
@@ -4716,14 +4721,14 @@ packages:
     resolution: {integrity: sha512-IvoRqVvXO9V+qkiYpidrvGc1rZoDz05bQWuW3qPAN+v5RmUXPH6O01car/rcHTpKP4xdSA6ZQAkBjc8j9/MzZg==}
     engines: {node: '>=14'}
     dependencies:
-      '@unocss/eslint-plugin': 0.51.8(eslint@8.39.0)(typescript@5.0.4)
+      '@unocss/eslint-plugin': 0.51.8(patch_hash=njhicrny3hhyeqicm5zynwbfou)(eslint@8.39.0)(typescript@5.0.4)
     transitivePeerDependencies:
       - eslint
       - supports-color
       - typescript
     dev: true
 
-  /@unocss/eslint-plugin@0.51.8(eslint@8.39.0)(typescript@5.0.4):
+  /@unocss/eslint-plugin@0.51.8(patch_hash=njhicrny3hhyeqicm5zynwbfou)(eslint@8.39.0)(typescript@5.0.4):
     resolution: {integrity: sha512-MQuwS/u2zdft2uVKhH+P0A8FEscXnO2y7BP/Entm8ytwZof4ng23M+FuNwBs8EDQJH+dueyVOYDDELQ94lZPvg==}
     engines: {node: '>=14'}
     dependencies:
@@ -4737,6 +4742,7 @@ packages:
       - supports-color
       - typescript
     dev: true
+    patched: true
 
   /@unocss/extractor-arbitrary-variants@0.51.8:
     resolution: {integrity: sha512-cCsdRLqmt3adcaRtoIP2pC8mYgH3ed8DEES3E7VOWghqLjwLULUMyBS+vy7n9CvnV75kuTKb1bZ+k9eu/rfh2w==}
