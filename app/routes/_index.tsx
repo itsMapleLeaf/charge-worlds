@@ -134,7 +134,7 @@ function WorldList({
         <Link
           key={world.id}
           to={route("/worlds/:worldId", { worldId: world.id })}
-          className="flex flex-col panel p-4 interactive-panel"
+          className="flex flex-col p-4 interactive-panel"
         >
           <h2 className="mb-2 text-2xl font-light">{world.name}</h2>
           <p className="mt-auto text-sm opacity-75">
