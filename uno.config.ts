@@ -44,12 +44,12 @@ export default defineConfig({
   shortcuts: {
     ":uno:": "", // no-op so uno doesn't complain
     "panel":
-      ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md",
+      ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md [&_&]:(shadow-none backdrop-blur-none)",
     "interactive-panel":
-      ":uno: panel transition active:(translate-y-0.5 shadow-none duration-0) hover:(border-indigo-300/40 text-indigo-300)",
+      ":uno: transition active:(translate-y-0.5 shadow-none duration-0) panel hover:(border-indigo-300/40 text-indigo-300)",
     "button":
       ":uno: h-12 inline-flex items-center gap-2 px-3 leading-none interactive-panel [&>svg]:s-5",
     "anchor": ":uno: transition hover:text-indigo-300",
-    "anchor-underline": ":uno: anchor underline hover:no-underline",
+    "anchor-underline": ":uno: underline anchor hover:no-underline",
   },
 })
