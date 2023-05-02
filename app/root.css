@@ -12,17 +12,6 @@
   @apply ring-2 ring-accent;
 }
 
-@keyframes zoom-fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 ::-webkit-scrollbar {
   @apply w-1.5;
 }
