@@ -1,5 +1,5 @@
 import { useParams } from "@remix-run/react"
-import { cx } from "class-variance-authority"
+import { rgba } from "polished"
 import { assert } from "~/helpers/assert"
 import { CharacterActionLevelsEditor } from "~/modules/characters/character-action-levels-editor"
 import { characterActionLibrary } from "~/modules/characters/character-actions"
@@ -51,11 +51,11 @@ export default function CharacterPage() {
 
   return (
     <div
-      className={cx(
-        "grid gap-4 rounded-md border p-4 shadow-md backdrop-blur-md backdrop-brightness-50",
-        colorClasses.background,
-        colorClasses.border,
-      )}
+      className="grid gap-4 p-4 panel"
+      style={{
+        backgroundColor: rgba(colorClasses.background, 0.75),
+        borderColor: rgba(colorClasses.border, 0.25),
+      }}
     >
       <div className="flex flex-wrap gap-4">
         {(isOwner || isPlayer) && (

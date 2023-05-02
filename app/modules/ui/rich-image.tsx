@@ -3,16 +3,34 @@ import * as lucide from "lucide-react"
 import * as React from "react"
 import { Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
+import { loadImage } from "~/helpers/load-image"
 import { clamp, lerp } from "~/helpers/math"
+import {
+  createSuspenseResource,
+  type SuspenseResource,
+} from "~/helpers/suspense-resource"
 import { type Nullish } from "~/helpers/types"
 import { useAnimationLoop } from "~/helpers/use-animation-loop"
 import { useWindowEvent } from "~/helpers/use-window-event"
 import { raise } from "../../helpers/errors"
 import { extractRef, type MaybeRef } from "../react/maybe-ref"
 import { LoadingSpinner } from "./loading"
+import { SuspenseImage } from "./suspense-image"
+
+function createIsomorphicImageResource(src: string) {
+  if (typeof window === "undefined") {
+    return createSuspenseResource(src)
+  }
+  return createSuspenseResource(loadImage(src).then((img) => img.src))
+}
 
 export function RichImage(props: { src: Nullish<string> }) {
-  if (!props.src) {
+  const imageResource = React.useMemo(() => {
+    if (!props.src) return
+    return createIsomorphicImageResource(props.src)
+  }, [props.src])
+
+  if (!imageResource) {
     return <ContentState text="No image provided" icon={lucide.ImageOff} />
   }
 
@@ -30,12 +48,12 @@ export function RichImage(props: { src: Nullish<string> }) {
         >
           <Suspense fallback={<LoadingSpinner />}>
             <SuspenseImage
-              src={props.src}
+              resource={imageResource}
               alt=""
               className="s-full absolute inset-0 object-cover"
             />
             <SuspenseImage
-              src={props.src}
+              resource={imageResource}
               alt=""
               className="s-full absolute inset-0 object-contain backdrop-blur-md backdrop-brightness-50"
             />
@@ -44,7 +62,19 @@ export function RichImage(props: { src: Nullish<string> }) {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/75 backdrop-blur data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150! animate-ease!">
-          <LargePreview src={props.src} />
+          <ErrorBoundary
+            fallback={
+              <ContentState
+                text="Image failed to load"
+                icon={lucide.ImageOff}
+              />
+            }
+            resetKeys={[props.src]}
+          >
+            <Suspense fallback={<LoadingSpinner />}>
+              <LargePreview resource={imageResource} />
+            </Suspense>
+          </ErrorBoundary>
         </Dialog.Overlay>
       </Dialog.Portal>
     </Dialog.Root>
@@ -60,59 +90,14 @@ function ContentState(props: { text: string; icon: lucide.LucideIcon }) {
   )
 }
 
-function loadImage(src: string) {
-  return new Promise<HTMLImageElement>((resolve, reject) => {
-    const image = new Image()
-    image.src = src
-    if (image.complete) {
-      resolve(image)
-    } else {
-      image.addEventListener("load", () => resolve(image))
-      image.addEventListener("error", reject)
-    }
-  })
-}
-
-function createImageResource(src: string) {
-  type State =
-    | { type: "loading" }
-    | { type: "loaded"; image: HTMLImageElement }
-    | { type: "error" }
-
-  let state: State = { type: "loading" }
-
-  const promise = loadImage(src).then(
-    (image) => (state = { type: "loaded", image }),
-    () => (state = { type: "error" }),
-  )
-
-  return {
-    read: () => {
-      if (state.type === "loading") throw promise
-      if (state.type === "error") throw new Error(`Image ${src} failed to load`)
-      return state.image
-    },
-  }
-}
-
-type ImageResource = ReturnType<typeof createImageResource>
-
-const resources: Record<string, ImageResource> = {}
-
-function SuspenseImage(
-  props: React.ComponentPropsWithoutRef<"img"> & { src: string },
-) {
-  const resource = (resources[props.src] ??= createImageResource(props.src))
-  const image = resource.read()
-  return <img {...props} src={image.src} alt={props.alt} />
-}
-
 const movementStiffness = 16
 const closenessThreshold = 0.001
 const wheelScaleStep = 1.2
 const manualScaleStep = 1.5
 
-function LargePreview({ src }: { src: string }) {
+function LargePreview({ resource }: { resource: SuspenseResource<string> }) {
+  const src = resource.read()
+
   const currentTransform = React.useRef({ x: 0, y: 0, scale: 1 })
   const targetTransform = React.useRef({ x: 0, y: 0, scale: 1 })
 
