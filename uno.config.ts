@@ -44,9 +44,9 @@ export default defineConfig({
   shortcuts: {
     ":uno:": "", // no-op so uno doesn't complain
     "panel":
-      ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md [&_&]:(shadow-none backdrop-blur-none)",
+      ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md [.panel_&]:(bg-transparent shadow-none backdrop-blur-none)",
     "interactive-panel":
-      ":uno: transition active:(translate-y-0.5 shadow-none duration-0) panel hover:(border-indigo-300/40 text-indigo-300)",
+      ":uno: transition active:(translate-y-0.5 shadow-none duration-0) panel [&.active,&:hover]:(border-indigo-300/40 text-indigo-300)",
     "button":
       ":uno: h-12 inline-flex items-center gap-2 px-3 leading-none interactive-panel [&>svg]:s-5",
     "anchor": ":uno: transition hover:text-indigo-300",

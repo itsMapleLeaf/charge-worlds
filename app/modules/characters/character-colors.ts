@@ -1,4 +1,4 @@
-import { cx } from "class-variance-authority"
+import * as colors from "@radix-ui/colors"
 
 export type CharacterColorClasses = {
   background: string
@@ -6,50 +6,50 @@ export type CharacterColorClasses = {
 }
 
 export const defaultCharacterColor = {
-  background: cx("bg-black/75"),
-  border: cx("border-white/25"),
+  background: "black",
+  border: "white",
 }
 
 export const characterColors: Record<string, CharacterColorClasses> = {
   neutral: defaultCharacterColor,
 
   red: {
-    background: cx("bg-radix-redDark-red1/75"),
-    border: cx("border-radix-redDark-red10/25"),
+    background: colors.redDark.red1,
+    border: colors.redDark.red10,
   },
 
   orange: {
-    background: cx("bg-radix-orangeDark-orange1/75"),
-    border: cx("border-radix-orangeDark-orange10/25"),
+    background: colors.orangeDark.orange1,
+    border: colors.orangeDark.orange10,
   },
 
   dandelion: {
-    background: cx("bg-radix-yellowDark-yellow1/75"),
-    border: cx("border-radix-yellowDark-yellow10/25"),
+    background: colors.yellowDark.yellow1,
+    border: colors.yellowDark.yellow10,
   },
 
   lime: {
-    background: cx("bg-radix-grassDark-grass1/75"),
-    border: cx("border-radix-grassDark-grass10/25"),
+    background: colors.grassDark.grass1,
+    border: colors.grassDark.grass10,
   },
 
   ocean: {
-    background: cx("bg-radix-skyDark-sky1/75"),
-    border: cx("border-radix-skyDark-sky10/25"),
+    background: colors.skyDark.sky1,
+    border: colors.skyDark.sky10,
   },
 
   blue: {
-    background: cx("bg-radix-blueDark-blue1/75"),
-    border: cx("border-radix-blueDark-blue10/25"),
+    background: colors.blueDark.blue1,
+    border: colors.blueDark.blue10,
   },
 
   violet: {
-    background: cx("bg-radix-violetDark-violet1/75"),
-    border: cx("border-radix-violetDark-violet10/25"),
+    background: colors.violetDark.violet1,
+    border: colors.violetDark.violet10,
   },
 
   pink: {
-    background: cx("bg-radix-pinkDark-pink1/75"),
-    border: cx("border-radix-pinkDark-pink10/25"),
+    background: colors.pinkDark.pink1,
+    border: colors.pinkDark.pink10,
   },
 }

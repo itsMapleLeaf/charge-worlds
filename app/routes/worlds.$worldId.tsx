@@ -2,7 +2,6 @@ import { ClientSideSuspense } from "@liveblocks/react"
 import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react"
 import type { LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
-import { cx } from "class-variance-authority"
 import {
   Dices,
   EyeOff,
@@ -15,6 +14,7 @@ import {
   UserPlus,
   type LucideIcon,
 } from "lucide-react"
+import { rgba } from "polished"
 import { route } from "routes-gen"
 import { AppHeader } from "~/modules/app/app-header"
 import { db } from "~/modules/app/db.server"
@@ -26,7 +26,7 @@ import type { Character } from "~/modules/characters/collections"
 import { CharacterCollection } from "~/modules/characters/collections"
 import { DicePanel } from "~/modules/dice/dice-panel"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
-import { button, circleButton } from "~/modules/ui/button"
+import { circleButton } from "~/modules/ui/button"
 import {
   Dialog,
   DialogButton,
@@ -187,14 +187,7 @@ function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
     <NavLink
       to={props.to}
       end
-      className={({ isActive }) =>
-        button({
-          border: "none",
-          shadow: "none",
-          background: "none",
-          active: isActive,
-        })
-      }
+      className="rounded-0 border-none button"
       prefetch="intent"
     >
       <props.icon aria-hidden /> {props.label}
@@ -219,6 +212,7 @@ function CharacterList() {
       ))}
       {membership?.role === "OWNER" && (
         <button
+          className="h-10 border-0 button"
           onClick={() => {
             const result = mutations.create({ name: "New Character" })
             if (!result) return
@@ -230,12 +224,6 @@ function CharacterList() {
               }),
             )
           }}
-          className={button({
-            border: "none",
-            shadow: "none",
-            background: "none",
-            size: 10,
-          })}
         >
           <UserPlus aria-hidden /> Create Character
         </button>
@@ -261,27 +249,15 @@ function CharacterLink({
         worldId: world.id,
         characterId: character._id,
       })}
-      className={({ isActive }) =>
-        button({
-          border: "none",
-          shadow: "none",
-          background: "none",
-          size: 10,
-          active: isActive,
-        })
-      }
+      className="h-10 rounded-0 border-none button"
       key={character._id}
     >
       <div
+        className="relative border rounded-full brightness-150 s-5 -top-px"
         style={{
           backgroundColor: colors.background,
-          borderColor: colors.border,
+          borderColor: rgba(colors.border, 0.3),
         }}
-        className={cx(
-          "relative -top-px rounded-full border brightness-150 s-5",
-          colors.background,
-          colors.border,
-        )}
       />
       <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
         {character.name}
