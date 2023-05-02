@@ -97,7 +97,7 @@ function AddCardButton() {
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className="radix-transition w-64 origin-top panel"
+          className="w-64 origin-top radix-transition panel"
           sideOffset={8}
           onKeyDown={(event) => {
             const focusTargets = [
@@ -126,7 +126,7 @@ function AddCardButton() {
           }}
         >
           <input
-            className="input border-0 border-b rounded-0 rounded-t-md"
+            className="border-0 border-b rounded-0 rounded-t-md input"
             placeholder="Search..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}

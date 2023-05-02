@@ -85,7 +85,7 @@ export default defineConfig({
     "input":
       ":uno: block h-12 w-full px-3 leading-none ring-2 ring-transparent transition panel",
 
-    "textarea": ":uno: input py-3 leading-normal",
+    "textarea": ":uno: py-3 leading-normal input",
 
     "radix-transition":
       "data-[state=closed]:(animate-zoom-fade-out animate-duration-150 animate-ease) data-[state=open]:(animate-zoom-fade-in animate-duration-150 animate-ease)",

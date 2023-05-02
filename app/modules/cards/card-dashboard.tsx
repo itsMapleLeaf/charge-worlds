@@ -313,7 +313,7 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
         onChange={(event) => {
           mutations.update(index, { title: event.target.value })
         }}
-        className="input border-0 border-y rounded-0 text-2xl font-light ring-inset"
+        className="border-0 border-y rounded-0 text-2xl font-light ring-inset input"
       />
 
       <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">

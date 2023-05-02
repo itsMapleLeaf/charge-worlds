@@ -40,7 +40,7 @@ export function UserMenuButton({ user }: UserMenuButtonProps) {
             reloadDocument
             className="contents"
           >
-            <Button className="flex items-center gap-2 p-3 leading-none transition data-[hovered]:text-accent-300 data-[pressed]:text-accent-100 data-[pressed]:duration-0">
+            <Button className="border-0 rounded-0 button">
               <LogOut /> Sign out
             </Button>
           </Form>
