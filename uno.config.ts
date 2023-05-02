@@ -74,7 +74,7 @@ export default defineConfig({
       ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md [.panel_&]:(bg-transparent shadow-none backdrop-blur-none)",
 
     "interactive-panel":
-      ":uno: transition active:(translate-y-0.5 shadow-none duration-0) panel [&.active,&:hover]:(border-accent-300/40 text-accent-300)",
+      ":uno: transition active:(scale-95 shadow-none duration-0) panel [&.active,&:hover]:(border-accent-300/40 text-accent-300)",
 
     "button":
       ":uno: h-12 inline-flex items-center gap-2 px-3 leading-none interactive-panel [&>svg]:s-5",
