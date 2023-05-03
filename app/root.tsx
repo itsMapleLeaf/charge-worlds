@@ -111,7 +111,7 @@ function Document({
         <Links />
       </head>
       <body
-        className="fancy:fixed bg-[length:100%_auto] bg-top bg-no-repeat"
+        className="bg-[length:100%_auto] fancy:bg-fixed bg-top bg-no-repeat"
         style={{ backgroundImage: `url(${background})` }}
       >
         <div className="min-h-[100vh] flex flex-col bg-black/50">
