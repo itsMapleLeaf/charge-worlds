@@ -9,7 +9,6 @@ import { AppHeader } from "~/modules/app/app-header"
 import { getAppMeta } from "~/modules/app/meta"
 import { getSessionUser } from "~/modules/auth/session.server"
 import { RelativeTimestamp } from "~/modules/dom/relative-timestamp"
-import { linkClass } from "~/modules/ui/link"
 import { LoadingSpinner } from "~/modules/ui/loading"
 import { db } from "../modules/app/db.server"
 
@@ -109,7 +108,7 @@ function WorldListCta() {
     <div className="h-full flex flex-col items-center justify-center">
       <p className="text-gray-500">
         Please{" "}
-        <a href="/auth/discord/login" className={linkClass}>
+        <a href="/auth/discord/login" className="link">
           sign in with Discord
         </a>{" "}
         to continue

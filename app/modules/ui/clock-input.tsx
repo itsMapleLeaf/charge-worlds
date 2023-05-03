@@ -1,9 +1,6 @@
-import clsx from "clsx"
-import { X } from "lucide-react"
 import { useEffect, useRef } from "react"
 import { raise } from "../../helpers/errors"
 import { Counter } from "./counter"
-import { activePressClass } from "./styles"
 
 const positiveMod = (n: number, m: number) => ((n % m) + m) % m
 
@@ -14,7 +11,6 @@ export function ClockInput({
   onNameChange,
   onProgressChange,
   onMaxProgressChange,
-  onRemove,
 }: {
   name: string
   progress: number
@@ -22,7 +18,6 @@ export function ClockInput({
   onNameChange?: (name: string) => void
   onProgressChange: (progress: number) => void
   onMaxProgressChange?: (maxProgress: number) => void
-  onRemove?: () => void
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pointerDownRef = useRef(false)
@@ -128,7 +123,7 @@ export function ClockInput({
     <div className="group relative flex flex-col items-center justify-center gap-3 text-center">
       {onNameChange ? (
         <input
-          className="w-full rounded-md bg-transparent p-2 text-center text-xl leading-tight tracking-wide transition -my-2 focus:bg-black/25 hover:bg-black/25 focus:outline-none"
+          className="h-10 border-none text-center text-xl font-light input hover:ring-accent"
           placeholder="Clock name"
           value={name}
           onChange={(event) => onNameChange(event.target.value)}
@@ -167,20 +162,6 @@ export function ClockInput({
 
       {onMaxProgressChange && (
         <Counter value={maxProgress} min={2} onChange={onMaxProgressChange} />
-      )}
-
-      {onRemove && (
-        <button
-          className={clsx(
-            "absolute right-0 top-0 rounded-md p-2 opacity-0 ring-blue-500 transition focus:opacity-75 focus:outline-none focus:ring-2 group-hover:opacity-75",
-            activePressClass,
-          )}
-          type="button"
-          title="Remove clock"
-          onClick={onRemove}
-        >
-          <X />
-        </button>
       )}
     </div>
   )

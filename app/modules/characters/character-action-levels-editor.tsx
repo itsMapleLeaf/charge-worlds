@@ -1,10 +1,8 @@
-import { cx } from "class-variance-authority"
 import { ChevronsRight, Dices } from "lucide-react"
 import { entriesTyped } from "../../helpers/entries-typed"
 import { DotCounter } from "../ui/counter"
-import { panel } from "../ui/panel"
 import { CharacterActionRollButton } from "./character-action-roll-button"
-import { type ActionDetails, characterActionLibrary } from "./character-actions"
+import { characterActionLibrary, type ActionDetails } from "./character-actions"
 import type { Character } from "./collections"
 
 export function CharacterActionLevelsEditor({
@@ -20,10 +18,7 @@ export function CharacterActionLevelsEditor({
     <div className="@container">
       <div className="grid gap-2 @lg:grid-cols-3">
         {entriesTyped(characterActionLibrary).map(([category, actions]) => (
-          <section
-            key={category}
-            className={cx(panel({ shadow: "none" }), "flex flex-col p-4")}
-          >
+          <section key={category} className="flex flex-col p-4 panel">
             <h4 className="mb-4 text-center text-xl leading-tight tracking-wide">
               {category}
             </h4>

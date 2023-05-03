@@ -1,4 +1,5 @@
 import * as colors from "@radix-ui/colors"
+import { rgba } from "polished"
 
 export type CharacterColorClasses = {
   background: string
@@ -6,50 +7,50 @@ export type CharacterColorClasses = {
 }
 
 export const defaultCharacterColor = {
-  background: "black",
-  border: "white",
+  background: rgba("black", 0.75),
+  border: rgba("white", 0.1),
 }
 
 export const characterColors: Record<string, CharacterColorClasses> = {
   neutral: defaultCharacterColor,
 
   red: {
-    background: colors.redDark.red1,
-    border: colors.redDark.red10,
+    background: rgba(colors.redDark.red1, 0.75),
+    border: rgba(colors.redDark.red10, 0.25),
   },
 
   orange: {
-    background: colors.orangeDark.orange1,
-    border: colors.orangeDark.orange10,
+    background: rgba(colors.orangeDark.orange1, 0.75),
+    border: rgba(colors.orangeDark.orange10, 0.25),
   },
 
   dandelion: {
-    background: colors.yellowDark.yellow1,
-    border: colors.yellowDark.yellow10,
+    background: rgba(colors.yellowDark.yellow1, 0.75),
+    border: rgba(colors.yellowDark.yellow10, 0.25),
   },
 
   lime: {
-    background: colors.grassDark.grass1,
-    border: colors.grassDark.grass10,
+    background: rgba(colors.grassDark.grass1, 0.75),
+    border: rgba(colors.grassDark.grass10, 0.25),
   },
 
   ocean: {
-    background: colors.skyDark.sky1,
-    border: colors.skyDark.sky10,
+    background: rgba(colors.skyDark.sky1, 0.75),
+    border: rgba(colors.skyDark.sky10, 0.25),
   },
 
   blue: {
-    background: colors.blueDark.blue1,
-    border: colors.blueDark.blue10,
+    background: rgba(colors.blueDark.blue1, 0.75),
+    border: rgba(colors.blueDark.blue10, 0.25),
   },
 
   violet: {
-    background: colors.violetDark.violet1,
-    border: colors.violetDark.violet10,
+    background: rgba(colors.violetDark.violet1, 0.75),
+    border: rgba(colors.violetDark.violet10, 0.25),
   },
 
   pink: {
-    background: colors.pinkDark.pink1,
-    border: colors.pinkDark.pink10,
+    background: rgba(colors.pinkDark.pink1, 0.75),
+    border: rgba(colors.pinkDark.pink10, 0.25),
   },
 }

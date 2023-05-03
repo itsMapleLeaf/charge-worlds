@@ -43,18 +43,18 @@ export function RichImage(props: { src: Nullish<string> }) {
       >
         <Suspense fallback={<LoadingPlaceholder />}>
           <Dialog.Trigger
-            className="relative s-full flex items-center justify-center"
+            className="relative s-full flex items-center justify-center overflow-clip"
             title="Show large preview"
           >
             <Thumbnail
               resource={image}
               width={350}
-              className="absolute inset-0 s-full object-cover"
+              className="absolute inset-0 s-full scale-110 object-cover blur-md brightness-50"
             />
             <Thumbnail
               resource={image}
               width={350}
-              className="absolute inset-0 s-full object-contain backdrop-blur-md backdrop-brightness-50"
+              className="absolute inset-0 s-full object-contain"
             />
           </Dialog.Trigger>
         </Suspense>
@@ -267,7 +267,7 @@ function LargePreview({ resource }: { resource: SuspenseResource<string> }) {
   })
 
   return (
-    <Dialog.Content className="s-full flex flex-col gap-4 p-4 radix-transition">
+    <Dialog.Content className="s-full flex flex-col gap-4 p-4 radix-zoom-fade-transition">
       <div
         className="min-h-0 flex-1 cursor-grab active:cursor-grabbing"
         ref={containerRef}

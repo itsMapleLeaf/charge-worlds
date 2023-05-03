@@ -1,7 +1,6 @@
 import * as RadixDialog from "@radix-ui/react-dialog"
 import clsx from "clsx"
 import { SidebarClose } from "lucide-react"
-import { circleButton } from "~/modules/ui/button"
 
 export type DialogProps = {
   children: React.ReactNode
@@ -29,7 +28,7 @@ export function DialogOverlay(props: { children: React.ReactNode }) {
 
 export function DialogModalPanel(props: { children: React.ReactNode }) {
   return (
-    <RadixDialog.Content className="m-auto max-h-full max-w-lg w-full flex flex-col overflow-y-auto radix-transition divide-y divide-white/10 panel">
+    <RadixDialog.Content className="m-auto max-h-full max-w-lg w-full flex flex-col overflow-y-auto radix-zoom-fade-transition divide-y divide-white/10 panel">
       {props.children}
     </RadixDialog.Content>
   )
@@ -54,7 +53,7 @@ export function DialogDrawerPanel(props: {
         data-side={props.side}
         className="sticky bottom-0 p-4 data-[side=right]:self-end"
       >
-        <DialogClose className={circleButton} title="Dismiss">
+        <DialogClose className="rounded-full button" title="Dismiss">
           <SidebarClose
             data-side={props.side}
             className="data-[side=right]:-scale-x-100"

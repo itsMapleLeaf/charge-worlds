@@ -2,7 +2,6 @@ import { useActionData, useLoaderData } from "@remix-run/react"
 import { withZod } from "@remix-validated-form/with-zod"
 import type { ActionArgs, LoaderArgs } from "@vercel/remix"
 import { json } from "@vercel/remix"
-import { cx } from "class-variance-authority"
 import { CheckCircle } from "lucide-react"
 import { ValidatedForm, validationError } from "remix-validated-form"
 import { z } from "zod"
@@ -12,9 +11,6 @@ import { requireWorldOwner } from "~/modules/auth/membership.server"
 import { requireSessionUser } from "~/modules/auth/session.server"
 import { FormButton } from "~/modules/forms/form-button"
 import { FormInput } from "~/modules/forms/form-input"
-import { button } from "~/modules/ui/button"
-import { panel } from "~/modules/ui/panel"
-import { errorTextClass } from "~/modules/ui/styles"
 import { getWorld } from "~/modules/world/world-db.server"
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -69,10 +65,10 @@ export default function SettingsPage() {
   const actionData = useActionData<typeof action>()
 
   return (
-    <div className={cx(panel(), "grid gap-4 p-4")}>
+    <div className="grid gap-4 p-4 panel">
       <h1 className="text-3xl font-light">World Details</h1>
       {actionData && "error" in actionData && (
-        <p className={errorTextClass}>{actionData.error}</p>
+        <p className="text-red-4">{actionData.error}</p>
       )}
       <ValidatedForm method="POST" validator={validator} className="contents">
         <FormInput
@@ -82,7 +78,7 @@ export default function SettingsPage() {
           defaultValue={data.world.name}
           placeholder="A Brand New World"
         />
-        <FormButton className={cx(button(), "justify-self-start")}>
+        <FormButton className="justify-self-start button">
           <CheckCircle size={20} /> Save
         </FormButton>
       </ValidatedForm>

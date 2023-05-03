@@ -14,7 +14,6 @@ import {
   UserPlus,
   type LucideIcon,
 } from "lucide-react"
-import { rgba } from "polished"
 import { route } from "routes-gen"
 import { AppHeader } from "~/modules/app/app-header"
 import { db } from "~/modules/app/db.server"
@@ -26,7 +25,6 @@ import type { Character } from "~/modules/characters/collections"
 import { CharacterCollection } from "~/modules/characters/collections"
 import { DicePanel } from "~/modules/dice/dice-panel"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
-import { circleButton } from "~/modules/ui/button"
 import {
   Dialog,
   DialogButton,
@@ -122,7 +120,7 @@ export default function WorldPage() {
 function MenuDrawerButton() {
   return (
     <Dialog>
-      <DialogButton className={circleButton} title="Open drawer">
+      <DialogButton className="rounded-full button" title="Open drawer">
         <SidebarOpen />
       </DialogButton>
       <DialogOverlay>
@@ -187,7 +185,7 @@ function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
     <NavLink
       to={props.to}
       end
-      className="rounded-0 border-none button"
+      className="origin-left rounded-0 border-none bg-transparent button"
       prefetch="intent"
     >
       <props.icon aria-hidden /> {props.label}
@@ -212,7 +210,7 @@ function CharacterList() {
       ))}
       {membership?.role === "OWNER" && (
         <button
-          className="h-10 border-0 button"
+          className="h-10 origin-left border-0 rounded-0 bg-transparent button"
           onClick={() => {
             const result = mutations.create({ name: "New Character" })
             if (!result) return
@@ -249,14 +247,14 @@ function CharacterLink({
         worldId: world.id,
         characterId: character._id,
       })}
-      className="h-10 rounded-0 border-none button"
+      className="h-10 origin-left rounded-0 border-none bg-transparent button"
       key={character._id}
     >
       <div
         className="relative border rounded-full brightness-150 s-5 -top-px"
         style={{
           backgroundColor: colors.background,
-          borderColor: rgba(colors.border, 0.3),
+          borderColor: colors.border,
         }}
       />
       <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -272,7 +270,7 @@ function CharacterLink({
 function DiceDrawerButton() {
   return (
     <Dialog>
-      <DialogButton className={circleButton} title="Show dice rolls">
+      <DialogButton className="rounded-full button" title="Show dice rolls">
         <Dices />
       </DialogButton>
       <DialogOverlay>

@@ -1,5 +1,4 @@
 import { Eye, EyeOff } from "lucide-react"
-import { button } from "../ui/button"
 
 export function CharacterHideButton({
   hidden,
@@ -9,7 +8,7 @@ export function CharacterHideButton({
   onHiddenChange: (hidden: boolean) => void
 }) {
   return (
-    <button className={button()} onClick={() => onHiddenChange(!hidden)}>
+    <button className="button" onClick={() => onHiddenChange(!hidden)}>
       {hidden ? <Eye /> : <EyeOff />}
       {hidden ? "Unhide" : "Hide"}
     </button>

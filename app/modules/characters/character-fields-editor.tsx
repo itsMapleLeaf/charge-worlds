@@ -1,7 +1,6 @@
 import type { ReactNode } from "react"
 import { useId } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
-import { input, textArea } from "../ui/input"
 import type { CharacterField } from "./collections"
 
 export type CharacterFieldsEditorProps = {
@@ -37,7 +36,7 @@ export function CharacterFieldsEditor(props: CharacterFieldsEditorProps) {
                   onChange={(event) =>
                     props.onChange(field.id, event.target.value)
                   }
-                  className={field.isLong ? textArea() : input()}
+                  className={field.isLong ? "textarea" : "input"}
                   readOnly={props.readOnly}
                 />
               </div>

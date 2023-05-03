@@ -22,7 +22,6 @@ import { getAppMeta } from "./modules/app/meta"
 import { getSessionUser } from "./modules/auth/session.server"
 import { ExternalLink } from "./modules/dom/external-link"
 import { CatchBoundaryMessage } from "./modules/ui/catch-boundary-message"
-import { maxWidthContainerClass } from "./modules/ui/styles"
 import { ToastProvider } from "./modules/ui/toast"
 import styles from "./root.css"
 
@@ -61,10 +60,8 @@ export function ErrorBoundary() {
   if (isRouteErrorResponse(error)) {
     return (
       <Document>
-        <div className={maxWidthContainerClass}>
-          <div className="py-8">
-            <CatchBoundaryMessage response={error} />
-          </div>
+        <div className="py-8 container">
+          <CatchBoundaryMessage response={error} />
         </div>
       </Document>
     )
@@ -75,7 +72,7 @@ export function ErrorBoundary() {
 
   return (
     <Document>
-      <div className={maxWidthContainerClass}>
+      <div className="container">
         <div className="grid gap-4 py-4">
           <h1 className="text-4xl font-light">Oops! Something went wrong.</h1>
           <pre className="overflow-x-auto rounded-md bg-black/50 p-4">

@@ -4,7 +4,6 @@ import type { ReactNode } from "react"
 import { Fragment } from "react"
 import { route } from "routes-gen"
 import { UserMenuButton } from "~/modules/auth/user-menu-button"
-import { clearButtonClass } from "~/modules/ui/styles"
 import { AuthGuard } from "./auth"
 
 type AppHeaderProps = {
@@ -38,7 +37,7 @@ export function AppHeader({ title, breadcrumbs }: AppHeaderProps) {
             fallback={
               <Link
                 to={route("/auth/discord/login")}
-                className={clearButtonClass}
+                className="border-0 bg-transparent button"
               >
                 <LogIn /> Sign in with Discord
               </Link>

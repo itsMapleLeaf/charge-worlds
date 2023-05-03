@@ -8,7 +8,6 @@ import { discordIdSchema } from "~/helpers/discord-id"
 import { db } from "~/modules/app/db.server"
 import { requireWorldOwner } from "~/modules/auth/membership.server"
 import { requireSessionUser } from "~/modules/auth/session.server"
-import { squareButton } from "~/modules/ui/button"
 import { WorldContext } from "~/modules/world/world-context"
 import { getWorld } from "~/modules/world/world-db.server"
 
@@ -57,7 +56,7 @@ export function RemovePlayerForm({
       <button
         type="button"
         title="Remove player"
-        className={squareButton({ shadow: "none" })}
+        className="justify-center s-12 button"
         onClick={() => {
           const body: z.input<typeof schema> = {
             discordId: player.userDiscordId,

@@ -70,8 +70,10 @@ export default defineConfig({
 
     "s-full": "w-full h-full",
 
+    "container": ":uno: mx-auto w-full max-w-screen-md px-4",
+
     "panel":
-      ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md [.panel_&]:(bg-transparent shadow-none backdrop-blur-none)",
+      ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md [.panel_&]:(shadow-none backdrop-blur-none)",
 
     "interactive-panel":
       ":uno: transition active:(scale-95 shadow-none duration-0) panel [&.active,&:hover]:(border-accent-300/40 text-accent-300)",
@@ -85,9 +87,14 @@ export default defineConfig({
     "input":
       ":uno: block h-12 w-full px-3 leading-none ring-2 ring-transparent transition panel",
 
-    "textarea": ":uno: py-3 leading-normal input",
+    "textarea": "input py-3 leading-normal",
 
-    "radix-transition":
-      "data-[state=closed]:(animate-zoom-fade-out animate-duration-150 animate-ease) data-[state=open]:(animate-zoom-fade-in animate-duration-150 animate-ease)",
+    "checkbox":
+      ":uno: inline cursor-pointer appearance-none s-4 interactive-panel border-white/25! rounded-sm! checked:bg-accent",
+
+    "label": "text-sm font-medium leading-none",
+
+    "radix-zoom-fade-transition":
+      "data-[state=closed]:(animate-zoom-fade-out animate-duration-150 animate-ease animate-fill-forwards) data-[state=open]:(animate-zoom-fade-in animate-duration-150 animate-ease animate-fill-forwards)",
   },
 })

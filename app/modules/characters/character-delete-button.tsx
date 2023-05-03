@@ -1,5 +1,4 @@
 import { Trash, X } from "lucide-react"
-import { button } from "../ui/button"
 import {
   Dialog,
   DialogButton,
@@ -17,7 +16,7 @@ export function CharacterDeleteButton({
 }) {
   return (
     <Dialog>
-      <DialogButton className={button()}>
+      <DialogButton className="button">
         <Trash />
         Delete
       </DialogButton>
@@ -26,11 +25,11 @@ export function CharacterDeleteButton({
           <div className="grid gap-3 p-3 text-center">
             <p>Are you sure you want to delete {character.name}?</p>
             <div className="flex items-center justify-center gap-4">
-              <DialogClose className={button()}>
+              <DialogClose className="button">
                 <X />
                 Cancel
               </DialogClose>
-              <DialogClose className={button()} onClick={onDelete}>
+              <DialogClose className="button" onClick={onDelete}>
                 <Trash />
                 Delete
               </DialogClose>
