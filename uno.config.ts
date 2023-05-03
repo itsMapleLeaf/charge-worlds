@@ -76,31 +76,29 @@ export default defineConfig({
   ],
 
   shortcuts: {
-    ":uno:": "", // no-op so uno doesn't complain
-
     "s-full": "w-full h-full",
 
-    "container": ":uno: mx-auto w-full max-w-screen-md px-4",
+    "container": "mx-auto w-full max-w-screen-md px-4",
 
     "panel":
-      ":uno: border border-white/20 fancy:(border-white/10 bg-black/75 shadow-black/25 shadow-md backdrop-blur-md) rounded-md bg-black [.panel_&]:(shadow-none backdrop-blur-none)",
+      "border border-white/20 fancy:(border-white/10 bg-black/75 shadow-black/25 shadow-md backdrop-blur-md) rounded-md bg-black [.panel_&]:(shadow-none backdrop-blur-none)",
 
     "interactive-panel":
-      ":uno: fancy:transition active:(scale-95 shadow-none duration-0) panel [&.active,&:hover]:(text-accent-300 border-accent-300/40!)",
+      "fancy:transition active:(scale-95 shadow-none duration-0) panel [&.active,&:hover]:(text-accent-300 border-accent-300/40!)",
 
     "button":
-      ":uno: h-12 inline-flex items-center gap-2 px-3 leading-none interactive-panel [&>svg]:s-5",
+      "h-12 inline-flex items-center gap-2 px-3 leading-none interactive-panel [&>svg]:s-5",
 
-    "anchor": ":uno: transition hover:text-accent-300",
-    "anchor-underline": ":uno: underline anchor hover:no-underline",
+    "anchor": "transition hover:text-accent-300",
+    "anchor-underline": "underline anchor hover:no-underline",
 
     "input":
-      ":uno: block h-12 w-full px-3 leading-none ring-2 ring-transparent transition panel",
+      "block h-12 w-full px-3 leading-none ring-2 ring-transparent transition panel",
 
     "textarea": "input py-3 leading-normal",
 
     "checkbox":
-      ":uno: inline cursor-pointer appearance-none s-4 interactive-panel border-white/25! rounded-sm! checked:bg-accent",
+      "inline cursor-pointer appearance-none s-4 interactive-panel border-white/25! rounded-sm! checked:bg-accent",
 
     "label": "text-sm font-medium leading-none",
 
