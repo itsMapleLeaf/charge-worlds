@@ -97,7 +97,8 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@unocss/eslint-plugin@0.51.8": "patches/@unocss__eslint-plugin@0.51.8.patch"
+      "@unocss/eslint-plugin@0.51.8": "patches/@unocss__eslint-plugin@0.51.8.patch",
+      "@remix-run/dev@1.16.0": "patches/@remix-run__dev@1.16.0.patch"
     }
   }
 }
