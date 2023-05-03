@@ -2,7 +2,6 @@ node_modules
 
 /.cache
 /build
-!/build.index.d.ts
 /public/build
 /api
 .env
