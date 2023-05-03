@@ -1,5 +1,4 @@
 import * as Popover from "@radix-ui/react-popover"
-import { cx } from "class-variance-authority"
 import { Plus, Trash } from "lucide-react"
 import { matchSorter } from "match-sorter"
 import { useRef, useState } from "react"
@@ -13,8 +12,6 @@ import {
   CreateCardButton,
 } from "~/modules/cards/card-dashboard"
 import { defineLiveblocksListCollection } from "~/modules/liveblocks/collection"
-import { button } from "~/modules/ui/button"
-import { interactable } from "~/modules/ui/panel"
 
 const sceneSchema = z.object({
   cards: z.array(z.string()).default([]),
@@ -49,7 +46,7 @@ export default function ScenePage() {
           />
           <AddCardButton />
           <button
-            className={button()}
+            className="button"
             onClick={() => {
               mutations.update(0, {
                 cards: [],
@@ -95,12 +92,12 @@ function AddCardButton() {
 
   return (
     <Popover.Root>
-      <Popover.Trigger className={button()}>
+      <Popover.Trigger className="button">
         <Plus /> Add Card
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className="panel w-64 animate-from-opacity-0 animate-from-scale-95 data-[state=open]:animate-in data-[state=closed]:animate-out"
+          className="radix-zoom-fade-transition w-64 origin-top panel"
           sideOffset={8}
           onKeyDown={(event) => {
             const focusTargets = [
@@ -129,10 +126,7 @@ function AddCardButton() {
           }}
         >
           <input
-            className={cx(
-              interactable(),
-              "w-full min-w-0 border-b border-white/10 bg-transparent px-3 py-2",
-            )}
+            className="border-0 border-b rounded-0 rounded-t-md input"
             placeholder="Search..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -150,10 +144,7 @@ function AddCardButton() {
               itemContent={(_, item) => (
                 <button
                   key={item.id}
-                  className={cx(
-                    interactable(),
-                    "w-full text-ellipsis whitespace-nowrap px-3 py-2 text-left",
-                  )}
+                  className="h-10 w-full border-0 rounded-0 button"
                   onClick={() => {
                     addCard(item.id)
                     inputRef.current?.focus()

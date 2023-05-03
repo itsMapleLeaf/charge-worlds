@@ -9,8 +9,6 @@ import { AppHeader } from "~/modules/app/app-header"
 import { getAppMeta } from "~/modules/app/meta"
 import { getSessionUser } from "~/modules/auth/session.server"
 import { RelativeTimestamp } from "~/modules/dom/relative-timestamp"
-import { button } from "~/modules/ui/button"
-import { linkClass } from "~/modules/ui/link"
 import { LoadingSpinner } from "~/modules/ui/loading"
 import { db } from "../modules/app/db.server"
 
@@ -97,7 +95,7 @@ function CreateWorldButton() {
 
   return (
     <Form method="POST">
-      <button className={button()}>
+      <button className="button">
         {pending ? <LoadingSpinner size="small" /> : <Wand2 />}
         Create a new world
       </button>
@@ -107,10 +105,10 @@ function CreateWorldButton() {
 
 function WorldListCta() {
   return (
-    <div className="flex h-full flex-col items-center justify-center">
+    <div className="h-full flex flex-col items-center justify-center">
       <p className="text-gray-500">
         Please{" "}
-        <a href="/auth/discord/login" className={linkClass}>
+        <a href="/auth/discord/login" className="link">
           sign in with Discord
         </a>{" "}
         to continue
@@ -135,7 +133,7 @@ function WorldList({
         <Link
           key={world.id}
           to={route("/worlds/:worldId", { worldId: world.id })}
-          className="panel panel-interactive flex flex-col p-4"
+          className="flex flex-col p-4 interactive-panel"
         >
           <h2 className="mb-2 text-2xl font-light">{world.name}</h2>
           <p className="mt-auto text-sm opacity-75">

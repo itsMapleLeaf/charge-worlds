@@ -1,0 +1,25 @@
+@unocss;
+
+:root {
+  @apply font-sans;
+}
+
+:focus {
+  @apply outline-0;
+}
+
+:focus-visible {
+  @apply ring-2 ring-accent;
+}
+
+::-webkit-scrollbar {
+  @apply w-1.5;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/25;
+}
+
+::-webkit-scrollbar-corner {
+  @apply bg-transparent;
+}
