@@ -33,11 +33,8 @@ export function UserMenuButton({ user }: UserMenuButtonProps) {
         placement="bottom end"
         ref={elementRef}
       >
-        <Dialog className="origin-top-right panel focus:ring-0 !data-[focus-visible]:ring-2">
-          <Link
-            to="/settings"
-            className="hover:text-foreground-8 flex items-center gap-2 p-3 leading-none transition data-[highlighted]:bg-black/25"
-          >
+        <Dialog className="flex flex-col origin-top-right panel focus:ring-0 !data-[focus-visible]:ring-2">
+          <Link to="/settings" className="border-0 rounded-0 button">
             <Settings /> Settings
           </Link>
           <Form
