@@ -1,6 +1,6 @@
+import { createId } from "@paralleldrive/cuid2"
 import type { User } from "@prisma/client"
 import { createCookie } from "@vercel/remix"
-import cuid from "cuid"
 import { z } from "zod"
 import { raise } from "../../helpers/errors"
 import { db } from "../app/db.server"
@@ -25,7 +25,7 @@ export async function createSessionCookie(authCode: string) {
   const loginResponse = await discordLogin(authCode)
   const discordUser = await getDiscordAuthUser(loginResponse.access_token)
 
-  const sessionId = cuid()
+  const sessionId = createId()
 
   const data = {
     name: discordUser.username,

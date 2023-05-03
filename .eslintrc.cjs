@@ -1,13 +1,6 @@
-// @ts-expect-error: the eslint patch doesn't have types
-require("@rushstack/eslint-patch/modern-module-resolution")
-
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
-  plugins: ["tailwindcss"],
-  extends: [
-    require.resolve("@itsmapleleaf/configs/eslint"),
-    "plugin:tailwindcss/recommended",
-  ],
+  extends: [require.resolve("@itsmapleleaf/configs/eslint"), "@unocss"],
   ignorePatterns: [
     "**/node_modules/**",
     "**/build/**",
@@ -18,15 +11,6 @@ module.exports = {
   ],
   parserOptions: {
     project: require.resolve("./tsconfig.json"),
-  },
-  settings: {
-    tailwindcss: {
-      config: "./tailwind.config.cjs",
-    },
-  },
-  rules: {
-    "tailwindcss/migration-from-tailwind-2": "off",
-    "tailwindcss/classnames-order": "off",
   },
   overrides: [
     {

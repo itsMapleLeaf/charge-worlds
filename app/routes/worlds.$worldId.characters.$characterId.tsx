@@ -1,5 +1,4 @@
 import { useParams } from "@remix-run/react"
-import { cx } from "class-variance-authority"
 import { assert } from "~/helpers/assert"
 import { CharacterActionLevelsEditor } from "~/modules/characters/character-action-levels-editor"
 import { characterActionLibrary } from "~/modules/characters/character-actions"
@@ -16,7 +15,6 @@ import {
   CharacterCollection,
   CharacterFieldCollection,
 } from "~/modules/characters/collections"
-import { dividerClass, labelTextClass } from "~/modules/ui/styles"
 import { WorldContext } from "~/modules/world/world-context"
 
 export default function CharacterPage() {
@@ -51,11 +49,11 @@ export default function CharacterPage() {
 
   return (
     <div
-      className={cx(
-        "grid gap-4 rounded-md border p-4 shadow-md backdrop-blur-md backdrop-brightness-50",
-        colorClasses.background,
-        colorClasses.border,
-      )}
+      className="grid gap-4 p-4 panel"
+      style={{
+        backgroundColor: colorClasses.background,
+        borderColor: colorClasses.border,
+      }}
     >
       <div className="flex flex-wrap gap-4">
         {(isOwner || isPlayer) && (
@@ -84,7 +82,7 @@ export default function CharacterPage() {
         )}
       </div>
 
-      <hr className={dividerClass} />
+      <hr className="border-white/10" />
 
       <CharacterPrimaryInfoEditor
         character={currentCharacter}
@@ -95,10 +93,10 @@ export default function CharacterPage() {
         isSpectator={isSpectator}
       />
 
-      <hr className={dividerClass} />
+      <hr className="border-white/10" />
 
       <section className="grid gap-2">
-        <h3 className={labelTextClass}>Actions ({actionLevelTotal})</h3>
+        <h3 className="label">Actions ({actionLevelTotal})</h3>
         <CharacterActionLevelsEditor
           character={currentCharacter}
           onCharacterChange={(data) => {
@@ -108,7 +106,7 @@ export default function CharacterPage() {
         />
       </section>
 
-      <hr className={dividerClass} />
+      <hr className="border-white/10" />
 
       <CharacterFieldsEditor
         fields={fields}

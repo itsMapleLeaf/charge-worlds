@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { useFetcher } from "@remix-run/react"
 import { json, type ActionArgs, type SerializeFrom } from "@vercel/remix"
-import { cx } from "class-variance-authority"
 import { Plus } from "lucide-react"
 import { useEffect, useRef } from "react"
 import { route } from "routes-gen"
@@ -13,10 +12,7 @@ import { discordIdSchema } from "~/helpers/discord-id"
 import { db } from "~/modules/app/db.server"
 import { requireWorldOwner } from "~/modules/auth/membership.server"
 import { requireSessionUser } from "~/modules/auth/session.server"
-import { squareButton } from "~/modules/ui/button"
 import { Field } from "~/modules/ui/field"
-import { input } from "~/modules/ui/input"
-import { errorTextClass } from "~/modules/ui/styles"
 import { WorldContext } from "~/modules/world/world-context"
 import { getWorld } from "~/modules/world/world-db.server"
 
@@ -81,7 +77,7 @@ export function AddPlayerForm() {
       ref={formRef}
     >
       {fetcher.data?.errors?.formErrors.map((error, index) => (
-        <p key={index} className={errorTextClass}>
+        <p key={index} className="text-red-400">
           {error}
         </p>
       ))}
@@ -92,13 +88,13 @@ export function AddPlayerForm() {
         <div className="flex gap-2">
           <input
             name="discordId"
-            className={cx(input(), "flex-1")}
+            className="flex-1 input"
             placeholder="123456789012345678"
             pattern="[0-9]+"
             title="A valid discord ID (digits only)"
           />
           <button
-            className={squareButton({ shadow: "none" })}
+            className="justify-center s-12 button"
             type="submit"
             title="Add player"
           >

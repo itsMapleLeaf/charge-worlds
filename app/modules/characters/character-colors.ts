@@ -1,4 +1,5 @@
-import { cx } from "class-variance-authority"
+import * as colors from "@radix-ui/colors"
+import { rgba } from "polished"
 
 export type CharacterColorClasses = {
   background: string
@@ -6,50 +7,50 @@ export type CharacterColorClasses = {
 }
 
 export const defaultCharacterColor = {
-  background: cx("bg-black/75"),
-  border: cx("border-white/25"),
+  background: rgba("black", 0.75),
+  border: rgba("white", 0.1),
 }
 
 export const characterColors: Record<string, CharacterColorClasses> = {
   neutral: defaultCharacterColor,
 
   red: {
-    background: cx("bg-radix-redDark-red1/75"),
-    border: cx("border-radix-redDark-red10/25"),
+    background: rgba(colors.redDark.red1, 0.75),
+    border: rgba(colors.redDark.red10, 0.25),
   },
 
   orange: {
-    background: cx("bg-radix-orangeDark-orange1/75"),
-    border: cx("border-radix-orangeDark-orange10/25"),
+    background: rgba(colors.orangeDark.orange1, 0.75),
+    border: rgba(colors.orangeDark.orange10, 0.25),
   },
 
   dandelion: {
-    background: cx("bg-radix-yellowDark-yellow1/75"),
-    border: cx("border-radix-yellowDark-yellow10/25"),
+    background: rgba(colors.yellowDark.yellow1, 0.75),
+    border: rgba(colors.yellowDark.yellow10, 0.25),
   },
 
   lime: {
-    background: cx("bg-radix-grassDark-grass1/75"),
-    border: cx("border-radix-grassDark-grass10/25"),
+    background: rgba(colors.grassDark.grass1, 0.75),
+    border: rgba(colors.grassDark.grass10, 0.25),
   },
 
   ocean: {
-    background: cx("bg-radix-skyDark-sky1/75"),
-    border: cx("border-radix-skyDark-sky10/25"),
+    background: rgba(colors.skyDark.sky1, 0.75),
+    border: rgba(colors.skyDark.sky10, 0.25),
   },
 
   blue: {
-    background: cx("bg-radix-blueDark-blue1/75"),
-    border: cx("border-radix-blueDark-blue10/25"),
+    background: rgba(colors.blueDark.blue1, 0.75),
+    border: rgba(colors.blueDark.blue10, 0.25),
   },
 
   violet: {
-    background: cx("bg-radix-violetDark-violet1/75"),
-    border: cx("border-radix-violetDark-violet10/25"),
+    background: rgba(colors.violetDark.violet1, 0.75),
+    border: rgba(colors.violetDark.violet10, 0.25),
   },
 
   pink: {
-    background: cx("bg-radix-pinkDark-pink1/75"),
-    border: cx("border-radix-pinkDark-pink10/25"),
+    background: rgba(colors.pinkDark.pink1, 0.75),
+    border: rgba(colors.pinkDark.pink10, 0.25),
   },
 }

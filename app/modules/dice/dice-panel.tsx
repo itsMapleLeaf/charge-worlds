@@ -7,8 +7,6 @@ import { DiceRollCollection } from "~/modules/dice/collections"
 import { DiceRollList } from "~/modules/dice/dice-roll-list"
 import { Counter } from "~/modules/ui/counter"
 import { useAuthContext } from "../app/auth"
-import { clearButton } from "../ui/button"
-import { input } from "../ui/input"
 import { WorldContext } from "../world/world-context"
 
 const intentStore = new Store("")
@@ -25,7 +23,7 @@ export function DicePanel() {
   const rolls = DiceRollCollection.useItems()
   const { isSpectator } = WorldContext.useValue()
   return (
-    <div className="flex h-full flex-col divide-y divide-white/10">
+    <div className="h-full flex flex-col divide-y divide-white/10">
       <section className="min-h-0 flex-1">
         <DiceRollList rolls={rolls} />
       </section>
@@ -81,7 +79,7 @@ function DiceRollForm() {
       <input
         value={intent}
         onChange={(event) => intentStore.set(event.target.value)}
-        className={input({ border: "none" })}
+        className="border-0 rounded-0 ring-inset input"
         placeholder="Intent (e.g. Move +1)"
         maxLength={128}
         ref={intentRef}
@@ -89,16 +87,18 @@ function DiceRollForm() {
           setTimeout(() => event.target.select())
         }}
       />
-      <div className="flex items-center justify-between gap-2 p-3">
-        <button type="submit" className={clearButton()}>
+      <div className="flex items-center justify-between gap-2">
+        <button type="submit" className="border-0 rounded-0 ring-inset button">
           <Dices /> Roll
         </button>
-        <Counter
-          value={poolSize}
-          onChange={poolSizeStore.set}
-          min={Number.NEGATIVE_INFINITY}
-          max={Number.POSITIVE_INFINITY}
-        />
+        <div className="px-3">
+          <Counter
+            value={poolSize}
+            onChange={poolSizeStore.set}
+            min={Number.NEGATIVE_INFINITY}
+            max={Number.POSITIVE_INFINITY}
+          />
+        </div>
       </div>
     </form>
   )

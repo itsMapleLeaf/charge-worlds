@@ -5,11 +5,12 @@ import {
   Meta,
   Outlet,
   Scripts,
+  isRouteErrorResponse,
   useLoaderData,
   useRouteError,
   type ShouldRevalidateFunction,
 } from "@remix-run/react"
-import { isErrorResponse } from "@remix-run/react/dist/data"
+import reset from "@unocss/reset/tailwind.css"
 import type { LinksFunction, LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
 import type { ReactNode } from "react"
@@ -21,16 +22,15 @@ import { getAppMeta } from "./modules/app/meta"
 import { getSessionUser } from "./modules/auth/session.server"
 import { ExternalLink } from "./modules/dom/external-link"
 import { CatchBoundaryMessage } from "./modules/ui/catch-boundary-message"
-import { linkClass } from "./modules/ui/link"
-import { maxWidthContainerClass } from "./modules/ui/styles"
-import tailwind from "./modules/ui/tailwind.css"
 import { ToastProvider } from "./modules/ui/toast"
+import styles from "./root.css"
 
 export const meta: V2_MetaFunction = () => getAppMeta()
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: rubik },
-  { rel: "stylesheet", href: tailwind },
+  { rel: "stylesheet", href: reset },
+  { rel: "stylesheet", href: styles },
   { rel: "icon", href: favicon },
 ]
 
@@ -57,13 +57,11 @@ export default function Root() {
 export function ErrorBoundary() {
   const error = useRouteError()
 
-  if (isErrorResponse(error)) {
+  if (isRouteErrorResponse(error)) {
     return (
       <Document>
-        <div className={maxWidthContainerClass}>
-          <div className="py-8">
-            <CatchBoundaryMessage />
-          </div>
+        <div className="py-8 container">
+          <CatchBoundaryMessage response={error} />
         </div>
       </Document>
     )
@@ -74,7 +72,7 @@ export function ErrorBoundary() {
 
   return (
     <Document>
-      <div className={maxWidthContainerClass}>
+      <div className="container">
         <div className="grid gap-4 py-4">
           <h1 className="text-4xl font-light">Oops! Something went wrong.</h1>
           <pre className="overflow-x-auto rounded-md bg-black/50 p-4">
@@ -93,7 +91,7 @@ function Document({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className="break-words bg-black font-body text-foreground-1 [word-break:break-word]"
+      className="[word-break:break-word] break-words bg-black text-neutral-3"
     >
       <head>
         <Meta />
@@ -103,22 +101,23 @@ function Document({ children }: { children: ReactNode }) {
         className="bg-[length:100%_auto] bg-top bg-no-repeat"
         style={{ backgroundImage: `url(${background})` }}
       >
-        <div className="flex min-h-[100vh] flex-col bg-black/50">
-          <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col p-4 lg:px-8">
+        <div className="min-h-[100vh] flex flex-col bg-black/50">
+          <div className="mx-auto w-full max-w-screen-2xl flex flex-1 flex-col p-4 lg:px-8">
             <ToastProvider>{children}</ToastProvider>
           </div>
+
           <footer className="p-2 text-center text-xs opacity-60">
             art by{" "}
             <ExternalLink
               href="https://www.pixiv.net/en/artworks/101034134"
-              className={linkClass}
+              className="anchor-underline"
             >
               ALC.3%VOL
             </ExternalLink>{" "}
             &bull;{" "}
             <ExternalLink
               href="https://github.com/itsMapleLeaf/charge-worlds"
-              className={linkClass}
+              className="anchor-underline"
             >
               view source
             </ExternalLink>

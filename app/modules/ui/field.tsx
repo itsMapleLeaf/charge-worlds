@@ -1,5 +1,3 @@
-import { errorTextClass, labelTextClass } from "./styles"
-
 export function Field({
   label,
   children,
@@ -13,11 +11,11 @@ export function Field({
 }) {
   return (
     <label className={className}>
-      <div className={labelTextClass}>{label}</div>
+      <div className="label">{label}</div>
       {!!errors?.length && (
         <div className="mt-2">
           {[errors].flat().map((error, i) => (
-            <p key={i} className={errorTextClass}>
+            <p key={i} className="text-red-400">
               {error}
             </p>
           ))}

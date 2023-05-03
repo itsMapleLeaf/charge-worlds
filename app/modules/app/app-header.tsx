@@ -4,7 +4,6 @@ import type { ReactNode } from "react"
 import { Fragment } from "react"
 import { route } from "routes-gen"
 import { UserMenuButton } from "~/modules/auth/user-menu-button"
-import { clearButtonClass } from "~/modules/ui/styles"
 import { AuthGuard } from "./auth"
 
 type AppHeaderProps = {
@@ -17,10 +16,7 @@ export function AppHeader({ title, breadcrumbs }: AppHeaderProps) {
     <header>
       <nav className="flex items-center">
         <div className="flex flex-1 flex-wrap items-start gap-1.5 text-lg font-light leading-tight">
-          <Link
-            to="/"
-            className="flex items-center gap-1 opacity-75 hover:opacity-100"
-          >
+          <Link to="/" className="flex items-center gap-1 anchor">
             <Zap className="s-5" /> Charge Worlds
           </Link>
 
@@ -29,7 +25,7 @@ export function AppHeader({ title, breadcrumbs }: AppHeaderProps) {
               <span className="opacity-50" aria-hidden>
                 /
               </span>
-              <Link to={to} className="opacity-75 hover:opacity-100">
+              <Link to={to} className="anchor">
                 {label}
               </Link>
             </Fragment>
@@ -41,7 +37,7 @@ export function AppHeader({ title, breadcrumbs }: AppHeaderProps) {
             fallback={
               <Link
                 to={route("/auth/discord/login")}
-                className={clearButtonClass}
+                className="border-0 bg-transparent button"
               >
                 <LogIn /> Sign in with Discord
               </Link>

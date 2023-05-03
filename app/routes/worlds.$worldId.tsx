@@ -2,7 +2,6 @@ import { ClientSideSuspense } from "@liveblocks/react"
 import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react"
 import type { LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
-import { cx } from "class-variance-authority"
 import {
   Dices,
   EyeOff,
@@ -26,7 +25,6 @@ import type { Character } from "~/modules/characters/collections"
 import { CharacterCollection } from "~/modules/characters/collections"
 import { DicePanel } from "~/modules/dice/dice-panel"
 import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
-import { button, circleButton } from "~/modules/ui/button"
 import {
   Dialog,
   DialogButton,
@@ -87,7 +85,7 @@ export default function WorldPage() {
           />
 
           <div className="flex flex-1 items-start gap-2">
-            <aside className="panel sticky top-8 hidden w-56 overflow-y-auto lg:block xl:w-64">
+            <aside className="sticky top-8 hidden w-56 overflow-y-auto lg:block xl:w-64 panel">
               <WorldNav />
             </aside>
 
@@ -97,7 +95,7 @@ export default function WorldPage() {
               </ClientSideLoadingSuspense>
             </div>
 
-            <aside className="panel sticky top-8 hidden h-[calc(100vh-12rem)] w-56 overflow-y-auto md:block xl:w-64">
+            <aside className="sticky top-8 hidden h-[calc(100vh-12rem)] w-56 overflow-y-auto md:block xl:w-64 panel">
               <ClientSideLoadingSuspense>
                 <DicePanel />
               </ClientSideLoadingSuspense>
@@ -122,7 +120,7 @@ export default function WorldPage() {
 function MenuDrawerButton() {
   return (
     <Dialog>
-      <DialogButton className={circleButton} title="Open drawer">
+      <DialogButton className="rounded-full button" title="Open drawer">
         <SidebarOpen />
       </DialogButton>
       <DialogOverlay>
@@ -187,14 +185,7 @@ function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
     <NavLink
       to={props.to}
       end
-      className={({ isActive }) =>
-        button({
-          border: "none",
-          shadow: "none",
-          background: "none",
-          active: isActive,
-        })
-      }
+      className="origin-left rounded-0 border-none bg-transparent button"
       prefetch="intent"
     >
       <props.icon aria-hidden /> {props.label}
@@ -219,6 +210,7 @@ function CharacterList() {
       ))}
       {membership?.role === "OWNER" && (
         <button
+          className="h-10 origin-left border-0 rounded-0 bg-transparent button"
           onClick={() => {
             const result = mutations.create({ name: "New Character" })
             if (!result) return
@@ -230,12 +222,6 @@ function CharacterList() {
               }),
             )
           }}
-          className={button({
-            border: "none",
-            shadow: "none",
-            background: "none",
-            size: 10,
-          })}
         >
           <UserPlus aria-hidden /> Create Character
         </button>
@@ -261,27 +247,15 @@ function CharacterLink({
         worldId: world.id,
         characterId: character._id,
       })}
-      className={({ isActive }) =>
-        button({
-          border: "none",
-          shadow: "none",
-          background: "none",
-          size: 10,
-          active: isActive,
-        })
-      }
+      className="h-10 origin-left rounded-0 border-none bg-transparent button"
       key={character._id}
     >
       <div
+        className="relative border rounded-full brightness-150 s-5 -top-px"
         style={{
           backgroundColor: colors.background,
           borderColor: colors.border,
         }}
-        className={cx(
-          "relative -top-px rounded-full border brightness-150 s-5",
-          colors.background,
-          colors.border,
-        )}
       />
       <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
         {character.name}
@@ -296,7 +270,7 @@ function CharacterLink({
 function DiceDrawerButton() {
   return (
     <Dialog>
-      <DialogButton className={circleButton} title="Show dice rolls">
+      <DialogButton className="rounded-full button" title="Show dice rolls">
         <Dices />
       </DialogButton>
       <DialogOverlay>
