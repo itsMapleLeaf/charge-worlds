@@ -49,13 +49,13 @@ export function CharacterPrimaryInfoEditor({
         <section className="grid gap-2">
           <h2 className="label">Momentum</h2>
           <div className="grid h-12 place-items-center panel">
-            {isGameMaster ? (
+            {isSpectator ? (
+              <p className="font-medium">{character.momentum}</p>
+            ) : (
               <Counter
                 value={character.momentum}
                 onChange={(momentum) => onCharacterChange({ momentum })}
               />
-            ) : (
-              <p className="font-medium">{character.momentum}</p>
             )}
           </div>
         </section>
