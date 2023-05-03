@@ -97,7 +97,7 @@ function AddCardButton() {
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className="radix-zoom-fade-transition w-64 origin-top panel"
+          className="w-64 origin-top radix-zoom-fade-transition panel"
           sideOffset={8}
           onKeyDown={(event) => {
             const focusTargets = [

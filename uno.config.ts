@@ -89,7 +89,7 @@ export default defineConfig({
       ":uno: fancy:transition active:(scale-95 shadow-none duration-0) panel [&.active,&:hover]:(text-accent-300 border-accent-300/40!)",
 
     "button":
-      ":uno: h-12 inline-flex items-center gap-2 px-3 leading-none interactive-panel [&>svg]:s-5",
+      ":uno: h-12 inline-flex items-center gap-2 px-3 leading-none [&>svg]:s-5 interactive-panel",
 
     "anchor": ":uno: transition hover:text-accent-300",
     "anchor-underline": ":uno: underline anchor hover:no-underline",
@@ -100,7 +100,7 @@ export default defineConfig({
     "textarea": "input py-3 leading-normal",
 
     "checkbox":
-      ":uno: inline cursor-pointer appearance-none s-4 interactive-panel border-white/25! rounded-sm! checked:bg-accent",
+      ":uno: inline cursor-pointer appearance-none s-4 border-white/25! rounded-sm! checked:bg-accent interactive-panel",
 
     "label": "text-sm font-medium leading-none",
 

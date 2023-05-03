@@ -4,8 +4,10 @@ import { z } from "zod"
 export type Settings = z.output<typeof settingsSchema>
 const settingsSchema = z
   .object({
+    // eslint-disable-next-line unicorn/prefer-top-level-await
     fancyMode: z.boolean().catch(true),
   })
+  // eslint-disable-next-line unicorn/prefer-top-level-await
   .catch({
     fancyMode: true,
   })
