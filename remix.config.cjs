@@ -9,10 +9,7 @@ const config = {
     v2_meta: true,
     v2_normalizeFormMethod: true,
     v2_routeConvention: true,
-    get unstable_postcss() {
-      console.log("unstable_postcss accessed")
-      return true
-    },
+    unstable_postcss: true,
     // unstable_dev: true,
   },
   watchPaths: ["./uno.config.ts"],

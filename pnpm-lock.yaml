@@ -1,9 +1,6 @@
 lockfileVersion: '6.0'
 
 patchedDependencies:
-  '@remix-run/dev@1.16.0':
-    hash: reqz6yvtgnqzmjr3tfgdrxgeca
-    path: patches/@remix-run__dev@1.16.0.patch
   '@unocss/eslint-plugin@0.51.8':
     hash: njhicrny3hhyeqicm5zynwbfou
     path: patches/@unocss__eslint-plugin@0.51.8.patch
@@ -139,7 +136,7 @@ devDependencies:
     version: 3.0.0(eslint@8.39.0)(typescript@5.0.4)
   '@remix-run/dev':
     specifier: ^1.16.0
-    version: 1.16.0(patch_hash=reqz6yvtgnqzmjr3tfgdrxgeca)(@remix-run/serve@1.16.0)(@types/node@18.16.3)
+    version: 1.16.0(@remix-run/serve@1.16.0)(@types/node@18.16.3)
   '@remix-run/express':
     specifier: ^1.16.0
     version: 1.16.0(express@4.18.2)
@@ -3880,7 +3877,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@remix-run/dev@1.16.0(patch_hash=reqz6yvtgnqzmjr3tfgdrxgeca)(@remix-run/serve@1.16.0)(@types/node@18.16.3):
+  /@remix-run/dev@1.16.0(@remix-run/serve@1.16.0)(@types/node@18.16.3):
     resolution: {integrity: sha512-mA5Wv8sOgN3pSZvjn22aEu+O+uz2/qkgRvB5RnXWncPtvOq8dMmGH7J9kvKO/iOF8btK5FaudymK+AjM6Yifag==}
     engines: {node: '>=14'}
     hasBin: true
@@ -3957,7 +3954,6 @@ packages:
       - ts-node
       - utf-8-validate
     dev: true
-    patched: true
 
   /@remix-run/express@1.16.0(express@4.18.2):
     resolution: {integrity: sha512-V6krwEHajFtpmp/Ds88Ml3HnVoZXrtBTgNaqIxnbiTKeIURKaVQbA0+BTIf3jwnFrL8jFTOFA0Dns3honKAHfw==}
@@ -4094,7 +4090,7 @@ packages:
     peerDependencies:
       '@remix-run/dev': ^1.0.3
     dependencies:
-      '@remix-run/dev': 1.16.0(patch_hash=reqz6yvtgnqzmjr3tfgdrxgeca)(@remix-run/serve@1.16.0)(@types/node@18.16.3)
+      '@remix-run/dev': 1.16.0(@remix-run/serve@1.16.0)(@types/node@18.16.3)
       routes-gen: 0.6.0
     dev: true
 
