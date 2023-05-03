@@ -2,7 +2,7 @@
 /** @type {import('@remix-run/dev').AppConfig} */
 const config = {
   serverDependenciesToBundle: ["@formkit/auto-animate/react", "pretty-bytes"],
-  serverModuleFormat: "cjs",
+  // serverModuleFormat: "cjs",
   postcss: true,
   future: {
     v2_errorBoundary: true,
