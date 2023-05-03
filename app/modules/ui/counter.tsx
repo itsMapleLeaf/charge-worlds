@@ -17,7 +17,7 @@ export function Counter({
       <button
         type="button"
         title="Subtract one"
-        className="justify-center border-0 bg-transparent p-2 s-10 button"
+        className="justify-center border-0 p-2 s-10 bg-transparent! button"
         onClick={() => onChange(Math.max(value - 1, min))}
       >
         <MinusCircle />
@@ -30,7 +30,7 @@ export function Counter({
       <button
         type="button"
         title="Add one"
-        className="justify-center border-0 bg-transparent p-2 s-10 button"
+        className="justify-center border-0 p-2 s-10 bg-transparent! button"
         onClick={() => onChange(Math.min(value + 1, max))}
       >
         <PlusCircle />
