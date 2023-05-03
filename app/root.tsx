@@ -105,6 +105,8 @@ function Document({
       className="[word-break:break-word] break-words bg-black text-neutral-3"
     >
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
       </head>

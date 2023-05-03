@@ -13,10 +13,6 @@ export function getAppMeta({
     descriptionArg || "Virtual environment for the Charge RPG system"
 
   return [
-    // eslint-disable-next-line unicorn/text-encoding-identifier-case
-    { charSet: "utf-8" },
-    { name: "viewport", content: "width=device-width,initial-scale=1" },
-
     { title },
     { name: "description", content: description },
     { name: "theme-color", content: "#1e293b" },
