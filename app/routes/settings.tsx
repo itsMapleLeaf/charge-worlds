@@ -11,9 +11,8 @@ import { route } from "routes-gen"
 import { useSpinDelay } from "spin-delay"
 import { AppHeader } from "~/modules/app/app-header"
 import { getAppMeta } from "~/modules/app/meta"
-import { button } from "~/modules/ui/button"
 import { LoadingSpinner } from "~/modules/ui/loading"
-import { type Settings, getSettings, updateSettingsFromForm } from "~/settings"
+import { getSettings, updateSettingsFromForm, type Settings } from "~/settings"
 
 export const meta: V2_MetaFunction<typeof loader> = () =>
   getAppMeta({ title: "Settings" })
@@ -40,7 +39,7 @@ export default function SettingsPage() {
   return (
     <div className="grid gap-4">
       <AppHeader title="Settings" breadcrumbs={[]} />
-      <div className="panel grid gap-4 p-4">
+      <div className="grid gap-4 p-4 panel">
         <ToggleSetting
           id="fancyMode"
           name="Fancy Mode"
@@ -65,11 +64,7 @@ function ToggleSetting(props: {
       <h2 className="text-2xl font-light">{props.name}</h2>
       <p className="mb-2 text-sm opacity-75">{props.description}</p>
       <Form method="POST">
-        <button
-          className={button()}
-          name="fancyMode"
-          value={String(!props.value)}
-        >
+        <button className="button" name={props.id} value={String(!props.value)}>
           {isPending && <LoadingSpinner size="small" />}
           {props.value ? "On" : "Off"}
         </button>

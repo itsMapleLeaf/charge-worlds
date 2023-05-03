@@ -19,7 +19,7 @@ export function DialogButton(props: RadixDialog.DialogTriggerProps) {
 export function DialogOverlay(props: { children: React.ReactNode }) {
   return (
     <RadixDialog.Portal>
-      <RadixDialog.Overlay className="fixed inset-0 flex flex-col bg-black/50 p-4 backdrop-blur-md data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150!">
+      <RadixDialog.Overlay className="fixed inset-0 flex flex-col bg-black/75 fancy:bg-black/50 p-4 fancy:backdrop-blur-md data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150!">
         {props.children}
       </RadixDialog.Overlay>
     </RadixDialog.Portal>

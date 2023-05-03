@@ -49,7 +49,7 @@ export function RichImage(props: { src: Nullish<string> }) {
             <Thumbnail
               resource={image}
               width={350}
-              className="absolute inset-0 s-full scale-110 object-cover blur-md brightness-50"
+              className="absolute inset-0 s-full scale-110 object-cover fancy:blur-md brightness-25 fancy:brightness-50"
             />
             <Thumbnail
               resource={image}
@@ -60,7 +60,7 @@ export function RichImage(props: { src: Nullish<string> }) {
         </Suspense>
       </ErrorBoundary>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/75 backdrop-blur data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150! animate-ease!">
+        <Dialog.Overlay className="fixed inset-0 bg-black/75 fancy:backdrop-blur data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150! animate-ease!">
           <ErrorBoundary
             fallback={
               <NoImageState

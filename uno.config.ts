@@ -65,6 +65,16 @@ export default defineConfig({
     ],
   ],
 
+  variants: [
+    (matcher) => {
+      if (!matcher.startsWith("fancy:")) return matcher
+      return {
+        matcher: matcher.slice(6),
+        selector: (s) => `[data-fancy-mode] ${s}`,
+      }
+    },
+  ],
+
   shortcuts: {
     ":uno:": "", // no-op so uno doesn't complain
 
@@ -73,10 +83,10 @@ export default defineConfig({
     "container": ":uno: mx-auto w-full max-w-screen-md px-4",
 
     "panel":
-      ":uno: border border-white/10 rounded-md bg-black/75 shadow-black/25 shadow-md backdrop-blur-md [.panel_&]:(shadow-none backdrop-blur-none)",
+      ":uno: border border-white/20 fancy:(border-white/10 bg-black/75 shadow-black/25 shadow-md backdrop-blur-md) rounded-md bg-black [.panel_&]:(shadow-none backdrop-blur-none)",
 
     "interactive-panel":
-      ":uno: transition active:(scale-95 shadow-none duration-0) panel [&.active,&:hover]:(border-accent-300/40 text-accent-300)",
+      ":uno: fancy:transition active:(scale-95 shadow-none duration-0) panel [&.active,&:hover]:(text-accent-300 border-accent-300/40!)",
 
     "button":
       ":uno: h-12 inline-flex items-center gap-2 px-3 leading-none interactive-panel [&>svg]:s-5",
