@@ -48,7 +48,7 @@
     "framer-motion": "^10.12.7",
     "inngest": "^1.8.0",
     "isbot": "^3.6.10",
-    "lucide-react": "^0.193.0",
+    "lucide-react": "^0.204.0",
     "match-sorter": "^6.3.1",
     "polished": "^4.2.2",
     "pretty-bytes": "^6.1.0",
