@@ -18,7 +18,7 @@ export function CharacterPrimaryInfoEditor({
 }) {
   return (
     <div className="flex flex-wrap gap-4 [&>*]:flex-1 [&>*]:basis-48">
-      <div className="min-h-[theme(height.64)] overflow-clip panel">
+      <div className="min-h-[16rem] overflow-clip panel">
         <RichImage src={character.imageUrl ?? undefined} />
       </div>
 
