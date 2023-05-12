@@ -3,13 +3,13 @@ import { json, type ActionArgs } from "@vercel/remix"
 import { Minus } from "lucide-react"
 import { route } from "routes-gen"
 import { z } from "zod"
+import { WorldContext } from "~/components/world-context"
+import { db } from "~/data/db.server"
+import { requireWorldOwner } from "~/data/membership.server"
+import { requireSessionUser } from "~/data/session.server"
+import { getWorld } from "~/data/world-db.server"
 import { assert } from "~/helpers/assert"
 import { discordIdSchema } from "~/helpers/discord-id"
-import { db } from "~/modules/app/db.server"
-import { requireWorldOwner } from "~/modules/auth/membership.server"
-import { requireSessionUser } from "~/modules/auth/session.server"
-import { WorldContext } from "~/modules/world/world-context"
-import { getWorld } from "~/modules/world/world-db.server"
 
 const schema = z.object({
   discordId: discordIdSchema,

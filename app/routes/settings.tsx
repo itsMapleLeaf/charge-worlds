@@ -9,10 +9,14 @@ import {
 } from "@vercel/remix"
 import { route } from "routes-gen"
 import { useSpinDelay } from "spin-delay"
-import { AppHeader } from "~/modules/app/app-header"
-import { getAppMeta } from "~/modules/app/meta"
-import { LoadingSpinner } from "~/modules/ui/loading"
-import { getSettings, updateSettingsFromForm, type Settings } from "~/settings"
+import { AppHeader } from "~/components/app-header"
+import { LoadingSpinner } from "~/components/loading"
+import { getAppMeta } from "~/data/meta.server"
+import {
+  getSettings,
+  updateSettingsFromForm,
+  type Settings,
+} from "~/data/settings.server"
 
 export const meta: V2_MetaFunction<typeof loader> = () =>
   getAppMeta({ title: "Settings" })

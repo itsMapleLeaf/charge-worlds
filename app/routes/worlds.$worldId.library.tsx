@@ -3,7 +3,7 @@ import {
   CardDashboardControls,
   CardDashboardLayout,
   CreateCardButton,
-} from "~/modules/cards/card-dashboard"
+} from "~/components/card-dashboard"
 
 export default function LibraryPage() {
   return (

@@ -15,29 +15,26 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { route } from "routes-gen"
-import { AppHeader } from "~/modules/app/app-header"
-import { db } from "~/modules/app/db.server"
-import {
-  characterColors,
-  defaultCharacterColor,
-} from "~/modules/characters/character-colors"
-import type { Character } from "~/modules/characters/collections"
-import { CharacterCollection } from "~/modules/characters/collections"
-import { DicePanel } from "~/modules/dice/dice-panel"
-import { RoomContext } from "~/modules/liveblocks/liveblocks-client"
+import { AppHeader } from "~/components/app-header"
 import {
   Dialog,
   DialogButton,
   DialogDrawerPanel,
   DialogOverlay,
-} from "~/modules/ui/dialog"
-import { LoadingPlaceholder } from "~/modules/ui/loading"
-import { WorldContext } from "~/modules/world/world-context"
+} from "~/components/dialog"
+import { DicePanel } from "~/components/dice-panel"
+import { LoadingPlaceholder } from "~/components/loading"
+import { WorldContext } from "~/components/world-context"
+import type { Character } from "~/data/character-collections"
+import { CharacterCollection } from "~/data/character-collections"
+import { characterColors, defaultCharacterColor } from "~/data/character-colors"
+import { db } from "~/data/db.server"
+import { RoomContext } from "~/data/liveblocks-client"
+import { getMembership } from "../data/membership.server"
+import { getAppMeta } from "../data/meta.server"
+import { getSessionUser } from "../data/session.server"
+import { getWorld } from "../data/world-db.server"
 import { pick } from "../helpers/pick"
-import { getAppMeta } from "../modules/app/meta"
-import { getMembership } from "../modules/auth/membership.server"
-import { getSessionUser } from "../modules/auth/session.server"
-import { getWorld } from "../modules/world/world-db.server"
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) =>
   getAppMeta({ title: data.world.name })

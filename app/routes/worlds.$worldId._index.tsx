@@ -4,14 +4,14 @@ import { matchSorter } from "match-sorter"
 import { useRef, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
 import { z } from "zod"
-import { CardCollection } from "~/modules/cards/card-collection"
 import {
   CardDashboard,
   CardDashboardControls,
   CardDashboardLayout,
   CreateCardButton,
-} from "~/modules/cards/card-dashboard"
-import { defineLiveblocksListCollection } from "~/modules/liveblocks/collection"
+} from "~/components/card-dashboard"
+import { CardCollection } from "~/data/card-collection"
+import { defineLiveblocksListCollection } from "~/data/liveblocks-collection"
 
 const sceneSchema = z.object({
   cards: z.array(z.string()).default([]),

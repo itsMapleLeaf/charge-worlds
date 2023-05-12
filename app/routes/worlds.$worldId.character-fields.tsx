@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { ChevronDown, ChevronUp, ListPlus, X } from "lucide-react"
 import { Fragment, useId } from "react"
 import TextArea from "react-expanding-textarea"
-import { CharacterFieldCollection } from "~/modules/characters/collections"
+import { CharacterFieldCollection } from "~/data/character-collections"
 
 export default function CharacterFieldsPage() {
   const fields = CharacterFieldCollection.useItems()

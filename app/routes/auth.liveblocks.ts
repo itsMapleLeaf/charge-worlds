@@ -1,16 +1,16 @@
 import { authorize } from "@liveblocks/node"
 import type { ActionArgs } from "@vercel/remix"
 import { z } from "zod"
-import { raise } from "~/helpers/errors"
-import { notFound } from "~/helpers/responses"
-import { db } from "~/modules/app/db.server"
-import { env } from "~/modules/app/env.server"
-import { getSessionUser } from "~/modules/auth/session.server"
+import { db } from "~/data/db.server"
+import { env } from "~/data/env.server"
 import {
   liveblocksFetch,
   RoomAccesses,
   throwResponseError,
-} from "~/modules/liveblocks/liveblocks-api.server"
+} from "~/data/liveblocks-api.server"
+import { getSessionUser } from "~/data/session.server"
+import { raise } from "~/helpers/errors"
+import { notFound } from "~/helpers/responses"
 
 const currentRoomVersion = 1
 

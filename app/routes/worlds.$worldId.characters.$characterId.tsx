@@ -1,21 +1,18 @@
 import { useParams } from "@remix-run/react"
-import { assert } from "~/helpers/assert"
-import { CharacterActionLevelsEditor } from "~/modules/characters/character-action-levels-editor"
-import { characterActionLibrary } from "~/modules/characters/character-actions"
-import { CharacterColorButton } from "~/modules/characters/character-color-button"
-import {
-  characterColors,
-  defaultCharacterColor,
-} from "~/modules/characters/character-colors"
-import { CharacterDeleteButton } from "~/modules/characters/character-delete-button"
-import { CharacterFieldsEditor } from "~/modules/characters/character-fields-editor"
-import { CharacterHideButton } from "~/modules/characters/character-hide-button"
-import { CharacterPrimaryInfoEditor } from "~/modules/characters/character-primary-info-editor"
+import { CharacterActionLevelsEditor } from "~/components/character-action-levels-editor"
+import { CharacterColorButton } from "~/components/character-color-button"
+import { CharacterDeleteButton } from "~/components/character-delete-button"
+import { CharacterFieldsEditor } from "~/components/character-fields-editor"
+import { CharacterHideButton } from "~/components/character-hide-button"
+import { CharacterPrimaryInfoEditor } from "~/components/character-primary-info-editor"
+import { WorldContext } from "~/components/world-context"
+import { characterActionLibrary } from "~/data/character-actions"
 import {
   CharacterCollection,
   CharacterFieldCollection,
-} from "~/modules/characters/collections"
-import { WorldContext } from "~/modules/world/world-context"
+} from "~/data/character-collections"
+import { characterColors, defaultCharacterColor } from "~/data/character-colors"
+import { assert } from "~/helpers/assert"
 
 export default function CharacterPage() {
   const { isPlayer, isOwner, isSpectator } = WorldContext.useValue()
