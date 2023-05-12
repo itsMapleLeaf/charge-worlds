@@ -11,7 +11,7 @@ import { route } from "routes-gen"
 import { useSpinDelay } from "spin-delay"
 import { AppHeader } from "~/components/app-header"
 import { LoadingSpinner } from "~/components/loading"
-import { getAppMeta } from "~/data/meta.server"
+import { getAppMeta } from "~/data/meta"
 import {
   getSettings,
   updateSettingsFromForm,
