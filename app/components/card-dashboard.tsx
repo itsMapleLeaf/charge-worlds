@@ -75,7 +75,7 @@ export function CreateCardButton(props: { onCreate?: (id: string) => void }) {
       className="button"
       onClick={() => {
         const id = crypto.randomUUID()
-        mutations.append({
+        mutations.prepend({
           id,
           title: "New Card",
           hidden: true,

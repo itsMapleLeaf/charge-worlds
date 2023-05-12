@@ -191,6 +191,10 @@ export function defineLiveblocksListCollection<
       resolveList(storage)?.push(new LiveObject(item))
     }, [])
 
+    const prepend = RoomContext.useMutation(({ storage }, item: Input) => {
+      resolveList(storage)?.insert(new LiveObject(item), 0)
+    }, [])
+
     const update = RoomContext.useMutation(
       ({ storage }, index: number, data: Partial<Input>) => {
         const list = resolveList(storage)?.get(index)
@@ -259,7 +263,7 @@ export function defineLiveblocksListCollection<
       [],
     )
 
-    return { append, update, updateWhere, remove, removeWhere, move }
+    return { append, prepend, update, updateWhere, remove, removeWhere, move }
   }
 
   return { useItems, useMutations }
