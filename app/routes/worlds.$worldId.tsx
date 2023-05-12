@@ -6,12 +6,12 @@ import {
   Dices,
   EyeOff,
   Gamepad2,
-  Globe,
   Library,
   List,
   Mountain,
   SidebarOpen,
   UserPlus,
+  Wrench,
   type LucideIcon,
 } from "lucide-react"
 import { route } from "routes-gen"
@@ -155,9 +155,9 @@ function WorldNav() {
       {membership?.role === "OWNER" && (
         <>
           <WorldNavLink
-            to={route("/worlds/:worldId/details", { worldId: world.id })}
-            icon={Globe}
-            label="World Details"
+            to={route("/worlds/:worldId/manage", { worldId: world.id })}
+            icon={Wrench}
+            label="Manage World"
           />
           <WorldNavLink
             to={route("/worlds/:worldId/players", { worldId: world.id })}
