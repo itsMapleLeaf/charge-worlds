@@ -19,6 +19,8 @@ import {
   Edit,
   Eye,
   EyeOff,
+  File,
+  FileMinus2,
   Grip,
   Trash,
   Wand2,
@@ -26,44 +28,48 @@ import {
 } from "lucide-react"
 import { useState, type ReactNode } from "react"
 import { cardBlockTypes } from "~/components/card-block"
-import { ControlsOverlay } from "~/components/controls-overlay"
-import {
-  Dialog,
-  DialogButton,
-  DialogModalPanel,
-  DialogOverlay,
-  DialogTitle,
-} from "~/components/dialog"
 import { Masonry } from "~/components/masonry"
 import { WorldContext } from "~/components/world-context"
 import { CardCollection } from "~/data/card-collection"
 import { type Card, type CardBlock } from "~/data/card-schema"
 import { createContextWrapper } from "~/helpers/context"
 
-const Context = createContextWrapper(function useCardDashboardProvider() {
-  const [currentDialogCardId, setCurrentDialogCardId] = useState<string>()
-  return {
-    currentDialogCardId,
-    setCurrentDialogCardId,
-  }
-})
+const CardDashboardContext = createContextWrapper(
+  function useCardDashboardProvider() {
+    const [currentDialogCardId, setCurrentDialogCardId] = useState<string>()
+    const [editing, setEditing] = useState(true)
+    return {
+      currentDialogCardId,
+      setCurrentDialogCardId,
+      editing,
+      setEditing,
+    }
+  },
+)
 
 export function CardDashboardLayout(props: { children: ReactNode }) {
   return (
     <div className="grid gap-2">
-      <Context.Provider>{props.children}</Context.Provider>
+      <CardDashboardContext.Provider>
+        {props.children}
+      </CardDashboardContext.Provider>
     </div>
   )
 }
 
 export function CardDashboardControls(props: { children: React.ReactNode }) {
   const { isOwner } = WorldContext.useValue()
-  return isOwner ? <div className="flex gap-2">{props.children}</div> : null
+  return isOwner ? (
+    <div className="flex gap-2">
+      <ToggleEditingButton />
+      {props.children}
+    </div>
+  ) : null
 }
 
 export function CreateCardButton(props: { onCreate?: (id: string) => void }) {
   const mutations = CardCollection.useMutations()
-  const { setCurrentDialogCardId } = Context.useValue()
+  const { setCurrentDialogCardId } = CardDashboardContext.useValue()
   return (
     <button
       className="button"
@@ -83,31 +89,38 @@ export function CreateCardButton(props: { onCreate?: (id: string) => void }) {
   )
 }
 
+export function ToggleEditingButton() {
+  const { editing, setEditing } = CardDashboardContext.useValue()
+
+  return (
+    <button
+      className="button"
+      onClick={() => {
+        setEditing(!editing)
+      }}
+    >
+      {editing ? <Eye aria-hidden /> : <Edit aria-hidden />}{" "}
+      {editing ? "View" : "Edit"}
+    </button>
+  )
+}
+
 export function CardDashboard(props: { visibleCardIds?: string[] }) {
+  const { editing } = CardDashboardContext.useValue()
   const { isOwner } = WorldContext.useValue()
-  const mutations = CardCollection.useMutations()
+  return editing && isOwner ? (
+    <CardDashboardEditing {...props} />
+  ) : (
+    <CardDashboardReadOnly {...props} />
+  )
+}
 
-  let cards = CardCollection.useItems()
-  if (!isOwner) {
-    cards = cards.filter((card) => !card.hidden)
-  }
-
+function CardDashboardReadOnly(props: { visibleCardIds?: string[] }) {
+  const { isOwner } = WorldContext.useValue()
+  const cards = CardCollection.useItems()
   const visibleCardIds = props.visibleCardIds && new Set(props.visibleCardIds)
 
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      activationConstraint: {
-        delay: 300,
-        tolerance: 5,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 500,
-        tolerance: 5,
-      },
-    }),
-  )
+  const mutations = CardCollection.useMutations()
 
   function handleBlockDataChange(
     card: Card,
@@ -119,6 +132,52 @@ export function CardDashboard(props: { visibleCardIds?: string[] }) {
       blocks: card.blocks.map((b) => (b.id === blockId ? { ...b, data } : b)),
     })
   }
+
+  return (
+    <>
+      {cards.length === 0 && <p>Nothing to see here!</p>}
+      <Masonry
+        items={cards
+          .map((card, index) => [card, index] as const)
+          .filter(([card]) =>
+            visibleCardIds ? visibleCardIds.has(card.id) : true,
+          )}
+        itemKey={([card]) => card.id}
+        columnWidth={256}
+        gap={8}
+        renderItem={([card, index]) => {
+          if (!isOwner && card.hidden) {
+            return null
+          }
+          return (
+            <motion.div layoutId={card.id}>
+              <CardPanel
+                key={card.id}
+                card={card}
+                onBlockDataChange={(blockId, data) => {
+                  handleBlockDataChange(card, index, blockId, data)
+                }}
+              />
+            </motion.div>
+          )
+        }}
+      />
+    </>
+  )
+}
+
+function CardDashboardEditing(props: { visibleCardIds?: string[] }) {
+  const { isOwner } = WorldContext.useValue()
+  const mutations = CardCollection.useMutations()
+
+  let cards = CardCollection.useItems()
+  if (!isOwner) {
+    cards = cards.filter((card) => !card.hidden)
+  }
+
+  const visibleCardIds = props.visibleCardIds && new Set(props.visibleCardIds)
+
+  const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
 
   return (
     <>
@@ -145,41 +204,18 @@ export function CardDashboard(props: { visibleCardIds?: string[] }) {
             itemKey={([card]) => card.id}
             columnWidth={256}
             gap={8}
-            renderItem={([card, index]) => {
-              if (!isOwner) {
-                return (
-                  <motion.div layoutId={card.id}>
-                    <CardPanel
-                      key={card.id}
-                      card={card}
-                      onBlockDataChange={(blockId, data) => {
-                        handleBlockDataChange(card, index, blockId, data)
-                      }}
-                    />
-                  </motion.div>
-                )
-              }
-
-              return (
-                <DragSortable id={card.id}>
-                  <ControlsOverlay
-                    controls={
-                      <CardEditorDialog cardId={card.id}>
-                        <CardEditor card={card} index={index} />
-                      </CardEditorDialog>
-                    }
+            renderItem={([card, index]) => (
+              <DragSortableWithHandle id={card.id}>
+                {({ handle }) => (
+                  <div
+                    data-hidden={card.hidden}
+                    className="panel divide-y divide-white/10 data-[hidden=true]:opacity-75"
                   >
-                    <CardPanel
-                      key={card.id}
-                      card={card}
-                      onBlockDataChange={(blockId, data) => {
-                        handleBlockDataChange(card, index, blockId, data)
-                      }}
-                    />
-                  </ControlsOverlay>
-                </DragSortable>
-              )
-            }}
+                    <CardEditor card={card} index={index} dragHandle={handle} />
+                  </div>
+                )}
+              </DragSortableWithHandle>
+            )}
           />
         </SortableContext>
       </DndContext>
@@ -192,7 +228,7 @@ function CardPanel({
   onBlockDataChange,
 }: {
   card: Card
-  onBlockDataChange: (blockId: string, data: JsonObject) => void
+  onBlockDataChange?: (blockId: string, data: JsonObject) => void
 }) {
   const { isOwner } = WorldContext.useValue()
 
@@ -201,10 +237,17 @@ function CardPanel({
     : card.blocks.filter((block) => !block.hidden)
 
   return (
-    <article className="divide-y divide-white/10 panel">
+    <article
+      data-hidden={card.hidden}
+      className="divide-y divide-white/10 panel data-[hidden=true]:opacity-75"
+    >
       <header className="flex items-center gap-3 p-3">
-        <h3 className="flex-1 text-2xl font-light">{card.title}</h3>
-        {card.hidden && <EyeOff aria-label="Hidden" className="opacity-50" />}
+        <h3 className="flex-1 text-2xl font-light">
+          {card.titleHidden ? "???" : card.title}{" "}
+          {isOwner && card.titleHidden && (
+            <span className="opacity-75">({card.title})</span>
+          )}
+        </h3>
       </header>
       <main className="grid max-h-[360px] gap-3 overflow-y-auto p-3">
         <AnimatePresence initial={false}>
@@ -218,7 +261,7 @@ function CardPanel({
               return (
                 <blockType.StaticComponent
                   data={block.data}
-                  onChange={(data) => onBlockDataChange(block.id, data)}
+                  onChange={(data) => onBlockDataChange?.(block.id, data)}
                 />
               )
             })()
@@ -246,34 +289,15 @@ function CardPanel({
   )
 }
 
-function CardEditorDialog(props: {
-  cardId: string
-  children: React.ReactNode
+function CardEditor({
+  card,
+  index,
+  dragHandle,
+}: {
+  card: Card
+  index: number
+  dragHandle: React.ReactNode
 }) {
-  const context = Context.useValue()
-  return (
-    <Dialog
-      open={context.currentDialogCardId === props.cardId}
-      onOpenChange={(open) => {
-        context.setCurrentDialogCardId(open ? props.cardId : undefined)
-      }}
-    >
-      <DialogButton title="Edit" className="button">
-        <Edit aria-hidden />
-      </DialogButton>
-      <DialogOverlay>
-        <DialogModalPanel>
-          <DialogTitle className="p-3 text-center text-3xl font-light">
-            Edit Card
-          </DialogTitle>
-          {props.children}
-        </DialogModalPanel>
-      </DialogOverlay>
-    </Dialog>
-  )
-}
-
-function CardEditor({ card, index }: { card: Card; index: number }) {
   const mutations = CardCollection.useMutations()
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor))
@@ -306,17 +330,50 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
 
   return (
     <>
-      <input
-        title="Card Title"
-        placeholder="Card Title"
-        value={card.title}
-        onChange={(event) => {
-          mutations.update(index, { title: event.target.value })
-        }}
-        className="border-0 border-y rounded-0 text-2xl font-light ring-inset input"
-      />
+      <div className="relative">
+        <input
+          title="Card Title"
+          placeholder="Card Title"
+          value={card.title}
+          onChange={(event) => {
+            mutations.update(index, { title: event.target.value })
+          }}
+          data-title-hidden={card.titleHidden}
+          className="border-0 rounded-0 text-2xl font-light ring-inset input data-[title-hidden=true]:pr-12"
+        />
+        {card.titleHidden && (
+          <div className="absolute inset-y-0 right-0 px-3 flex items-center justify-center opacity-50">
+            <EyeOff />
+          </div>
+        )}
+      </div>
 
-      <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+      <Toolbar>
+        {dragHandle}
+        <ToolbarButton
+          label={card.titleHidden ? "Show title" : "Hide title"}
+          icon={card.titleHidden ? EyeOff : Eye}
+          onClick={() => {
+            mutations.update(index, { titleHidden: !card.titleHidden })
+          }}
+        />
+        <ToolbarButton
+          label={card.hidden ? "Show card" : "Hide card"}
+          icon={card.hidden ? FileMinus2 : File}
+          onClick={() => {
+            mutations.update(index, { hidden: !card.hidden })
+          }}
+        />
+        <ToolbarButton
+          label="Delete card"
+          icon={Trash}
+          onClick={() => {
+            mutations.remove(index)
+          }}
+        />
+      </Toolbar>
+
+      <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto max-h-[16rem]">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -391,20 +448,6 @@ function CardEditor({ card, index }: { card: Card; index: number }) {
             }}
           />
         ))}
-        <ToolbarButton
-          label={card.hidden ? "Show card" : "Hide card"}
-          icon={card.hidden ? EyeOff : Eye}
-          onClick={() => {
-            mutations.update(index, { hidden: !card.hidden })
-          }}
-        />
-        <ToolbarButton
-          label="Delete card"
-          icon={Trash}
-          onClick={() => {
-            mutations.remove(index)
-          }}
-        />
       </Toolbar>
     </>
   )
@@ -489,45 +532,5 @@ function DragSortableWithHandle({
     >
       {children({ handle })}
     </div>
-  )
-}
-
-function DragSortable({
-  children,
-  id,
-}: {
-  children: React.ReactNode
-  id: string
-}) {
-  const sortable = useSortable({ id, transition: null })
-  return (
-    <motion.div
-      {...sortable.attributes}
-      {...sortable.listeners}
-      ref={sortable.setNodeRef}
-      layoutId={id}
-      className={sortable.isDragging ? "cursor-grabbing" : "cursor-grab"}
-      animate={
-        sortable.transform && sortable.isDragging
-          ? {
-              x: sortable.transform.x,
-              y: sortable.transform.y,
-              opacity: 0.75,
-            }
-          : {
-              x: 0,
-              y: 0,
-              opacity: sortable.isOver ? 0.5 : 1,
-            }
-      }
-      transition={{
-        duration: sortable.isDragging ? 0 : 0.35,
-      }}
-      style={{
-        zIndex: sortable.isDragging ? 10 : undefined,
-      }}
-    >
-      {children}
-    </motion.div>
   )
 }

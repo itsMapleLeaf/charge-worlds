@@ -20,6 +20,7 @@ export type CardBlock = z.output<typeof cardBlockSchema>
 export const cardSchema = z.object({
   id: z.string(),
   title: z.string().default(""),
+  titleHidden: z.boolean().default(false),
   blocks: z.array(cardBlockSchema).default([]),
   hidden: z.boolean().default(true),
 })
