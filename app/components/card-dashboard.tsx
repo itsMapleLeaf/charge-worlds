@@ -24,7 +24,6 @@ import {
   Grip,
   Trash,
   Wand2,
-  type LucideIcon,
 } from "lucide-react"
 import { useState, type ReactNode } from "react"
 import { cardBlockTypes } from "~/components/card-block"
@@ -33,6 +32,7 @@ import { WorldContext } from "~/components/world-context"
 import { CardCollection } from "~/data/card-collection"
 import { type Card, type CardBlock } from "~/data/card-schema"
 import { createContextWrapper } from "~/helpers/context"
+import { Toolbar, ToolbarButton } from "./toolbar"
 
 const CardDashboardContext = createContextWrapper(
   function useCardDashboardProvider() {
@@ -105,7 +105,10 @@ export function ToggleEditingButton() {
   )
 }
 
-export function CardDashboard(props: { visibleCardIds?: string[] }) {
+export function CardDashboard(props: {
+  visibleCardIds?: string[]
+  extraCardControls?: (card: Card, index: number) => ReactNode
+}) {
   const { editing } = CardDashboardContext.useValue()
   const { isOwner } = WorldContext.useValue()
   return editing && isOwner ? (
@@ -166,7 +169,10 @@ function CardDashboardReadOnly(props: { visibleCardIds?: string[] }) {
   )
 }
 
-function CardDashboardEditing(props: { visibleCardIds?: string[] }) {
+function CardDashboardEditing(props: {
+  visibleCardIds?: string[]
+  extraCardControls?: (card: Card, index: number) => ReactNode
+}) {
   const { isOwner } = WorldContext.useValue()
   const mutations = CardCollection.useMutations()
 
@@ -211,7 +217,12 @@ function CardDashboardEditing(props: { visibleCardIds?: string[] }) {
                     data-hidden={card.hidden}
                     className="panel divide-y divide-white/10 data-[hidden=true]:opacity-75"
                   >
-                    <CardEditor card={card} index={index} dragHandle={handle} />
+                    <CardEditor
+                      card={card}
+                      index={index}
+                      dragHandle={handle}
+                      extraControls={props.extraCardControls}
+                    />
                   </div>
                 )}
               </DragSortableWithHandle>
@@ -293,10 +304,12 @@ function CardEditor({
   card,
   index,
   dragHandle,
+  extraControls,
 }: {
   card: Card
   index: number
   dragHandle: React.ReactNode
+  extraControls?: (card: Card, index: number) => ReactNode
 }) {
   const mutations = CardCollection.useMutations()
 
@@ -364,6 +377,7 @@ function CardEditor({
             mutations.update(index, { hidden: !card.hidden })
           }}
         />
+        {extraControls?.(card, index)}
         <ToolbarButton
           label="Delete card"
           icon={Trash}
@@ -477,26 +491,6 @@ function CardBlockControls(props: {
         />
       </Toolbar>
     </div>
-  )
-}
-
-function Toolbar(props: { children: ReactNode }) {
-  return <div className="grid auto-cols-fr grid-flow-col">{props.children}</div>
-}
-
-function ToolbarButton(props: {
-  label: string
-  icon: LucideIcon
-  onClick: () => void
-}) {
-  return (
-    <button
-      title={props.label}
-      className="h-10 justify-center border-none bg-transparent button"
-      onClick={props.onClick}
-    >
-      <props.icon aria-hidden className="!s-4" />
-    </button>
   )
 }
 

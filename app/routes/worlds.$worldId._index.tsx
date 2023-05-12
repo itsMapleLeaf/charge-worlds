@@ -1,5 +1,5 @@
 import * as Popover from "@radix-ui/react-popover"
-import { Plus, Trash } from "lucide-react"
+import { Plus, Trash, X } from "lucide-react"
 import { matchSorter } from "match-sorter"
 import { useRef, useState } from "react"
 import { Virtuoso } from "react-virtuoso"
@@ -10,6 +10,7 @@ import {
   CardDashboardLayout,
   CreateCardButton,
 } from "~/components/card-dashboard"
+import { ToolbarButton } from "~/components/toolbar"
 import { CardCollection } from "~/data/card-collection"
 import { defineLiveblocksListCollection } from "~/data/liveblocks-collection"
 
@@ -56,7 +57,10 @@ export default function ScenePage() {
             <Trash /> Clear Scene
           </button>
         </CardDashboardControls>
-        <CardDashboard visibleCardIds={scene?.cards ?? []} />
+        <CardDashboard
+          visibleCardIds={scene?.cards ?? []}
+          extraCardControls={(card) => <RemoveCardButton id={card.id} />}
+        />
       </CardDashboardLayout>
     </section>
   )
@@ -158,5 +162,23 @@ function AddCardButton() {
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
+  )
+}
+
+function RemoveCardButton({ id }: { id: string }) {
+  const scene = SceneCollection.useItems()[0]
+  const mutations = SceneCollection.useMutations()
+  return (
+    <ToolbarButton
+      label="Remove Card"
+      icon={X}
+      onClick={() => {
+        if (scene) {
+          mutations.update(0, {
+            cards: scene.cards.filter((cardId) => cardId !== id),
+          })
+        }
+      }}
+    />
   )
 }
