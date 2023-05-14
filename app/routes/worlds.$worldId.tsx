@@ -140,12 +140,6 @@ function WorldNav() {
         label="Scene"
       />
 
-      <div className="border-y border-white/10">
-        <ClientSideLoadingSuspense>
-          <CharacterList />
-        </ClientSideLoadingSuspense>
-      </div>
-
       <WorldNavLink
         to={route("/worlds/:worldId/library", { worldId: world.id })}
         icon={Library}
@@ -173,6 +167,12 @@ function WorldNav() {
           />
         </>
       )}
+
+      <div className="border-t border-white/10">
+        <ClientSideLoadingSuspense>
+          <CharacterList />
+        </ClientSideLoadingSuspense>
+      </div>
     </nav>
   )
 }
