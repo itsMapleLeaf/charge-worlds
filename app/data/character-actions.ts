@@ -13,12 +13,12 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
     },
     {
       id: "Travel",
-      name: "Travel",
+      name: "Move",
       description: "Run, climb, or swim somewhere",
     },
     {
       id: "Dodge",
-      name: "Dodge",
+      name: "Finesse",
       description: "Perform a swift short-distance movement",
     },
     {
@@ -76,14 +76,14 @@ export const characterActionLibrary: Record<string, ActionDetails[]> = {
       description: "Influence with flattery or charisma",
     },
     {
-      id: "Comfort",
-      name: "Comfort",
-      description: "Ease someone's emotions",
-    },
-    {
       id: "Intimidate",
       name: "Intimidate",
       description: "Threaten or bully someone",
+    },
+    {
+      id: "Comfort",
+      name: "Comfort",
+      description: "Ease someone's emotions",
     },
   ],
 }
