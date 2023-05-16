@@ -1,5 +1,4 @@
-/* eslint-disable unicorn/prefer-top-level-await */
-import { Form, useLoaderData, useNavigation } from "@remix-run/react"
+import { Form, useLoaderData } from "@remix-run/react"
 import {
   json,
   redirect,
@@ -17,6 +16,7 @@ import {
   updateSettingsFromForm,
   type Settings,
 } from "~/data/settings.server"
+import { usePendingSubmit } from "~/helpers/use-pending-submit"
 
 export const meta: V2_MetaFunction<typeof loader> = () =>
   getAppMeta({ title: "Settings" })
@@ -61,8 +61,7 @@ function ToggleSetting(props: {
   description: string
   value: boolean
 }) {
-  const navigation = useNavigation()
-  const isPending = useSpinDelay(navigation.state !== "idle")
+  const isPendingSubmit = useSpinDelay(usePendingSubmit())
   return (
     <section>
       <h2 className="text-2xl font-light">{props.name}</h2>
@@ -73,7 +72,7 @@ function ToggleSetting(props: {
           name={props.id}
           value={String(!props.value)}
         >
-          {isPending && <LoadingSpinner size="small" />}
+          {isPendingSubmit && <LoadingSpinner size="small" />}
           {props.value ? "On" : "Off"}
         </button>
       </Form>
