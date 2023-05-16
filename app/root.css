@@ -1,25 +1,182 @@
-@unocss;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  @apply font-sans;
+@layer base {
+  :root {
+    @apply font-sans;
+  }
+
+  :focus {
+    @apply outline-0;
+  }
+
+  :focus-visible {
+    @apply ring-2 ring-accent-400;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/25;
+  }
+
+  ::-webkit-scrollbar-corner {
+    @apply bg-transparent;
+  }
 }
 
-:focus {
-  @apply outline-0;
+@layer components {
+  .container {
+    @apply mx-auto w-full max-w-screen-md px-4;
+  }
+
+  .button {
+    @apply interactive inline-flex h-12 items-center gap-2 px-3 leading-none ring-inset [&>svg]:flex-shrink-0 [&>svg]:s-5;
+  }
+
+  .anchor {
+    @apply transition hover:text-accent-300;
+  }
+  .anchor-underline {
+    @apply anchor underline hover:no-underline;
+  }
+
+  .input {
+    @apply block h-12 w-full bg-transparent px-3 leading-none ring-inset fancy:transition;
+  }
+
+  .textarea {
+    @apply input resize-none py-[11px] leading-normal;
+  }
+
+  .checkbox {
+    @apply panel interactive inline cursor-pointer appearance-none rounded-sm border-white/25 s-4 checked:bg-accent-400;
+  }
+
+  .label {
+    @apply text-sm font-medium leading-none;
+  }
+
+  .panel {
+    @apply rounded-md border border-white/10 bg-black fancy:bg-black/75;
+  }
+  .panel-border-r {
+    @apply rounded-none border-0 border-r;
+  }
+  .panel-border-l {
+    @apply rounded-none border-0 border-l;
+  }
+  .panel-border-t {
+    @apply rounded-none border-0 border-t;
+  }
+  .panel-border-b {
+    @apply rounded-none border-0 border-b;
+  }
+
+  .panel-divide-x {
+    @apply divide-x divide-white/10;
+  }
+  .panel-divide-y {
+    @apply divide-y divide-white/10;
+  }
+
+  .interactive {
+    @apply hover:border-accent-300/40 hover:text-accent-300 active:scale-95 active:shadow-none fancy:transition fancy:active:duration-0 [&.active]:border-accent-300/40 [&.active]:text-accent-300;
+  }
+
+  .glass {
+    @apply fancy:shadow-md fancy:shadow-black/25 fancy:backdrop-blur-lg;
+  }
 }
 
-:focus-visible {
-  @apply ring-2 ring-accent;
-}
+@layer components {
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+    }
 
-::-webkit-scrollbar {
-  @apply w-1.5;
-}
+    @keyframes fade-out {
+      to {
+        opacity: 0;
+      }
+    }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-white/25;
-}
+    [data-fancy-mode] .radix-fade-transition[data-state="open"] {
+      animation: fade-in theme(transitionDuration.DEFAULT)
+        theme(transitionTimingFunction.DEFAULT);
+    }
+    [data-fancy-mode] .radix-fade-transition[data-state="closed"] {
+      animation: fade-out theme(transitionDuration.DEFAULT)
+        theme(transitionTimingFunction.DEFAULT);
+    }
 
-::-webkit-scrollbar-corner {
-  @apply bg-transparent;
+    @keyframes zoom-fade-in {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+
+    @keyframes zoom-fade-out {
+      to {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+
+    [data-fancy-mode] .radix-zoom-fade-transition[data-state="open"] {
+      animation: zoom-fade-in theme(transitionDuration.DEFAULT)
+        theme(transitionTimingFunction.DEFAULT);
+    }
+    [data-fancy-mode] .radix-zoom-fade-transition[data-state="closed"] {
+      animation: zoom-fade-out theme(transitionDuration.DEFAULT)
+        theme(transitionTimingFunction.DEFAULT);
+    }
+    .radix-zoom-fade-transition {
+      transform-origin: var(--radix-popper-transform-origin);
+    }
+
+    @keyframes slide-left-in {
+      from {
+        transform: translateX(-100%);
+      }
+    }
+
+    @keyframes slide-left-out {
+      to {
+        transform: translateX(-100%);
+      }
+    }
+
+    [data-fancy-mode] .radix-slide-left-transition[data-state="open"] {
+      animation: slide-left-in theme(transitionDuration.DEFAULT);
+    }
+    [data-fancy-mode] .radix-slide-left-transition[data-state="closed"] {
+      animation: slide-left-out theme(transitionDuration.DEFAULT);
+    }
+
+    @keyframes slide-right-in {
+      from {
+        transform: translateX(100%);
+      }
+    }
+
+    @keyframes slide-right-out {
+      to {
+        transform: translateX(100%);
+      }
+    }
+
+    [data-fancy-mode] .radix-slide-right-transition[data-state="open"] {
+      animation: slide-right-in theme(transitionDuration.DEFAULT);
+    }
+    [data-fancy-mode] .radix-slide-right-transition[data-state="closed"] {
+      animation: slide-right-out theme(transitionDuration.DEFAULT);
+    }
+  }
 }

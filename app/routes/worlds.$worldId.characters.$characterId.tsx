@@ -46,7 +46,7 @@ export default function CharacterPage() {
 
   return (
     <div
-      className="grid gap-4 p-4 panel"
+      className="panel glass grid gap-4 p-4"
       style={{
         backgroundColor: colorClasses.background,
         borderColor: colorClasses.border,

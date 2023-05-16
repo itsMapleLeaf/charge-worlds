@@ -16,7 +16,7 @@ export function AppHeader({ title, breadcrumbs }: AppHeaderProps) {
     <header>
       <nav className="flex items-center">
         <div className="flex flex-1 flex-wrap items-start gap-1.5 text-lg font-light leading-tight">
-          <Link to="/" className="flex items-center gap-1 anchor">
+          <Link to="/" className="anchor flex items-center gap-1">
             <Zap className="s-5" /> Charge Worlds
           </Link>
 
@@ -35,10 +35,7 @@ export function AppHeader({ title, breadcrumbs }: AppHeaderProps) {
         <div className="ml-auto self-start">
           <AuthGuard
             fallback={
-              <Link
-                to={route("/auth/discord/login")}
-                className="border-0 bg-transparent button"
-              >
+              <Link to={route("/auth/discord/login")} className="button">
                 <LogIn /> Sign in with Discord
               </Link>
             }

@@ -82,7 +82,7 @@ export default function WorldPage() {
           />
 
           <div className="flex flex-1 items-start gap-2">
-            <aside className="sticky top-8 hidden w-56 overflow-y-auto lg:block xl:w-64 panel">
+            <aside className="panel glass sticky top-8 hidden w-56 overflow-y-auto lg:block xl:w-64">
               <WorldNav />
             </aside>
 
@@ -92,7 +92,7 @@ export default function WorldPage() {
               </ClientSideLoadingSuspense>
             </div>
 
-            <aside className="sticky top-8 hidden h-[calc(100vh-12rem)] w-56 overflow-y-auto md:block xl:w-64 panel">
+            <aside className="panel glass sticky top-8 hidden h-[calc(100vh-12rem)] w-56 overflow-y-auto md:block xl:w-64">
               <ClientSideLoadingSuspense>
                 <DicePanel />
               </ClientSideLoadingSuspense>
@@ -117,7 +117,10 @@ export default function WorldPage() {
 function MenuDrawerButton() {
   return (
     <Dialog>
-      <DialogButton className="rounded-full button" title="Open drawer">
+      <DialogButton
+        className="button glass panel rounded-full"
+        title="Open drawer"
+      >
         <SidebarOpen />
       </DialogButton>
       <DialogOverlay>
@@ -182,7 +185,7 @@ function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
     <NavLink
       to={props.to}
       end
-      className="origin-left rounded-0 border-none bg-transparent button"
+      className="rounded-0 button origin-left border-none bg-transparent"
       prefetch="intent"
     >
       <props.icon aria-hidden /> {props.label}
@@ -207,7 +210,7 @@ function CharacterList() {
       ))}
       {membership?.role === "OWNER" && (
         <button
-          className="h-10 origin-left border-0 rounded-0 bg-transparent button"
+          className="rounded-0 button h-10 origin-left border-0 bg-transparent"
           onClick={() => {
             const result = mutations.create({ name: "New Character" })
             if (!result) return
@@ -244,11 +247,11 @@ function CharacterLink({
         worldId: world.id,
         characterId: character._id,
       })}
-      className="h-10 origin-left rounded-0 border-none bg-transparent button"
+      className="rounded-0 button h-10 origin-left border-none bg-transparent"
       key={character._id}
     >
       <div
-        className="relative border rounded-full brightness-150 s-5 -top-px"
+        className="relative -top-px rounded-full border brightness-150 s-5"
         style={{
           backgroundColor: colors.background,
           borderColor: colors.border,
@@ -267,7 +270,10 @@ function CharacterLink({
 function DiceDrawerButton() {
   return (
     <Dialog>
-      <DialogButton className="rounded-full button" title="Show dice rolls">
+      <DialogButton
+        className="button glass panel rounded-full"
+        title="Show dice rolls"
+      >
         <Dices />
       </DialogButton>
       <DialogOverlay>

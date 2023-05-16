@@ -9,9 +9,9 @@ export function LoadingSpinner({
   return (
     <div
       className={clsx(
-        "grid grid-cols-2 grid-rows-2 animate-spin",
-        size === "small" && "s-5 gap-0.5",
-        size === "medium" && "s-12 gap-1.5",
+        "grid animate-spin grid-cols-2 grid-rows-2",
+        size === "small" && "gap-0.5 s-5",
+        size === "medium" && "gap-1.5 s-12",
       )}
     >
       <div className="rounded-full bg-accent-200" />

@@ -8,7 +8,7 @@ export function CharacterHideButton({
   onHiddenChange: (hidden: boolean) => void
 }) {
   return (
-    <button className="button" onClick={() => onHiddenChange(!hidden)}>
+    <button className="button panel" onClick={() => onHiddenChange(!hidden)}>
       {hidden ? <Eye /> : <EyeOff />}
       {hidden ? "Unhide" : "Hide"}
     </button>

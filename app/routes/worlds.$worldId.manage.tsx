@@ -70,13 +70,13 @@ export default function SettingsPage() {
 
   return (
     <div className="grid gap-4">
-      <section className="grid gap-4 p-4 panel">
+      <section className="glass panel grid gap-4 p-4">
         <h1 className="text-3xl font-light">Actions</h1>
         <div className="flex flex-wrap gap-2">
           <ResetMomentumButton />
         </div>
       </section>
-      <section className="grid gap-4 p-4 panel">
+      <section className="glass panel grid gap-4 p-4">
         <h1 className="text-3xl font-light">World Details</h1>
         {actionData && "error" in actionData && (
           <p className="text-red-4">{actionData.error}</p>
@@ -89,7 +89,7 @@ export default function SettingsPage() {
             defaultValue={data.world.name}
             placeholder="A Brand New World"
           />
-          <FormButton className="justify-self-start button">
+          <FormButton className="panel button justify-self-start">
             <CheckCircle size={20} /> Save
           </FormButton>
         </ValidatedForm>
@@ -103,7 +103,7 @@ function ResetMomentumButton() {
   const mutations = CharacterCollection.useMutations()
   return (
     <button
-      className="button"
+      className="button panel"
       onClick={() => {
         for (const character of characters) {
           mutations.update(character._id, {

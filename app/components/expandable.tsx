@@ -37,7 +37,7 @@ export function Expandable({ children }: { children: React.ReactNode }) {
       </motion.div>
       {innerHeight > maxHeight && (
         <button
-          className="hover:text-foreground-8 relative z-10 w-full flex flex-row items-center justify-center gap-2 border-t border-white/10 bg-black p-2 text-sm"
+          className="hover:text-foreground-8 relative z-10 flex w-full flex-row items-center justify-center gap-2 border-t border-white/10 bg-black p-2 text-sm"
           onClick={() => setExpanded(!expanded)}
         >
           {expanded ? "Show less" : "Show more"}

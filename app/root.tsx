@@ -9,7 +9,6 @@ import {
   useLoaderData,
   useRouteError,
 } from "@remix-run/react"
-import reset from "@unocss/reset/tailwind.css"
 import type { LinksFunction, LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
 import type { ReactNode } from "react"
@@ -29,7 +28,6 @@ export const meta: V2_MetaFunction = () => getAppMeta()
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: rubik },
-  { rel: "stylesheet", href: reset },
   { rel: "stylesheet", href: styles },
   { rel: "icon", href: favicon },
 ]
@@ -102,7 +100,7 @@ function Document({
     <html
       lang="en"
       data-fancy-mode={settings.fancyMode || undefined}
-      className="[word-break:break-word] break-words bg-black text-neutral-3"
+      className="break-words bg-black text-accent-50 [word-break:break-word]"
     >
       <head>
         <meta charSet="utf-8" />
@@ -111,11 +109,11 @@ function Document({
         <Links />
       </head>
       <body
-        className="bg-[length:100%_auto] fancy:bg-fixed bg-top bg-no-repeat"
+        className="bg-[length:100%_auto] bg-top bg-no-repeat fancy:bg-fixed"
         style={{ backgroundImage: `url(${background})` }}
       >
-        <div className="min-h-[100vh] flex flex-col bg-black/50">
-          <div className="mx-auto w-full max-w-screen-2xl flex flex-1 flex-col p-4 lg:px-8">
+        <div className="flex min-h-[100vh] flex-col bg-black/50">
+          <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col p-4 lg:px-8">
             <ToastProvider>{children}</ToastProvider>
           </div>
 

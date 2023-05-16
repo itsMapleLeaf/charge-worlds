@@ -36,7 +36,7 @@ export function CharacterFieldsEditor(props: CharacterFieldsEditorProps) {
                   onChange={(event) =>
                     props.onChange(field.id, event.target.value)
                   }
-                  className={field.isLong ? "textarea" : "input"}
+                  className={field.isLong ? "textarea panel" : "input panel"}
                   readOnly={props.readOnly}
                 />
               </div>

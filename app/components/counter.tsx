@@ -17,23 +17,23 @@ export function Counter({
       <button
         type="button"
         title="Subtract one"
-        className="justify-center border-0 p-2 s-10 bg-transparent! button"
+        className="interactive flex items-center justify-center s-8"
         onClick={() => onChange(Math.max(value - 1, min))}
       >
-        <MinusCircle />
+        <MinusCircle className="s-5" />
       </button>
 
-      <p className="min-w-[1rem] text-center leading-none tabular-nums">
+      <p className="min-w-[1rem] text-center tabular-nums leading-none">
         {value}
       </p>
 
       <button
         type="button"
         title="Add one"
-        className="justify-center border-0 p-2 s-10 bg-transparent! button"
+        className="interactive flex items-center justify-center s-8"
         onClick={() => onChange(Math.min(value + 1, max))}
       >
-        <PlusCircle />
+        <PlusCircle className="s-5" />
       </button>
     </div>
   )
@@ -57,7 +57,7 @@ export function DotCounter({
           title={value === n ? `Set to ${n - 1}` : `Set to ${n}`}
           onClick={() => onChange(value === n ? n - 1 : n)}
           data-active={n <= value || undefined}
-          className="border-2 border-white/50 rounded-full transition s-5 active:scale-90 hover:border-accent data-[active]:bg-white active:duration-0 data-[active]:hover:bg-accent"
+          className="hover:border-accent data-[active]:hover:bg-accent rounded-full border-2 border-white/50 transition s-5 active:scale-90 active:duration-0 data-[active]:bg-white"
         />
       ))}
     </div>

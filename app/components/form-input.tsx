@@ -13,7 +13,7 @@ export function FormInput({
   const field = useField(props.name)
   return (
     <Field label={label} errors={field.error}>
-      <input {...props} className={clsx("input", props.className)} />
+      <input {...props} className={clsx("input panel", props.className)} />
     </Field>
   )
 }

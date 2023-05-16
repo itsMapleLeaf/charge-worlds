@@ -19,7 +19,7 @@ export function DialogButton(props: RadixDialog.DialogTriggerProps) {
 export function DialogOverlay(props: { children: React.ReactNode }) {
   return (
     <RadixDialog.Portal>
-      <RadixDialog.Overlay className="fixed inset-0 flex flex-col bg-black/75 fancy:bg-black/50 p-4 fancy:backdrop-blur-md data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150!">
+      <RadixDialog.Overlay className="radix-fade-transition fixed inset-0 flex flex-col bg-black/75 p-4 fancy:bg-black/50 fancy:backdrop-blur-md">
         {props.children}
       </RadixDialog.Overlay>
     </RadixDialog.Portal>
@@ -28,7 +28,7 @@ export function DialogOverlay(props: { children: React.ReactNode }) {
 
 export function DialogModalPanel(props: { children: React.ReactNode }) {
   return (
-    <RadixDialog.Content className="m-auto max-h-full max-w-lg w-full flex flex-col overflow-y-auto radix-zoom-fade-transition divide-y divide-white/10 panel">
+    <RadixDialog.Content className="radix-zoom-fade-transition panel glass panel-divide-y m-auto flex max-h-full w-full max-w-lg flex-col overflow-y-auto">
       {props.children}
     </RadixDialog.Content>
   )
@@ -41,23 +41,18 @@ export function DialogDrawerPanel(props: {
   return (
     <RadixDialog.Content
       className={clsx(
-        ":uno: fixed inset-y-0 w-64 flex flex-col overflow-y-scroll rounded-0 animate-duration-300! animate-ease! panel",
+        "panel glass group fixed inset-y-0 flex w-64 flex-col overflow-y-scroll ",
         props.side === "left" &&
-          ":uno: left-0 border-0 border-r data-[state=closed]:animate-slide-out-left data-[state=open]:animate-slide-in-left",
+          "radix-slide-left-transition panel-border-r left-0",
         props.side === "right" &&
-          ":uno: right-0 border-0 border-l data-[state=closed]:animate-slide-out-right data-[state=open]:animate-slide-in-right",
+          "radix-slide-right-transition panel-border-l right-0",
       )}
+      data-side={props.side}
     >
       <div className="flex-1">{props.children}</div>
-      <div
-        data-side={props.side}
-        className="sticky bottom-0 p-4 data-[side=right]:self-end"
-      >
-        <DialogClose className="rounded-full button" title="Dismiss">
-          <SidebarClose
-            data-side={props.side}
-            className="data-[side=right]:-scale-x-100"
-          />
+      <div className="sticky bottom-0 p-4 group-data-[side=right]:self-end">
+        <DialogClose className="button panel rounded-full" title="Dismiss">
+          <SidebarClose className="group-data-[side=right]:-scale-x-100" />
         </DialogClose>
       </div>
     </RadixDialog.Content>

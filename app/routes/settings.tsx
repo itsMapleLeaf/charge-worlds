@@ -43,7 +43,7 @@ export default function SettingsPage() {
   return (
     <div className="grid gap-4">
       <AppHeader title="Settings" breadcrumbs={[]} />
-      <div className="grid gap-4 p-4 panel">
+      <div className="panel grid gap-4 p-4">
         <ToggleSetting
           id="fancyMode"
           name="Fancy Mode"
@@ -68,7 +68,11 @@ function ToggleSetting(props: {
       <h2 className="text-2xl font-light">{props.name}</h2>
       <p className="mb-2 text-sm opacity-75">{props.description}</p>
       <Form method="POST">
-        <button className="button" name={props.id} value={String(!props.value)}>
+        <button
+          className="button button-flat"
+          name={props.id}
+          value={String(!props.value)}
+        >
           {isPending && <LoadingSpinner size="small" />}
           {props.value ? "On" : "Off"}
         </button>

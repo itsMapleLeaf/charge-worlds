@@ -14,7 +14,7 @@ export function CharacterActionRollButton({
   return (
     <button
       title={title}
-      className="justify-center border-0 bg-transparent p-2 s-10 -m-2 button"
+      className="button -m-2 justify-center border-0 bg-transparent p-2 s-10"
       onClick={() => setRoll(intent, poolSize)}
     >
       {children}

@@ -14,3 +14,5 @@ export type RequiredNonNullable<T> = {
 }
 
 export type Nullish<T> = T | null | undefined
+
+export type Merge<A, B> = Simplify<A & Omit<B, keyof A>>

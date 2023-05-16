@@ -16,7 +16,7 @@ export function CharacterDeleteButton({
 }) {
   return (
     <Dialog>
-      <DialogButton className="button">
+      <DialogButton className="button panel">
         <Trash />
         Delete
       </DialogButton>
@@ -25,11 +25,11 @@ export function CharacterDeleteButton({
           <div className="grid gap-3 p-3 text-center">
             <p>Are you sure you want to delete {character.name}?</p>
             <div className="flex items-center justify-center gap-4">
-              <DialogClose className="button">
+              <DialogClose className="button panel">
                 <X />
                 Cancel
               </DialogClose>
-              <DialogClose className="button" onClick={onDelete}>
+              <DialogClose className="button panel" onClick={onDelete}>
                 <Trash />
                 Delete
               </DialogClose>

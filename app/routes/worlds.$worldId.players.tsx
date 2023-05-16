@@ -41,7 +41,7 @@ export async function loader({ request, params }: LoaderArgs) {
 export default function PlayersPage() {
   const data = useLoaderData<typeof loader>()
   return (
-    <section className="grid gap-4 p-4 panel">
+    <section className="glass panel grid gap-4 p-4">
       <h2 className="text-3xl font-light">Players</h2>
       <div className="grid gap-2">
         <AddPlayerForm />

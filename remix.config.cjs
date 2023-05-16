@@ -3,16 +3,14 @@
 const config = {
   serverDependenciesToBundle: ["@formkit/auto-animate/react", "pretty-bytes"],
   serverModuleFormat: "cjs",
-  postcss: true,
+  tailwind: true,
   future: {
     v2_errorBoundary: true,
     v2_meta: true,
     v2_normalizeFormMethod: true,
     v2_routeConvention: true,
-    unstable_postcss: true,
-    // unstable_dev: true,
   },
-  watchPaths: ["./uno.config.ts"],
+  watchPaths: ["./tailwind.config.ts"],
 }
 
 module.exports = config

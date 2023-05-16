@@ -20,7 +20,7 @@ export function CharacterPrimaryInfoEditor({
 }) {
   return (
     <div className="flex flex-wrap gap-4 [&>*]:flex-1 [&>*]:basis-48">
-      <div className="min-h-[16rem] overflow-clip panel">
+      <div className="panel min-h-[16rem] overflow-clip">
         <RichImage src={character.imageUrl ?? undefined} />
       </div>
 
@@ -33,13 +33,13 @@ export function CharacterPrimaryInfoEditor({
             onChange={(event) => {
               onCharacterChange({ name: event.target.value })
             }}
-            className="input"
+            className="input panel"
             readOnly={isSpectator}
           />
         </Field>
         <Field label="Reference image">
           <input
-            className="input"
+            className="input panel"
             placeholder="https://the/image.png"
             value={character.imageUrl ?? ""}
             onChange={(event) => {
@@ -50,7 +50,7 @@ export function CharacterPrimaryInfoEditor({
         </Field>
         <section className="grid gap-2">
           <h2 className="label">Momentum</h2>
-          <div className="grid h-12 place-items-center panel">
+          <div className="panel grid h-12 place-items-center">
             {isSpectator ? (
               <p className="font-medium">{character.momentum}</p>
             ) : (
@@ -64,7 +64,7 @@ export function CharacterPrimaryInfoEditor({
       </div>
 
       <div className="flex flex-col gap-4">
-        <div className="flex flex-1 items-center justify-center p-4 panel">
+        <div className="panel flex flex-1 items-center justify-center p-4">
           <ClockInput
             name="Stress"
             progress={character.stress}
@@ -81,7 +81,7 @@ export function CharacterPrimaryInfoEditor({
             onChange={(event) => {
               onCharacterChange({ condition: event.target.value })
             }}
-            className="textarea"
+            className="textarea panel"
             readOnly={isSpectator}
           />
         </Field>

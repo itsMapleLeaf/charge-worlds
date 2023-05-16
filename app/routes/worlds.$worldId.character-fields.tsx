@@ -11,7 +11,7 @@ export default function CharacterFieldsPage() {
   const [autoAnimateRef] = useAutoAnimate()
   return (
     <section>
-      <div className="grid mb-4 p-4 panel" ref={autoAnimateRef}>
+      <div className="glass panel mb-4 grid p-4" ref={autoAnimateRef}>
         <h2 className="text-3xl font-light">Character Fields</h2>
         {fields.map((field, index) => (
           <Fragment key={field.id}>
@@ -22,7 +22,7 @@ export default function CharacterFieldsPage() {
       </div>
       <button
         type="button"
-        className="button"
+        className="button panel"
         onClick={() => mutations.append({ id: crypto.randomUUID() })}
       >
         <ListPlus /> Add field
@@ -55,7 +55,7 @@ function CharacterFieldForm({
       <input
         id={nameId}
         placeholder="Field name"
-        className="input"
+        className="input panel"
         value={field.name}
         onChange={(event) => {
           mutations.update(index, { name: event.target.value })
@@ -68,7 +68,7 @@ function CharacterFieldForm({
       <TextArea
         id={descriptionId}
         placeholder="Tell players what to put here."
-        className="textarea"
+        className="textarea panel"
         rows={2}
         value={field.description}
         onChange={(event) => {
@@ -97,35 +97,35 @@ function CharacterFieldForm({
             <button
               type="button"
               title="Move field up"
-              className="flex items-center justify-center border-0 bg-transparent p-2 s-10 button"
+              className="interactive flex items-center justify-center border-0 bg-transparent p-2 s-10"
               onClick={() => {
                 mutations.move(index, index - 1)
               }}
             >
-              <ChevronUp />
+              <ChevronUp className="s-5" />
             </button>
           )}
           {index < fields.length - 1 && (
             <button
               type="button"
               title="Move field down"
-              className="flex items-center justify-center border-0 bg-transparent p-2 s-10 button"
+              className="interactive flex items-center justify-center border-0 bg-transparent p-2 s-10"
               onClick={() => {
                 mutations.move(index, index + 1)
               }}
             >
-              <ChevronDown />
+              <ChevronDown className="s-5" />
             </button>
           )}
 
           <button
             title={`Remove ${field.name}`}
-            className="flex items-center justify-center border-0 bg-transparent p-2 s-10 button"
+            className="interactive flex items-center justify-center border-0 bg-transparent p-2 s-10"
             onClick={() => {
               mutations.remove(index)
             }}
           >
-            <X />
+            <X className="s-5" />
           </button>
         </div>
       </div>

@@ -72,7 +72,7 @@ export function CreateCardButton(props: { onCreate?: (id: string) => void }) {
   const { setCurrentDialogCardId } = CardDashboardContext.useValue()
   return (
     <button
-      className="button"
+      className="glass panel button"
       onClick={() => {
         const id = crypto.randomUUID()
         mutations.prepend({
@@ -94,7 +94,7 @@ export function ToggleEditingButton() {
 
   return (
     <button
-      className="button"
+      className="glass panel button"
       onClick={() => {
         setEditing(!editing)
       }}
@@ -215,7 +215,7 @@ function CardDashboardEditing(props: {
                 {({ handle }) => (
                   <div
                     data-hidden={card.hidden}
-                    className="panel divide-y divide-white/10 data-[hidden=true]:opacity-75"
+                    className="glass panel panel-divide-y overflow-clip data-[hidden=true]:opacity-75"
                   >
                     <CardEditor
                       card={card}
@@ -250,7 +250,7 @@ function CardPanel({
   return (
     <article
       data-hidden={card.hidden}
-      className="divide-y divide-white/10 panel data-[hidden=true]:opacity-75"
+      className="glass panel panel-divide-y data-[hidden=true]:opacity-75"
     >
       <header className="flex items-center gap-3 p-3">
         <h3 className="flex-1 text-2xl font-light">
@@ -259,6 +259,7 @@ function CardPanel({
             <span className="opacity-75">({card.title})</span>
           )}
         </h3>
+        {isOwner && card.hidden && <EyeOff className="opacity-50" />}
       </header>
       <main className="grid max-h-[360px] gap-3 overflow-y-auto p-3">
         <AnimatePresence initial={false}>
@@ -352,10 +353,10 @@ function CardEditor({
             mutations.update(index, { title: event.target.value })
           }}
           data-title-hidden={card.titleHidden}
-          className="border-0 rounded-0 text-2xl font-light ring-inset input data-[title-hidden=true]:pr-12"
+          className="rounded-0 input border-0 text-2xl font-light ring-inset data-[title-hidden=true]:pr-12"
         />
         {card.titleHidden && (
-          <div className="absolute inset-y-0 right-0 px-3 flex items-center justify-center opacity-50">
+          <div className="absolute inset-y-0 right-0 flex items-center justify-center px-3 opacity-50">
             <EyeOff />
           </div>
         )}
@@ -387,7 +388,7 @@ function CardEditor({
         />
       </Toolbar>
 
-      <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto max-h-[32rem]">
+      <div className="max-h-[32rem] min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -475,7 +476,7 @@ function CardBlockControls(props: {
   onToggleHidden: () => void
 }) {
   return (
-    <div className="flex flex-col divide-y divide-white/10 panel">
+    <div className="panel flex flex-col divide-y divide-white/10">
       {props.children}
       <Toolbar>
         {props.dragHandle}
@@ -504,15 +505,14 @@ function DragSortableWithHandle({
   const sortable = useSortable({ id })
 
   const handle = (
-    <button
+    <ToolbarButton
       {...sortable.attributes}
       {...sortable.listeners}
       ref={sortable.setActivatorNodeRef}
       data-dragging={sortable.isDragging || undefined}
-      className="cursor-grab px-1.5 text-center data-[dragging]:cursor-grabbing"
-    >
-      <Grip className="inline leading-4 s-4" aria-label="Drag to rearrange" />
-    </button>
+      label="Drag to rearrange"
+      icon={Grip}
+    />
   )
 
   return (

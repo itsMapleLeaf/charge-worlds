@@ -43,24 +43,24 @@ export function RichImage(props: { src: Nullish<string> }) {
       >
         <Suspense fallback={<LoadingPlaceholder />}>
           <Dialog.Trigger
-            className="relative s-full flex items-center justify-center overflow-clip"
+            className="relative flex items-center justify-center overflow-clip s-full"
             title="Show large preview"
           >
             <Thumbnail
               resource={image}
               width={350}
-              className="absolute inset-0 s-full scale-110 object-cover fancy:blur-md brightness-25 fancy:brightness-50"
+              className="brightness-25 absolute inset-0 scale-110 object-cover s-full fancy:blur-md fancy:brightness-50"
             />
             <Thumbnail
               resource={image}
               width={350}
-              className="absolute inset-0 s-full object-contain"
+              className="absolute inset-0 object-contain s-full"
             />
           </Dialog.Trigger>
         </Suspense>
       </ErrorBoundary>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/75 fancy:backdrop-blur data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150! animate-ease!">
+        <Dialog.Overlay className="data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in animate-duration-150! animate-ease! fixed inset-0 bg-black/75 fancy:backdrop-blur">
           <ErrorBoundary
             fallback={
               <NoImageState
@@ -110,7 +110,7 @@ function Thumbnail({
 
 function NoImageState(props: { text: string; icon: lucide.LucideIcon }) {
   return (
-    <div className="s-full flex flex-col items-center justify-center gap-3 p-4">
+    <div className="flex flex-col items-center justify-center gap-3 p-4 s-full">
       <props.icon className="opacity-25 s-24" aria-hidden />
       <p className="opacity-75">{props.text}</p>
     </div>
@@ -267,7 +267,7 @@ function LargePreview({ resource }: { resource: SuspenseResource<string> }) {
   })
 
   return (
-    <Dialog.Content className="s-full flex flex-col gap-4 p-4 radix-zoom-fade-transition">
+    <Dialog.Content className="radix-zoom-fade-transition flex flex-col gap-4 p-4 s-full">
       <div
         className="min-h-0 flex-1 cursor-grab active:cursor-grabbing"
         ref={containerRef}
@@ -281,11 +281,11 @@ function LargePreview({ resource }: { resource: SuspenseResource<string> }) {
         />
       </div>
       <div className="relative flex justify-center gap-4">
-        <Dialog.Close className="button">Close</Dialog.Close>
+        <Dialog.Close className="button panel">Close</Dialog.Close>
         <div className="h-full w-px bg-white/10" />
         <button
           type="button"
-          className="button"
+          className="button panel"
           title="Zoom out"
           onClick={() => {
             zoomBy(1 / manualScaleStep, "viewport")
@@ -294,7 +294,7 @@ function LargePreview({ resource }: { resource: SuspenseResource<string> }) {
           <lucide.Minus />
         </button>
         <button
-          className="tabular-nums button"
+          className="button panel tabular-nums"
           onClick={() => {
             targetTransform.current.scale = 1
           }}
@@ -302,7 +302,7 @@ function LargePreview({ resource }: { resource: SuspenseResource<string> }) {
         ></button>
         <button
           type="button"
-          className="button"
+          className="button panel"
           title="Zoom in"
           onClick={() => {
             zoomBy(manualScaleStep, "viewport")

@@ -10,12 +10,12 @@ export function CharacterColorButton({
 }) {
   return (
     <RadixPopover.Root>
-      <RadixPopover.Trigger className="button">
+      <RadixPopover.Trigger className="button panel">
         <Palette /> Color
       </RadixPopover.Trigger>
       <RadixPopover.Portal>
         <RadixPopover.Content
-          className="w-64 origin-[var(--radix-popover-content-transform-origin)] p-4 radix-zoom-fade-transition panel"
+          className="radix-zoom-fade-transition panel glass w-64 origin-[var(--radix-popover-content-transform-origin)] p-4"
           collisionPadding={8}
           sideOffset={4}
           align="start"
@@ -24,7 +24,7 @@ export function CharacterColorButton({
             {Object.entries(characterColors).map(([name, classes]) => (
               <button
                 key={name}
-                className="button"
+                className="button panel hover:brightness-125"
                 style={{
                   backgroundColor: classes.background,
                   borderColor: rgba(classes.border, 0.5),

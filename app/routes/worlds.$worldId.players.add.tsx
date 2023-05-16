@@ -88,13 +88,13 @@ export function AddPlayerForm() {
         <div className="flex gap-2">
           <input
             name="discordId"
-            className="flex-1 input"
+            className="input panel flex-1"
             placeholder="123456789012345678"
             pattern="[0-9]+"
             title="A valid discord ID (digits only)"
           />
           <button
-            className="justify-center s-12 button"
+            className="button panel justify-center s-12"
             type="submit"
             title="Add player"
           >

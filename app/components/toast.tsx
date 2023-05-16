@@ -58,9 +58,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           ref={animationParent}
         >
           {toasts.map((toast) => (
-            <li role="alert" key={toast.id} className="max-w-lg w-full">
+            <li role="alert" key={toast.id} className="w-full max-w-lg">
               <button
-                className="pointer-events-auto w-full flex flex-row items-center gap-3 rounded-lg bg-white p-4 text-slate-900 shadow-lg"
+                className="pointer-events-auto flex w-full flex-row items-center gap-3 rounded-lg bg-white p-4 text-slate-900 shadow-lg"
                 onClick={() => actions.dismiss(toast.id)}
               >
                 {toast.type === "info" && <Info className="text-blue-600" />}

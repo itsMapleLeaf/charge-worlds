@@ -23,7 +23,7 @@ export function DicePanel() {
   const rolls = DiceRollCollection.useItems()
   const { isSpectator } = WorldContext.useValue()
   return (
-    <div className="h-full flex flex-col divide-y divide-white/10">
+    <div className="panel-divide-y flex h-full flex-col">
       <section className="min-h-0 flex-1">
         <DiceRollList rolls={rolls} />
       </section>
@@ -70,7 +70,7 @@ function DiceRollForm() {
 
   return (
     <form
-      className="flex flex-col divide-y divide-white/10"
+      className="panel-divide-y flex flex-col"
       onSubmit={(event) => {
         event.preventDefault()
         handleRoll()
@@ -79,7 +79,7 @@ function DiceRollForm() {
       <input
         value={intent}
         onChange={(event) => intentStore.set(event.target.value)}
-        className="border-0 rounded-0 ring-inset input"
+        className="rounded-0 input border-0 ring-inset"
         placeholder="Intent (e.g. Move +1)"
         maxLength={128}
         ref={intentRef}
@@ -88,7 +88,7 @@ function DiceRollForm() {
         }}
       />
       <div className="flex items-center justify-between gap-2">
-        <button type="submit" className="border-0 rounded-0 ring-inset button">
+        <button type="submit" className="button button-clear ring-inset">
           <Dices /> Roll
         </button>
         <div className="px-3">

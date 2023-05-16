@@ -95,7 +95,7 @@ function CreateWorldButton() {
 
   return (
     <Form method="POST">
-      <button className="button">
+      <button className="button panel glass">
         {pending ? <LoadingSpinner size="small" /> : <Wand2 />}
         Create a new world
       </button>
@@ -105,7 +105,7 @@ function CreateWorldButton() {
 
 function WorldListCta() {
   return (
-    <div className="h-full flex flex-col items-center justify-center">
+    <div className="flex h-full flex-col items-center justify-center">
       <p className="text-gray-500">
         Please{" "}
         <a href="/auth/discord/login" className="link">
@@ -133,7 +133,7 @@ function WorldList({
         <Link
           key={world.id}
           to={route("/worlds/:worldId", { worldId: world.id })}
-          className="flex flex-col p-4 interactive-panel"
+          className="panel interactive glass flex flex-col p-4"
         >
           <h2 className="mb-2 text-2xl font-light">{world.name}</h2>
           <p className="mt-auto text-sm opacity-75">

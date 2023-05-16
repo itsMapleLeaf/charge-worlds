@@ -47,7 +47,7 @@ export default function ScenePage() {
           />
           <AddCardButton />
           <button
-            className="button"
+            className="glass panel button"
             onClick={() => {
               mutations.update(0, {
                 cards: [],
@@ -96,12 +96,12 @@ function AddCardButton() {
 
   return (
     <Popover.Root>
-      <Popover.Trigger className="button">
+      <Popover.Trigger className="glass panel button">
         <Plus /> Add Card
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className="w-64 origin-top radix-zoom-fade-transition panel"
+          className="glass panel radix-zoom-fade-transition w-64 origin-top"
           sideOffset={8}
           onKeyDown={(event) => {
             const focusTargets = [
@@ -130,7 +130,7 @@ function AddCardButton() {
           }}
         >
           <input
-            className="border-0 border-b rounded-0 rounded-t-md input"
+            className="input panel panel-border-b rounded-t-md border-0"
             placeholder="Search..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -148,7 +148,7 @@ function AddCardButton() {
               itemContent={(_, item) => (
                 <button
                   key={item.id}
-                  className="h-10 w-full border-0 rounded-0 button"
+                  className="button h-10 w-full border-0"
                   onClick={() => {
                     addCard(item.id)
                     inputRef.current?.focus()
