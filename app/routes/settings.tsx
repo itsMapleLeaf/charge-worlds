@@ -69,7 +69,7 @@ function ToggleSetting(props: {
       <p className="mb-2 text-sm opacity-75">{props.description}</p>
       <Form method="POST">
         <button
-          className="button button-flat"
+          className="button panel"
           name={props.id}
           value={String(!props.value)}
         >
