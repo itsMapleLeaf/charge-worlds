@@ -3,12 +3,12 @@ import { NavLink, Outlet, useLoaderData, useNavigate } from "@remix-run/react"
 import type { LoaderArgs, V2_MetaFunction } from "@vercel/remix"
 import { json } from "@vercel/remix"
 import {
+  ChevronsRight,
   Dices,
   EyeOff,
   Gamepad2,
   Library,
   List,
-  Mountain,
   SidebarOpen,
   UserPlus,
   Wrench,
@@ -139,14 +139,16 @@ function WorldNav() {
     <nav className="flex flex-col">
       <WorldNavLink
         to={route("/worlds/:worldId", { worldId: world.id })}
-        icon={Mountain}
+        icon={ChevronsRight}
         label="Scene"
+        description="See what's currently happening."
       />
 
       <WorldNavLink
         to={route("/worlds/:worldId/library", { worldId: world.id })}
         icon={Library}
         label="Library"
+        description="Records of your journey thus far."
       />
 
       {membership?.role === "OWNER" && (
@@ -155,11 +157,13 @@ function WorldNav() {
             to={route("/worlds/:worldId/manage", { worldId: world.id })}
             icon={Wrench}
             label="Manage World"
+            description="Change world settings."
           />
           <WorldNavLink
             to={route("/worlds/:worldId/players", { worldId: world.id })}
             icon={Gamepad2}
             label="Players"
+            description="Manage player access."
           />
           <WorldNavLink
             to={route("/worlds/:worldId/character-fields", {
@@ -167,6 +171,7 @@ function WorldNav() {
             })}
             icon={List}
             label="Character Fields"
+            description="Manage character sheet fields."
           />
         </>
       )}
@@ -180,15 +185,19 @@ function WorldNav() {
   )
 }
 
-function WorldNavLink(props: { to: string; icon: LucideIcon; label: string }) {
+function WorldNavLink(props: {
+  to: string
+  icon: LucideIcon
+  label: string
+  description: string
+}) {
   return (
-    <NavLink
-      to={props.to}
-      end
-      className="rounded-0 button origin-left border-none bg-transparent"
-      prefetch="intent"
-    >
-      <props.icon aria-hidden /> {props.label}
+    <NavLink to={props.to} end className="interactive p-2.5" prefetch="intent">
+      <div className="flex items-center gap-1">
+        <props.icon aria-hidden />
+        {props.label}
+      </div>
+      <div className="text-xs opacity-75">{props.description}</div>
     </NavLink>
   )
 }
