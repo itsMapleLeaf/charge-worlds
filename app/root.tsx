@@ -77,9 +77,7 @@ export function ErrorBoundary() {
       <div className="container">
         <div className="grid gap-4 py-4">
           <h1 className="text-4xl font-light">Oops! Something went wrong.</h1>
-          <pre className="overflow-x-auto rounded-md bg-black/50 p-4">
-            {message}
-          </pre>
+          <pre className="glass panel overflow-x-auto p-4">{message}</pre>
           <a href="/" className="underline hover:no-underline">
             Return to safety
           </a>
