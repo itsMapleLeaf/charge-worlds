@@ -1,3 +1,4 @@
+import containerQueries from "@tailwindcss/container-queries"
 import type { Config } from "tailwindcss"
 import colors from "tailwindcss/colors"
 import plugin from "tailwindcss/plugin"
@@ -17,6 +18,7 @@ export default {
   },
   corePlugins: { container: false },
   plugins: [
+    containerQueries,
     plugin(function customStyles(api) {
       // adds s-* classes to set width and height
       api.matchUtilities(
