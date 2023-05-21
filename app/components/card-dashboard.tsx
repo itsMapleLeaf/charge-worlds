@@ -60,7 +60,7 @@ export function CardDashboardLayout(props: { children: ReactNode }) {
 export function CardDashboardControls(props: { children: React.ReactNode }) {
   const { isOwner } = WorldContext.useValue()
   return isOwner ? (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap gap-2">
       <ToggleEditingButton />
       {props.children}
     </div>
