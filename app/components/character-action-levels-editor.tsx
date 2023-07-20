@@ -19,7 +19,7 @@ export function CharacterActionLevelsEditor({
 }) {
   return (
     <div className="@container">
-      <div className="@lg:grid-cols-3 grid gap-2">
+      <div className="grid gap-2 @lg:grid-cols-3">
         {entriesTyped(characterActionLibrary).map(([category, actions]) => (
           <section key={category} className="panel flex flex-col p-4">
             <h4 className="mb-4 text-center text-xl leading-tight tracking-wide">
