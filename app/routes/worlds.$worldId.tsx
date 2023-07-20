@@ -212,6 +212,10 @@ function CharacterList() {
     characters = characters.filter((character) => !character.hidden)
   }
 
+  characters = characters
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .sort((a, b) => Number(a.hidden) - Number(b.hidden))
+
   return (
     <div className="flex flex-col">
       {characters.map((character) => (
