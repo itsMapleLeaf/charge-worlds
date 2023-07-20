@@ -37,7 +37,7 @@ import { getWorld } from "../data/world-db.server"
 import { pick } from "../helpers/pick"
 
 export const meta: V2_MetaFunction<typeof loader> = ({ data }) =>
-  getAppMeta({ title: data.world.name })
+  getAppMeta({ title: data?.world.name })
 
 export async function loader({ request, params }: LoaderArgs) {
   const [world, user, memberships] = await Promise.all([
