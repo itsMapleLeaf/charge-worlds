@@ -68,7 +68,7 @@ export function CharacterPrimaryInfoEditor({
           <ClockInput
             name="Stress"
             progress={character.stress}
-            maxProgress={4}
+            maxProgress={6}
             onProgressChange={(stress) => {
               isGameMaster && onCharacterChange({ stress })
             }}
