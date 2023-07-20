@@ -11,7 +11,7 @@
     "dev:routes": "pnpm run routes --watch",
     "build": "remix build",
     "start": "remix-serve build",
-    "lint": "pnpm run routes && pnpm run --parallel /^lint:/",
+    "lint": "pnpm run routes && pnpm run --parallel --no-bail /^lint:/",
     "lint:tsc": "tsc -b",
     "lint:eslint": "eslint --ext js,ts,tsx .",
     "format": "pnpm run routes && pnpm run --sequential /^format:/",
