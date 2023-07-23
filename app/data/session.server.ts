@@ -15,7 +15,7 @@ const sessionCookie = createCookie("charge_worlds_session", {
   secure: env.NODE_ENV === "production",
   sameSite: "lax",
   path: "/",
-  secrets: [env.COOKIE_SECRET],
+  secrets: [env.SESSION_SECRET],
   maxAge: 60 * 60 * 24 * 365, // 1 year
 })
 

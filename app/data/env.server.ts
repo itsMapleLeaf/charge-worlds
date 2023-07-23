@@ -7,7 +7,7 @@ const envSchema = z.object({
     .default("development"),
 
   DATABASE_URL: z.string(),
-  COOKIE_SECRET: z.string(),
+  SESSION_SECRET: z.string(),
 
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),

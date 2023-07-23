@@ -5,7 +5,7 @@
     "node": "18"
   },
   "scripts": {
-    "prepare": "prisma generate && panda codegen",
+    "setup": "prisma generate && panda codegen",
     "dev": "pnpm run --parallel /^dev:/",
     "dev:remix": "remix dev",
     "dev:routes": "remix-routes --watch",
@@ -27,25 +27,26 @@
     "@remix-run/css-bundle": "^1.19.1",
     "@remix-run/node": "^1.19.1",
     "@remix-run/react": "^1.19.1",
+    "@remix-run/serve": "^1.19.1",
     "isbot": "^3.6.13",
     "lucide-react": "^0.263.0",
+    "prisma": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "remix-routes": "^1.4.4",
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.3.3",
     "@pandacss/dev": "^0.7.0",
     "@remix-run/dev": "^1.19.1",
     "@remix-run/eslint-config": "^1.19.1",
-    "@remix-run/serve": "^1.19.1",
     "@types/node": "^20.4.4",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "eslint": "^8.45.0",
     "knip": "^2.16.1",
     "prettier": "^3.0.0",
-    "prisma": "^5.0.0",
-    "remix-routes": "^1.4.4",
     "typescript": "~5.1.6"
   }
 }
