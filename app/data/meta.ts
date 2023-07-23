@@ -1,4 +1,4 @@
-import type { V2_MetaDescriptor } from "@vercel/remix"
+import type { V2_MetaDescriptor } from "@remix-run/node"
 import { truthyJoin } from "../helpers/truthy-join"
 
 const siteUrl = "https://charge-worlds.mapleleaf.dev"

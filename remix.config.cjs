@@ -1,9 +1,8 @@
-/* eslint-disable unicorn/prefer-module */
 /** @type {import('@remix-run/dev').AppConfig} */
-const config = {
+module.exports = {
   serverDependenciesToBundle: ["@formkit/auto-animate/react", "pretty-bytes"],
   serverModuleFormat: "cjs",
-  tailwind: true,
+  postcss: true,
   future: {
     v2_errorBoundary: true,
     v2_meta: true,
@@ -14,5 +13,3 @@ const config = {
   },
   watchPaths: ["./tailwind.config.ts"],
 }
-
-module.exports = config

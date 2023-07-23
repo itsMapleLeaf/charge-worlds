@@ -3,6 +3,7 @@ import { useSyncExternalStore } from "react"
 export class Store<T> {
   private listeners = new Set<(value: T) => void>()
 
+  // eslint-disable-next-line no-useless-constructor
   constructor(private valueInternal: T) {}
 
   get value(): T {

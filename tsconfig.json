@@ -1,27 +1,18 @@
 {
-  "extends": "@itsmapleleaf/configs/tsconfig.base",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "noUncheckedIndexedAccess": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.js",
-    "**/*.cjs",
-    "**/*.mjs",
-    "**/*.astro",
-    ".eslintrc.cjs"
-  ],
-  "exclude": [
-    "**/node_modules/**",
-    "**/build/**",
-    "**/dist/**",
-    "**/.cache/**",
-    "api",
-    "generated"
-  ]
+  "exclude": ["node_modules", "build", "public/build"]
 }

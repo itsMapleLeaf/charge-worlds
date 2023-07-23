@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2"
 import type { User } from "@prisma/client"
-import { createCookie } from "@vercel/remix"
+import { createCookie } from "@remix-run/node"
 import { z } from "zod"
 import { raise } from "../helpers/errors"
 import { db } from "./db.server"

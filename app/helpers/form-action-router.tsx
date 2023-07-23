@@ -1,9 +1,8 @@
+import type { ActionArgs, TypedResponse } from "@remix-run/node"
 import * as RemixReact from "@remix-run/react"
-import type { ActionArgs, TypedResponse } from "@vercel/remix"
 import type { ComponentProps } from "react"
 import { useMemo } from "react"
 import type * as z from "zod"
-import type { ZodRawShape } from "zod"
 import { ZodEffects, ZodObject, ZodString } from "zod"
 import { autoRef } from "./react"
 
@@ -46,6 +45,7 @@ export class ActionRoute<
 > {
   readonly __fieldNames!: OnlyString<keyof FormInput>
 
+  // eslint-disable-next-line no-useless-constructor
   constructor(
     readonly name: string,
     readonly config: {
@@ -59,7 +59,7 @@ export class ActionRoute<
     context: Context,
     redirectTo: string | undefined,
   ): Promise<TypedResponse<ActionRouteData<Output>> | undefined> {
-    const { json, redirect } = await import("@vercel/remix")
+    const { json, redirect } = await import("@remix-run/node")
 
     const formData = await args.request.clone().formData()
     const actionName = formData.get("actionName")
@@ -191,7 +191,7 @@ function extractZodString(schema: z.ZodTypeAny): ZodString | undefined {
 
 function extractZodObject(
   schema: z.ZodTypeAny,
-): ZodObject<ZodRawShape> | undefined {
+): ZodObject<z.ZodRawShape> | undefined {
   if (schema instanceof ZodObject) return schema
   if (schema instanceof ZodEffects)
     return extractZodObject(schema.innerType() as z.ZodTypeAny)
