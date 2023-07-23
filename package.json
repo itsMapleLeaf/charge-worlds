@@ -9,6 +9,7 @@
     "dev": "pnpm run --parallel /^dev:/",
     "dev:remix": "remix dev",
     "dev:routes": "remix-routes --watch",
+    "dev:prisma": "prisma studio",
     "build": "remix build",
     "start": "remix-serve build",
     "lint": "remix-routes && pnpm run --parallel --no-bail /^lint:/",
