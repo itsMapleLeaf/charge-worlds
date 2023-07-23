@@ -29,13 +29,21 @@ export function MenuPanel({ children }: { children: React.ReactNode }) {
         align="end"
         sideOffset={8}
         className={css({
-          bg: "neutral.700",
-          shadow: "lg",
-          shadowColor: "neutral.950",
-          borderWidth: "thin",
-          borderStyle: "solid",
-          borderColor: "neutral.600",
-          rounded: "md",
+          "bg": "neutral.700",
+          "shadow": "lg",
+          "shadowColor": "neutral.950",
+          "borderWidth": "thin",
+          "borderStyle": "solid",
+          "borderColor": "neutral.600",
+          "rounded": "md",
+          "&[data-state=open]": {
+            animation: "100ms fadeRiseIn",
+            animationTimingFunction: "ease-out",
+          },
+          "&[data-state=closed]": {
+            animation: "100ms fadeRiseOut",
+            animationTimingFunction: "ease-in",
+          },
         })}
       >
         {children}

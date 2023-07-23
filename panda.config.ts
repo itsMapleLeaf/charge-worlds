@@ -1,5 +1,13 @@
 import { defineConfig } from "@pandacss/dev"
 
+const fadeRiseEnter = { transform: "translateY(0)", opacity: 1 }
+const fadeRiseExit = { transform: "translateY(0.5rem)", opacity: 0 }
+
+const fadeRiseKeyframes = {
+  fadeRiseIn: { from: fadeRiseExit, to: fadeRiseEnter },
+  fadeRiseOut: { from: fadeRiseEnter, to: fadeRiseExit },
+}
+
 export default defineConfig({
   // Whether to use css reset
   preflight: true,
@@ -20,6 +28,7 @@ export default defineConfig({
           sans: { value: `"Spline Sans Variable", sans-serif` },
         },
       },
+      keyframes: fadeRiseKeyframes,
     },
   },
 
