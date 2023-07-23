@@ -11,5 +11,5 @@ module.exports = {
     v2_dev: true,
     v2_headers: true,
   },
-  watchPaths: ["styled-system"],
+  watchPaths: ["./panda.config.ts", "styled-system"],
 }
