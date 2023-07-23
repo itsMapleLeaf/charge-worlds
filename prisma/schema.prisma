@@ -10,49 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id          String       @id @default(cuid())
-  name        String
-  avatarUrl   String?
-  discordId   String       @unique
-  sessionId   String?      @unique
-  memberships Membership[]
-}
-
-model World {
-  id                    String          @id @default(cuid())
-  createdAt             DateTime        @default(now())
-  name                  String
-  memberships           Membership[]
-  liveblocksRoomVersion Int             @default(0)
-  snapshots             WorldSnapshot[]
-}
-
-model WorldSnapshot {
-  id        String   @id @default(cuid())
+model Session {
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  name      String
-  data      Json     @db.Json
+  updatedAt DateTime @updatedAt
 
-  world   World  @relation(fields: [worldId], references: [id])
-  worldId String
-}
-
-model Membership {
-  id String @id @default(cuid())
-
-  user          User   @relation(fields: [userDiscordId], references: [discordId], onDelete: Cascade)
-  userDiscordId String
-
-  world   World  @relation(fields: [worldId], references: [id], onDelete: Cascade)
-  worldId String
-
-  role Role
-
-  @@unique([worldId, userDiscordId])
-}
-
-enum Role {
-  OWNER
-  PLAYER
+  discordAccessToken  String
+  discordRefreshToken String
+  discordExpiresAt    DateTime
 }

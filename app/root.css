@@ -1,1 +1,16 @@
 @layer reset, base, tokens, recipes, utilities;
+
+@layer reset {
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    box-shadow: 0 0 0 2px var(--colors-indigo-300);
+  }
+
+  button {
+    cursor: pointer;
+    color: inherit;
+  }
+}

@@ -1,3 +1,5 @@
+import splineSans from "@fontsource-variable/spline-sans/index.css"
+import { cssBundleHref } from "@remix-run/css-bundle"
 import type {
   LinksFunction,
   LoaderArgs,
@@ -5,40 +7,48 @@ import type {
 } from "@remix-run/node"
 import { json } from "@remix-run/node"
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   isRouteErrorResponse,
+  useLoaderData,
   useRouteError,
 } from "@remix-run/react"
+import { LucideLogIn, LucideLogOut } from "lucide-react"
 import type { ReactNode } from "react"
-import { css, cx } from "styled-system/css"
+import { $path } from "remix-routes"
+import { css } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
+import { button } from "./components/button"
+import { Menu, MenuButton, MenuItem, MenuPanel } from "./components/menu"
 import { getAppMeta } from "./data/meta"
-import { getSessionUser } from "./data/session.server"
-import { pick } from "./helpers/pick"
+import type { DiscordUser } from "./data/session.server"
+import { getDiscordUser, getSession } from "./data/session.server"
 import styles from "./root.css"
 
 export const meta: V2_MetaFunction = () => getAppMeta()
 
 export const links: LinksFunction = () => [
+  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+  { rel: "stylesheet", href: splineSans },
   { rel: "stylesheet", href: styles },
   { rel: "icon", href: favicon },
 ]
 
 export async function loader({ request }: LoaderArgs) {
-  const user = await getSessionUser(request)
-  return json({
-    user: user && pick(user, ["id", "name", "avatarUrl"]),
-  })
+  const session = await getSession(request)
+  const user = session && (await getDiscordUser(session))
+  return json({ user })
 }
 
 export default function Root() {
+  const { user } = useLoaderData<typeof loader>()
   return (
-    <Document>
+    <Document user={user}>
       <Outlet />
     </Document>
   )
@@ -69,9 +79,22 @@ export function ErrorBoundary() {
   )
 }
 
-function Document({ children }: { children: ReactNode }) {
+function Document({
+  children,
+  user,
+}: {
+  children: ReactNode
+  user?: DiscordUser | null
+}) {
   return (
-    <html lang="en" className={css({ bg: "neutral.900", color: "blue.50" })}>
+    <html
+      lang="en"
+      className={css({
+        bg: "neutral.900",
+        color: "blue.50",
+        fontFamily: "sans",
+      })}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -80,14 +103,43 @@ function Document({ children }: { children: ReactNode }) {
       </head>
       <body>
         <header
-          className={cx(
-            css({ bg: "neutral.800", shadow: "lg", px: "4", h: "12" }),
-            hstack(),
-          )}
+          className={hstack({
+            justify: "space-between",
+            bg: "neutral.800",
+            shadow: "lg",
+            px: "4",
+            h: "16",
+          })}
         >
-          <h1 className={css({ fontSize: "lg", fontWeight: "light" })}>
-            Charge Worlds
+          <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
+            World of Arte
           </h1>
+          {user ? (
+            <Menu>
+              <MenuButton>
+                <img
+                  src={user.avatarUrl}
+                  alt=""
+                  className={css({ w: "8", h: "8", rounded: "full" })}
+                />
+              </MenuButton>
+              <MenuPanel>
+                <MenuItem asChild>
+                  <Link to={$path("/auth/logout")}>
+                    <LucideLogOut size={20} /> Sign out
+                  </Link>
+                </MenuItem>
+              </MenuPanel>
+            </Menu>
+          ) : (
+            <Link
+              to={$path("/auth/discord")}
+              draggable={false}
+              className={button}
+            >
+              <LucideLogIn /> Sign in with Discord
+            </Link>
+          )}
         </header>
         {children}
         <Scripts />
