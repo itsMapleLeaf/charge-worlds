@@ -1,0 +1,7 @@
+{
+  "$schema": "https://unpkg.com/knip@2/schema.json",
+  "entry": ["app/root.tsx", "app/routes/**/*.{ts,tsx}"],
+  "project": ["app/**/*.{ts,tsx}"],
+  "ignore": ["app/helpers", "app/**/*.d.ts"],
+  "ignoreDependencies": ["isbot"]
+}

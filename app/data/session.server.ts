@@ -8,7 +8,7 @@ import { env } from "./env.server"
 const sessionCookieSchema = z.object({
   sessionId: z.string(),
 })
-export type SessionCookie = z.infer<typeof sessionCookieSchema>
+type SessionCookie = z.infer<typeof sessionCookieSchema>
 
 const sessionCookie = createCookie("charge_worlds_session", {
   httpOnly: true,
