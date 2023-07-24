@@ -1,16 +1,14 @@
+import { css, cx } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
 
-export const button = () =>
+const buttonBase = () =>
   hstack({
     bg: "neutral.700",
     borderWidth: "1px",
     borderColor: "neutral.600",
     color: "white",
     transition: "common",
-    px: "3",
-    h: "10",
     fontWeight: "medium",
-    rounded: "md",
     gap: "2.5",
     fontSize: "15px",
     transform: "translateY(0)",
@@ -19,5 +17,27 @@ export const button = () =>
       transitionDuration: "0s",
       transform: "translateY(2px)",
     },
-    "& > svg": { w: "5", h: "5", mx: "-1" },
   })
+
+export const button = () =>
+  cx(
+    buttonBase(),
+    hstack({
+      px: 3,
+      h: 10,
+      rounded: "md",
+      "& > svg": { w: 5, h: 5, mx: -1 },
+    }),
+  )
+
+export const circleButton = () =>
+  cx(
+    buttonBase(),
+    css({
+      justifyContent: "center",
+      rounded: "full",
+      w: 12,
+      h: 12,
+      "& > svg": { w: 6, h: 6 },
+    }),
+  )

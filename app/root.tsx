@@ -21,7 +21,7 @@ import { LucideLogIn, LucideLogOut } from "lucide-react"
 import type { ReactNode } from "react"
 import { $path } from "remix-routes"
 import { css, cx } from "styled-system/css"
-import { hstack } from "styled-system/patterns"
+import { hstack, vstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
 import { button } from "./components/button"
 import { container } from "./components/container"
@@ -103,30 +103,10 @@ function Document({
         <Links />
       </head>
       <body>
-        <div className={hstack({ bg: "neutral.800", h: "16", shadow: "lg" })}>
-          <header
-            className={cx(container(), hstack({ justify: "space-between" }))}
-          >
-            <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
-              World of Arte
-            </h1>
+        <div className={vstack({ minH: "screen", alignItems: "stretch" })}>
+          <Header>
             {user ? (
-              <Menu>
-                <MenuButton>
-                  <img
-                    src={user.avatarUrl}
-                    alt=""
-                    className={css({ w: "8", h: "8", rounded: "full" })}
-                  />
-                </MenuButton>
-                <MenuPanel>
-                  <MenuItem asChild>
-                    <Link to={$path("/auth/logout")}>
-                      <LucideLogOut size={20} /> Sign out
-                    </Link>
-                  </MenuItem>
-                </MenuPanel>
-              </Menu>
+              <UserMenu user={user} />
             ) : (
               <Link
                 to={$path("/auth/discord")}
@@ -136,12 +116,46 @@ function Document({
                 <LucideLogIn /> Sign in with Discord
               </Link>
             )}
-          </header>
+          </Header>
+          {children}
         </div>
-        {children}
         <Scripts />
         <LiveReload />
       </body>
     </html>
+  )
+}
+
+function Header({ children }: { children: ReactNode }) {
+  return (
+    <header className={hstack({ bg: "neutral.800", h: "16", shadow: "lg" })}>
+      <div className={cx(container(), hstack({ justify: "space-between" }))}>
+        <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
+          World of Arte
+        </h1>
+        {children}
+      </div>
+    </header>
+  )
+}
+
+function UserMenu({ user }: { user: DiscordUser }) {
+  return (
+    <Menu>
+      <MenuButton>
+        <img
+          src={user.avatarUrl}
+          alt=""
+          className={css({ w: "8", h: "8", rounded: "full" })}
+        />
+      </MenuButton>
+      <MenuPanel>
+        <MenuItem asChild>
+          <Link to={$path("/auth/logout")}>
+            <LucideLogOut size={20} /> Sign out
+          </Link>
+        </MenuItem>
+      </MenuPanel>
+    </Menu>
   )
 }
