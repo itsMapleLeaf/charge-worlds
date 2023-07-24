@@ -14,7 +14,7 @@ import { Select } from "~/components/select"
 
 export function DiceMenuButton() {
   return (
-    <Popover defaultOpen>
+    <Popover>
       <PopoverButton className={circleButton()}>
         <LucideDices />
         <span className={css({ srOnly: true })}>Dice Rolls</span>
