@@ -16,6 +16,7 @@ jobs:
     strategy:
       matrix:
         script: [tsc, eslint, knip]
+      fail-fast: false
     name: lint:${{ matrix.script }}
     runs-on: ubuntu-latest
     steps:
