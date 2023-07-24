@@ -12,7 +12,7 @@
     "dev:prisma": "prisma studio",
     "build": "panda codegen && remix build",
     "start": "remix-serve build",
-    "lint": "remix-routes && pnpm run --parallel /^lint:/",
+    "lint": "remix-routes && panda codegen && pnpm run --parallel /^lint:/",
     "lint:tsc": "tsc -b",
     "lint:eslint": "eslint .",
     "lint:knip": "knip",
