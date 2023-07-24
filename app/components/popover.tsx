@@ -1,23 +1,8 @@
 import * as RadixPopover from "@radix-ui/react-popover"
-import { css, cx } from "styled-system/css"
+import { css } from "styled-system/css"
 
 export const Popover = RadixPopover.Root
-
-export function PopoverButton(props: RadixPopover.PopoverTriggerProps) {
-  return (
-    <RadixPopover.Trigger
-      {...props}
-      className={cx(
-        css({
-          _hover: { opacity: 0.5 },
-          transition: "opacity",
-          rounded: "full",
-        }),
-        props.className,
-      )}
-    />
-  )
-}
+export const PopoverButton = RadixPopover.Trigger
 
 export function PopoverPanel({
   children,

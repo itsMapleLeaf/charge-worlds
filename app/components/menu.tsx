@@ -2,25 +2,8 @@ import * as Dropdown from "@radix-ui/react-dropdown-menu"
 import { css, cx } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
 
-export function Menu({ children }: { children: React.ReactNode }) {
-  return <Dropdown.Root>{children}</Dropdown.Root>
-}
-
-export function MenuButton(props: Dropdown.DropdownMenuTriggerProps) {
-  return (
-    <Dropdown.Trigger
-      {...props}
-      className={cx(
-        css({
-          _hover: { opacity: 0.5 },
-          transition: "opacity",
-          rounded: "full",
-        }),
-        props.className,
-      )}
-    />
-  )
-}
+export const Menu = Dropdown.Root
+export const MenuButton = Dropdown.Trigger
 
 export function MenuPanel({
   children,
