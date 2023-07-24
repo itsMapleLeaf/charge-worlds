@@ -5,18 +5,18 @@
     "node": "18"
   },
   "scripts": {
-    "setup": "prisma generate && panda codegen",
+    "prepare": "prisma generate && panda codegen && remix-routes",
     "dev": "pnpm run --parallel /^dev:/",
     "dev:remix": "remix dev",
     "dev:routes": "remix-routes --watch",
     "dev:prisma": "prisma studio",
-    "build": "panda codegen && remix build",
+    "build": "remix build",
     "start": "remix-serve build",
-    "lint": "remix-routes && panda codegen && pnpm run --parallel /^lint:/",
+    "lint": "pnpm run --parallel /^lint:/",
     "lint:tsc": "tsc -b",
     "lint:eslint": "eslint .",
     "lint:knip": "knip",
-    "format": "remix-routes && pnpm run --sequential /^format:/",
+    "format": "pnpm run --sequential /^format:/",
     "format:eslint": "eslint . --fix",
     "format:prettier": "prettier --write ."
   },
