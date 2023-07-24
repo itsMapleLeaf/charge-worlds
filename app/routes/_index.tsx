@@ -7,6 +7,7 @@ import {
 import { css } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
 import { circleButton } from "~/components/button"
+import { Popover, PopoverButton, PopoverPanel } from "~/components/popover"
 
 export default function Home() {
   return (
@@ -19,10 +20,7 @@ export default function Home() {
           <LucideUser />
           <span className={css({ srOnly: true })}>Your Characters</span>
         </button>
-        <button className={circleButton()}>
-          <LucideDices />
-          <span className={css({ srOnly: true })}>Dice Rolls</span>
-        </button>
+        <DiceMenuButton />
         <button className={circleButton()}>
           <LucideUsers />
           <span className={css({ srOnly: true })}>Players</span>
@@ -33,5 +31,18 @@ export default function Home() {
         </button>
       </footer>
     </>
+  )
+}
+function DiceMenuButton() {
+  return (
+    <Popover>
+      <PopoverButton className={circleButton()}>
+        <LucideDices />
+        <span className={css({ srOnly: true })}>Dice Rolls</span>
+      </PopoverButton>
+      <PopoverPanel side="top" align="center">
+        <div className={css({ w: 48, h: "min(calc(100vh - 8rem), 640px)" })} />
+      </PopoverPanel>
+    </Popover>
   )
 }

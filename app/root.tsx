@@ -128,7 +128,15 @@ function Document({
 
 function Header({ children }: { children: ReactNode }) {
   return (
-    <header className={hstack({ bg: "base.800", h: "16", shadow: "lg" })}>
+    <header
+      className={hstack({
+        bg: "base.800",
+        h: "16",
+        shadow: "lg",
+        borderBottomWidth: 1,
+        borderColor: "base.700",
+      })}
+    >
       <div className={cx(container(), hstack({ justify: "space-between" }))}>
         <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
           World of Arte
@@ -149,7 +157,7 @@ function UserMenu({ user }: { user: DiscordUser }) {
           className={css({ w: "8", h: "8", rounded: "full" })}
         />
       </MenuButton>
-      <MenuPanel>
+      <MenuPanel side="bottom" align="end">
         <MenuItem asChild>
           <Link to={$path("/auth/logout")}>
             <LucideLogOut size={20} /> Sign out
