@@ -5,14 +5,14 @@
     "node": "18"
   },
   "scripts": {
-    "prepare": "prisma generate && panda codegen && remix-routes",
+    "prepare": "prisma generate && panda codegen",
     "dev": "pnpm run --parallel /^dev:/",
     "dev:remix": "remix dev",
     "dev:routes": "remix-routes --watch",
     "dev:prisma": "prisma studio",
     "build": "remix build",
     "start": "remix-serve build",
-    "lint": "pnpm run --parallel /^lint:/",
+    "lint": "remix-routes && pnpm run --parallel /^lint:/",
     "lint:tsc": "tsc -b",
     "lint:eslint": "eslint .",
     "lint:knip": "knip",
