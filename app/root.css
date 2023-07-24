@@ -2,13 +2,14 @@
 
 @layer base {
   * {
+    outline-width: 2px;
     outline-style: solid;
     outline-color: transparent;
   }
   :focus {
-    outline: none;
+    outline-color: transparent;
   }
   :focus-visible {
-    outline: 2px solid var(--colors-accent-400);
+    outline-color: var(--colors-accent-400);
   }
 }
