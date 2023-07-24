@@ -1,4 +1,5 @@
 import { defineConfig, defineGlobalStyles } from "@pandacss/dev"
+import { preset } from "@pandacss/preset-panda"
 
 const fadeRiseEnter = { transform: "translateY(0)", opacity: 1 }
 const fadeRiseExit = { transform: "translateY(0.5rem)", opacity: 0 }
@@ -24,6 +25,10 @@ export default defineConfig({
   theme: {
     extend: {
       tokens: {
+        colors: {
+          base: preset.theme.tokens.colors.neutral,
+          accent: preset.theme.tokens.colors.indigo,
+        },
         fonts: {
           sans: { value: `"Spline Sans Variable", sans-serif` },
         },

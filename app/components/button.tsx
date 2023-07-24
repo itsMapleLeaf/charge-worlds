@@ -3,16 +3,16 @@ import { hstack } from "styled-system/patterns"
 
 const buttonBase = () =>
   hstack({
-    bg: "neutral.700",
+    bg: "base.700",
     borderWidth: "1px",
-    borderColor: "neutral.600",
+    borderColor: "base.600",
     color: "white",
     transition: "common",
     fontWeight: "medium",
     gap: "2.5",
     fontSize: "15px",
     transform: "translateY(0)",
-    _hover: { bg: "neutral.600" },
+    _hover: { bg: "base.600" },
     _active: {
       transitionDuration: "0s",
       transform: "translateY(2px)",

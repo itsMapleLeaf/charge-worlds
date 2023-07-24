@@ -91,7 +91,7 @@ function Document({
     <html
       lang="en"
       className={css({
-        bg: "neutral.900",
+        bg: "base.900",
         color: "blue.50",
         fontFamily: "sans",
       })}
@@ -128,7 +128,7 @@ function Document({
 
 function Header({ children }: { children: ReactNode }) {
   return (
-    <header className={hstack({ bg: "neutral.800", h: "16", shadow: "lg" })}>
+    <header className={hstack({ bg: "base.800", h: "16", shadow: "lg" })}>
       <div className={cx(container(), hstack({ justify: "space-between" }))}>
         <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
           World of Arte

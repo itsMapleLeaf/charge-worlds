@@ -29,10 +29,10 @@ export function MenuPanel({ children }: { children: React.ReactNode }) {
         align="end"
         sideOffset={8}
         className={css({
-          bg: "neutral.700",
+          bg: "base.700",
           shadow: "lg",
           borderWidth: "1px",
-          borderColor: "neutral.600",
+          borderColor: "base.600",
           rounded: "md",
           "&[data-state=open]": {
             animation: "100ms fadeRiseIn",
@@ -62,7 +62,7 @@ export function MenuItem(props: Dropdown.DropdownMenuItemProps) {
           borderColor: "transparent",
           _focusVisible: {
             ring: "none",
-            borderColor: "indigo.400",
+            borderColor: "accent.400",
           },
           _first: { roundedTop: "sm" },
           _last: { roundedBottom: "sm" },

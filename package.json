@@ -39,6 +39,7 @@
   "devDependencies": {
     "@flydotio/dockerfile": "^0.3.3",
     "@pandacss/dev": "^0.7.0",
+    "@pandacss/preset-panda": "^0.7.0",
     "@remix-run/dev": "^1.19.1",
     "@remix-run/eslint-config": "^1.19.1",
     "@types/node": "^20.4.4",
