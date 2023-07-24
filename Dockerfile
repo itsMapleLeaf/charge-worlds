@@ -24,7 +24,7 @@ RUN apt-get update -qq && \
     apt-get install -y python-is-python3 pkg-config build-essential openssl 
 
 # Install node modules
-COPY --link package.json pnpm-lock.yaml ./
+COPY --link package.json pnpm-lock.yaml panda.config.ts ./
 RUN pnpm install --frozen-lockfile --prod=false
 
 # Generate Prisma Client
