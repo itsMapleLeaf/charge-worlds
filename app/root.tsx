@@ -20,10 +20,11 @@ import {
 import { LucideLogIn, LucideLogOut } from "lucide-react"
 import type { ReactNode } from "react"
 import { $path } from "remix-routes"
-import { css } from "styled-system/css"
+import { css, cx } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
 import { button } from "./components/button"
+import { container } from "./components/container"
 import { Menu, MenuButton, MenuItem, MenuPanel } from "./components/menu"
 import { getAppMeta } from "./data/meta"
 import type { DiscordUser } from "./data/session.server"
@@ -102,45 +103,41 @@ function Document({
         <Links />
       </head>
       <body>
-        <header
-          className={hstack({
-            justify: "space-between",
-            bg: "neutral.800",
-            shadow: "lg",
-            px: "4",
-            h: "16",
-          })}
-        >
-          <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
-            World of Arte
-          </h1>
-          {user ? (
-            <Menu>
-              <MenuButton>
-                <img
-                  src={user.avatarUrl}
-                  alt=""
-                  className={css({ w: "8", h: "8", rounded: "full" })}
-                />
-              </MenuButton>
-              <MenuPanel>
-                <MenuItem asChild>
-                  <Link to={$path("/auth/logout")}>
-                    <LucideLogOut size={20} /> Sign out
-                  </Link>
-                </MenuItem>
-              </MenuPanel>
-            </Menu>
-          ) : (
-            <Link
-              to={$path("/auth/discord")}
-              draggable={false}
-              className={button}
-            >
-              <LucideLogIn /> Sign in with Discord
-            </Link>
-          )}
-        </header>
+        <div className={hstack({ bg: "neutral.800", h: "16", shadow: "lg" })}>
+          <header
+            className={cx(container(), hstack({ justify: "space-between" }))}
+          >
+            <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
+              World of Arte
+            </h1>
+            {user ? (
+              <Menu>
+                <MenuButton>
+                  <img
+                    src={user.avatarUrl}
+                    alt=""
+                    className={css({ w: "8", h: "8", rounded: "full" })}
+                  />
+                </MenuButton>
+                <MenuPanel>
+                  <MenuItem asChild>
+                    <Link to={$path("/auth/logout")}>
+                      <LucideLogOut size={20} /> Sign out
+                    </Link>
+                  </MenuItem>
+                </MenuPanel>
+              </Menu>
+            ) : (
+              <Link
+                to={$path("/auth/discord")}
+                draggable={false}
+                className={button()}
+              >
+                <LucideLogIn /> Sign in with Discord
+              </Link>
+            )}
+          </header>
+        </div>
         {children}
         <Scripts />
         <LiveReload />

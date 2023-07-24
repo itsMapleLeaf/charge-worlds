@@ -1,4 +1,4 @@
-import { defineConfig } from "@pandacss/dev"
+import { defineConfig, defineGlobalStyles } from "@pandacss/dev"
 
 const fadeRiseEnter = { transform: "translateY(0)", opacity: 1 }
 const fadeRiseExit = { transform: "translateY(0.5rem)", opacity: 0 }
@@ -34,4 +34,20 @@ export default defineConfig({
 
   // The output directory for your css system
   outdir: "styled-system",
+
+  globalCss: defineGlobalStyles({
+    "*": {
+      borderStyle: "solid",
+    },
+    button: {
+      cursor: "pointer",
+    },
+    ":focus": {
+      outline: "none",
+    },
+    ":focus-visible": {
+      ring: "2",
+      ringColor: "indigo.400",
+    },
+  }),
 })

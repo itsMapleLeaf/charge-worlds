@@ -1,6 +1,6 @@
 import * as Dropdown from "@radix-ui/react-dropdown-menu"
 import { css, cx } from "styled-system/css"
-import { hstack } from "styled-system/patterns"
+import { button } from "./button"
 
 export function Menu({ children }: { children: React.ReactNode }) {
   return <Dropdown.Root>{children}</Dropdown.Root>
@@ -31,9 +31,7 @@ export function MenuPanel({ children }: { children: React.ReactNode }) {
         className={css({
           bg: "neutral.700",
           shadow: "lg",
-          shadowColor: "neutral.950",
-          borderWidth: "thin",
-          borderStyle: "solid",
+          borderWidth: "1px",
           borderColor: "neutral.600",
           rounded: "md",
           "&[data-state=open]": {
@@ -57,14 +55,17 @@ export function MenuItem(props: Dropdown.DropdownMenuItemProps) {
     <Dropdown.Item
       {...props}
       className={cx(
-        hstack({
-          px: "3",
-          py: "2",
-          gap: "2",
-          transition: "common",
-          _first: { roundedTop: "md" },
-          _last: { roundedBottom: "md" },
-          _hover: { bg: "neutral.600", boxShadow: "none" },
+        button(),
+        css({
+          rounded: "0px",
+          borderWidth: "2px",
+          borderColor: "transparent",
+          _focusVisible: {
+            ring: "none",
+            borderColor: "indigo.400",
+          },
+          _first: { roundedTop: "sm" },
+          _last: { roundedBottom: "sm" },
         }),
         props.className,
       )}
