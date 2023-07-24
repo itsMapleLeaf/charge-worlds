@@ -10,7 +10,7 @@
     "dev:remix": "remix dev",
     "dev:routes": "remix-routes --watch",
     "dev:prisma": "prisma studio",
-    "build": "remix build",
+    "build": "panda codegen && remix build",
     "start": "remix-serve build",
     "lint": "remix-routes && pnpm run --parallel /^lint:/",
     "lint:tsc": "tsc -b",
