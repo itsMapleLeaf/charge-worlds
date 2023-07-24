@@ -46,13 +46,11 @@ export default defineConfig({
     },
     button: {
       cursor: "pointer",
+      color: "inherit",
     },
-    ":focus": {
-      outline: "none",
-    },
-    ":focus-visible": {
-      ring: "2",
-      ringColor: "indigo.400",
+    "input, select, textarea": {
+      background: "transparent",
+      color: "inherit",
     },
   }),
 })

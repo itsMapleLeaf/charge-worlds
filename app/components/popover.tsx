@@ -1,9 +1,7 @@
 import * as RadixPopover from "@radix-ui/react-popover"
 import { css, cx } from "styled-system/css"
 
-export function Popover({ children }: { children: React.ReactNode }) {
-  return <RadixPopover.Root>{children}</RadixPopover.Root>
-}
+export const Popover = RadixPopover.Root
 
 export function PopoverButton(props: RadixPopover.PopoverTriggerProps) {
   return (

@@ -9,7 +9,8 @@ const buttonBase = () =>
     color: "white",
     transition: "common",
     fontWeight: "medium",
-    gap: "2.5",
+    gap: 2.5,
+    justifyContent: "center",
     fontSize: "15px",
     transform: "translateY(0)",
     _hover: { bg: "base.600" },
@@ -22,7 +23,7 @@ const buttonBase = () =>
 export const button = () =>
   cx(
     buttonBase(),
-    hstack({
+    css({
       px: 3,
       h: 10,
       rounded: "md",
@@ -34,7 +35,6 @@ export const circleButton = () =>
   cx(
     buttonBase(),
     css({
-      justifyContent: "center",
       rounded: "full",
       w: 12,
       h: 12,

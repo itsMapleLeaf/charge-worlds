@@ -1,13 +1,8 @@
-import {
-  LucideDices,
-  LucideUser,
-  LucideUsers,
-  LucideWrench,
-} from "lucide-react"
+import { LucideUser, LucideUsers, LucideWrench } from "lucide-react"
 import { css } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
+import { DiceMenuButton } from "~/components/DiceMenuButton"
 import { circleButton } from "~/components/button"
-import { Popover, PopoverButton, PopoverPanel } from "~/components/popover"
 
 export default function Home() {
   return (
@@ -31,18 +26,5 @@ export default function Home() {
         </button>
       </footer>
     </>
-  )
-}
-function DiceMenuButton() {
-  return (
-    <Popover>
-      <PopoverButton className={circleButton()}>
-        <LucideDices />
-        <span className={css({ srOnly: true })}>Dice Rolls</span>
-      </PopoverButton>
-      <PopoverPanel side="top" align="center">
-        <div className={css({ w: 48, h: "min(calc(100vh - 8rem), 640px)" })} />
-      </PopoverPanel>
-    </Popover>
   )
 }

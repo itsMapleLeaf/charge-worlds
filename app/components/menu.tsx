@@ -43,6 +43,8 @@ export function MenuPanel({
           borderWidth: "1px",
           borderColor: "base.600",
           rounded: "md",
+          minW: 40,
+          overflowX: "clip",
           "&[data-state=open]": {
             animation: "100ms fadeRiseIn",
             animationTimingFunction: "ease-out",
@@ -53,7 +55,7 @@ export function MenuPanel({
           },
         })}
       >
-        {children}
+        <div className={css({ maxH: 72, overflowY: "auto" })}>{children}</div>
       </Dropdown.Content>
     </Dropdown.Portal>
   )
@@ -71,10 +73,10 @@ export function MenuItem(props: Dropdown.DropdownMenuItemProps) {
           rounded: "0px",
           borderWidth: "2px",
           borderColor: "transparent",
-          _focusVisible: {
-            ring: "none",
-            borderColor: "accent.400",
-          },
+          transition: "background",
+          cursor: "pointer",
+          _hover: { bg: "base.600" },
+          _focusVisible: { outline: "none", borderColor: "accent.400" },
           _first: { roundedTop: "sm" },
           _last: { roundedBottom: "sm" },
         }),
