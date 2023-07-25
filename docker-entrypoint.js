@@ -5,13 +5,17 @@ const { spawn } = require("node:child_process")
 const env = { ...process.env }
 
 ;(async () => {
+  const command = process.argv.slice(2).join(" ")
+
   // If running the web server then migrate existing database
-  if (process.argv.slice(2).join(" ") === "pnpm run start") {
+  if (
+    command === "node /app/node_modules/@remix-run/serve/dist/cli.js /app/build"
+  ) {
     await exec("npx prisma migrate deploy")
   }
 
   // launch application
-  await exec(process.argv.slice(2).join(" "))
+  await exec(command)
 })()
 
 function exec(command) {

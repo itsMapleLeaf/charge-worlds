@@ -55,7 +55,7 @@ RUN apt-get update -qq && \
 # Copy built application
 COPY --from=build /app /app
 
-# Make the docker entrypoint executable
+# Make the entrypoint executable
 RUN chmod +x /app/docker-entrypoint.js
 
 # Entrypoint prepares the database.
@@ -63,4 +63,4 @@ ENTRYPOINT [ "/app/docker-entrypoint.js" ]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "pnpm", "run", "start" ]
+CMD [ "node", "/app/node_modules/@remix-run/serve/dist/cli.js", "/app/build" ]
