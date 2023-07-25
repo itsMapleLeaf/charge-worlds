@@ -34,6 +34,9 @@ RUN npx prisma generate
 # Copy application code
 COPY --link . .
 
+# Run the setup script
+RUN pnpm run setup
+
 # Build application
 RUN pnpm run build
 
