@@ -23,7 +23,7 @@ import { LucideLogIn, LucideLogOut, LucideUser } from "lucide-react"
 import { useState, type ReactNode } from "react"
 import { $path } from "remix-routes"
 import { css, cx } from "styled-system/css"
-import { flex, hstack, vstack } from "styled-system/patterns"
+import { flex, hstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
 import { button } from "./components/button"
 import { container } from "./components/container"
@@ -104,7 +104,7 @@ function Document({ children }: { children: ReactNode }) {
         <Links />
       </head>
       <body>
-        <div className={vstack({ minH: "screen", alignItems: "stretch" })}>
+        <div className={flex({ direction: "column", h: "screen" })}>
           <Header>
             <UserMenu />
           </Header>
