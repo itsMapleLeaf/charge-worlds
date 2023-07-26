@@ -5,7 +5,6 @@ import type {
   LoaderArgs,
   V2_MetaFunction,
 } from "@remix-run/node"
-import { json } from "@remix-run/node"
 import {
   Link,
   Links,
@@ -17,19 +16,22 @@ import {
   useLoaderData,
   useRouteError,
 } from "@remix-run/react"
-import { LucideLogIn, LucideLogOut } from "lucide-react"
-import type { ReactNode } from "react"
+import { api } from "convex/_generated/api"
+import { ConvexHttpClient } from "convex/browser"
+import { ConvexProvider, ConvexReactClient } from "convex/react"
+import { LucideLogIn, LucideLogOut, LucideUser } from "lucide-react"
+import { useState, type ReactNode } from "react"
 import { $path } from "remix-routes"
 import { css, cx } from "styled-system/css"
-import { hstack, vstack } from "styled-system/patterns"
+import { flex, hstack, vstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
 import { button } from "./components/button"
 import { container } from "./components/container"
 import { Menu, MenuButton, MenuItem, MenuPanel } from "./components/menu"
 import { getAppMeta } from "./data/meta"
-import type { DiscordUser } from "./data/session.server"
-import { getDiscordUser, getSession } from "./data/session.server"
+import { env } from "./env.server"
 import styles from "./root.css"
+import { getSession } from "./session.server"
 
 export const meta: V2_MetaFunction = () => getAppMeta()
 
@@ -41,17 +43,22 @@ export const links: LinksFunction = () => [
 ]
 
 export async function loader({ request }: LoaderArgs) {
-  const session = await getSession(request)
-  const user = session && (await getDiscordUser(session))
-  return json({ user })
+  const sessionId = await getSession(request.headers.get("Cookie"))
+  const convexClient = new ConvexHttpClient(env.CONVEX_URL)
+  const user =
+    sessionId && (await convexClient.action(api.auth.getUser, { sessionId }))
+  return { sessionId, user, convexUrl: env.CONVEX_URL }
 }
 
 export default function Root() {
-  const { user } = useLoaderData<typeof loader>()
+  const { convexUrl } = useLoaderData<typeof loader>()
+  const [client] = useState(() => new ConvexReactClient(convexUrl))
   return (
-    <Document user={user}>
-      <Outlet />
-    </Document>
+    <ConvexProvider client={client}>
+      <Document>
+        <Outlet />
+      </Document>
+    </ConvexProvider>
   )
 }
 
@@ -80,13 +87,7 @@ export function ErrorBoundary() {
   )
 }
 
-function Document({
-  children,
-  user,
-}: {
-  children: ReactNode
-  user?: DiscordUser | null
-}) {
+function Document({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
@@ -105,17 +106,7 @@ function Document({
       <body>
         <div className={vstack({ minH: "screen", alignItems: "stretch" })}>
           <Header>
-            {user ? (
-              <UserMenu user={user} />
-            ) : (
-              <Link
-                to={$path("/auth/discord")}
-                draggable={false}
-                className={button()}
-              >
-                <LucideLogIn /> Sign in with Discord
-              </Link>
-            )}
+            <UserMenu />
           </Header>
           {children}
         </div>
@@ -147,15 +138,31 @@ function Header({ children }: { children: ReactNode }) {
   )
 }
 
-function UserMenu({ user }: { user: DiscordUser }) {
-  return (
+function UserMenu() {
+  const { user } = useLoaderData<typeof loader>()
+  return user ? (
     <Menu>
       <MenuButton>
-        <img
-          src={user.avatarUrl}
-          alt=""
-          className={css({ w: "8", h: "8", rounded: "full" })}
-        />
+        {user.avatarUrl ? (
+          <img
+            src={user.avatarUrl}
+            alt=""
+            className={css({ w: "8", h: "8", rounded: "full" })}
+          />
+        ) : (
+          <div
+            className={flex({
+              w: "8",
+              h: "8",
+              rounded: "full",
+              borderColor: "neutral.700",
+              align: "center",
+              justify: "center",
+            })}
+          >
+            <LucideUser />
+          </div>
+        )}
       </MenuButton>
       <MenuPanel side="bottom" align="end">
         <MenuItem asChild>
@@ -165,5 +172,15 @@ function UserMenu({ user }: { user: DiscordUser }) {
         </MenuItem>
       </MenuPanel>
     </Menu>
+  ) : (
+    <LoginLink />
+  )
+}
+
+function LoginLink() {
+  return (
+    <Link to={$path("/auth/discord")} draggable={false} className={button()}>
+      <LucideLogIn /> Sign in with Discord
+    </Link>
   )
 }

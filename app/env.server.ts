@@ -7,13 +7,9 @@ const envSchema = z.object({
     .default("development"),
 
   DATABASE_URL: z.string(),
-  SESSION_SECRET: z.string(),
-
-  DISCORD_CLIENT_ID: z.string(),
-  DISCORD_CLIENT_SECRET: z.string(),
-  DISCORD_REDIRECT_URI: z
-    .string()
-    .default("http://localhost:3000/auth/discord/callback"),
+  CONVEX_URL: z.string(),
+  CONVEX_HTTP_URL: z.string(),
+  AUTH_CALLBACK_URL: z.string(),
 })
 
 export const env = envSchema.parse(process.env)
