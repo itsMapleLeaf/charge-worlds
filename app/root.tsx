@@ -140,7 +140,16 @@ function Header({ children }: { children: ReactNode }) {
 
 function UserMenu() {
   const { user } = useLoaderData<typeof loader>()
-  return user ? (
+
+  if (!user) {
+    return (
+      <Link to={$path("/auth/discord")} draggable={false} className={button()}>
+        <LucideLogIn /> Sign in with Discord
+      </Link>
+    )
+  }
+
+  return (
     <Menu>
       <MenuButton>
         {user.avatarUrl ? (
@@ -172,15 +181,5 @@ function UserMenu() {
         </MenuItem>
       </MenuPanel>
     </Menu>
-  ) : (
-    <LoginLink />
-  )
-}
-
-function LoginLink() {
-  return (
-    <Link to={$path("/auth/discord")} draggable={false} className={button()}>
-      <LucideLogIn /> Sign in with Discord
-    </Link>
   )
 }
