@@ -19,12 +19,13 @@ import {
 import { api } from "convex/_generated/api"
 import { ConvexHttpClient } from "convex/browser"
 import { ConvexProvider, ConvexReactClient } from "convex/react"
-import { LucideLogIn, LucideLogOut, LucideUser } from "lucide-react"
+import { LucideLogIn, LucideLogOut } from "lucide-react"
 import { useState, type ReactNode } from "react"
 import { $path } from "remix-routes"
 import { css, cx } from "styled-system/css"
 import { flex, hstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
+import { Avatar } from "./components/Avatar"
 import { button } from "./components/button"
 import { container } from "./components/container"
 import { Menu, MenuButton, MenuItem, MenuPanel } from "./components/menu"
@@ -152,26 +153,7 @@ function UserMenu() {
   return (
     <Menu>
       <MenuButton>
-        {user.avatarUrl ? (
-          <img
-            src={user.avatarUrl}
-            alt=""
-            className={css({ w: "8", h: "8", rounded: "full" })}
-          />
-        ) : (
-          <div
-            className={flex({
-              w: "8",
-              h: "8",
-              rounded: "full",
-              borderColor: "neutral.700",
-              align: "center",
-              justify: "center",
-            })}
-          >
-            <LucideUser />
-          </div>
-        )}
+        <Avatar src={user.avatarUrl} />
       </MenuButton>
       <MenuPanel side="bottom" align="end">
         <MenuItem asChild>
