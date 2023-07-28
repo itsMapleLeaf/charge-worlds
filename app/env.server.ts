@@ -6,7 +6,6 @@ const envSchema = z.object({
     .optional()
     .default("development"),
 
-  DATABASE_URL: z.string(),
   CONVEX_URL: z.string(),
   CONVEX_HTTP_URL: z.string(),
   AUTH_CALLBACK_URL: z.string(),
