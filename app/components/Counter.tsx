@@ -1,7 +1,8 @@
 import { LucideChevronLeft, LucideChevronRight } from "lucide-react"
 import { useState } from "react"
-import { css } from "styled-system/css"
+import { css, cx } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
+import { input } from "./input"
 
 export function Counter() {
   const [value, setValue] = useState(0)
@@ -15,21 +16,7 @@ export function Counter() {
   })
 
   return (
-    <div
-      className={hstack({
-        justify: "center",
-        minW: 0,
-        w: "full",
-        bg: "base.700",
-        borderWidth: 1,
-        borderColor: "base.600",
-        rounded: "md",
-        px: 1,
-        h: 10,
-        color: "inherit",
-        gap: 0.5,
-      })}
-    >
+    <div className={cx(input(), hstack({ gap: 1, justify: "center" }))}>
       <button
         type="button"
         className={buttonClass}
