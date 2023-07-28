@@ -1,6 +1,11 @@
 {
   "$schema": "https://unpkg.com/knip@2/schema.json",
-  "entry": ["app/root.tsx", "app/routes/**/*.{ts,tsx}", "./*.{js,cjs,mjs,ts}"],
+  "entry": [
+    "app/root.tsx",
+    "app/routes/**/*.{ts,tsx}",
+    "./*.{js,cjs,mjs,ts}",
+    "convex/*.ts"
+  ],
   "ignore": ["**/*.d.ts"],
   "ignoreDependencies": ["isbot", "@flydotio/dockerfile", "styled-system"],
   "exclude": [
