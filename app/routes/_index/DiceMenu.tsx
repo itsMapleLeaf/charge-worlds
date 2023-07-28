@@ -1,14 +1,16 @@
-import { LucideDices } from "lucide-react"
-import type { ReactElement } from "react"
+import { LucideDices, LucideHexagon } from "lucide-react"
+import type { CSSProperties, ReactElement } from "react"
 import { useState } from "react"
+import { Virtuoso } from "react-virtuoso"
 import { css } from "styled-system/css"
-import { flex, grid } from "styled-system/patterns"
+import { center, flex, grid } from "styled-system/patterns"
+import { token } from "styled-system/tokens"
 import { Counter } from "~/components/Counter"
+import { Field } from "~/components/Field"
 import { button } from "~/components/button"
 import { MenuItem } from "~/components/menu"
 import { Popover, PopoverButton, PopoverPanel } from "~/components/popover"
 import { Select } from "~/components/select"
-import { Field } from "../../components/Field"
 
 const views = [
   { id: "action", name: "Action", component: ActionDiceForm },
@@ -16,6 +18,18 @@ const views = [
   { id: "other", name: "Other", component: () => <></> },
 ] as const
 type View = (typeof views)[number]
+
+const rolls = [...Array(100).keys()].map((key) => ({
+  key,
+  label: `Roll ${key + 1}`,
+  rolledBy: "Player",
+  dice: [...Array(Math.floor(Math.random() * 8) + 1)].map(() => ({
+    sides: 6,
+    result: Math.floor(Math.random() * 6) + 1,
+  })),
+  displayType: "highestWithCrit" as "highestWithCrit" | "lowest" | "normal",
+}))
+type Roll = (typeof rolls)[number]
 
 export function DiceMenu({ children }: { children: ReactElement }) {
   const [viewId, setViewId] = useState<View["id"]>(views[0].id)
@@ -34,7 +48,25 @@ export function DiceMenu({ children }: { children: ReactElement }) {
             divideColor: "base.700",
           })}
         >
-          <div className={css({ flex: 1 })}>the</div>
+          <div className={css({ flex: 1 })}>
+            <Virtuoso
+              data={rolls}
+              computeItemKey={(index, item) => item.key}
+              itemContent={(index, roll) => (
+                <div
+                  className={css({
+                    borderTopWidth: index === 0 ? 0 : 1,
+                    borderColor: "base.700",
+                  })}
+                >
+                  <RollDetails roll={roll} />
+                </div>
+              )}
+              initialTopMostItemIndex={rolls.length - 1}
+              alignToBottom
+              followOutput
+            />
+          </div>
 
           <currentView.component />
 
@@ -67,6 +99,61 @@ export function DiceMenu({ children }: { children: ReactElement }) {
         </div>
       </PopoverPanel>
     </Popover>
+  )
+}
+
+function RollDetails({ roll }: { roll: Roll }) {
+  const getDieColor = (index: number, result: number) => {
+    if (roll.displayType === "normal") return undefined
+
+    if (roll.displayType === "lowest") {
+      if (index < roll.dice.length - 1) return undefined
+      if (result === 6) return token("colors.green.400")
+      if (result >= 4) return token("colors.yellow.400")
+      return token("colors.red.400")
+    }
+
+    if (index >= 2) return
+    if (index === 1) return result === 6 ? token("colors.green.400") : undefined
+    if (index === 0 && result === 6) return token("colors.green.400")
+    if (index === 0 && result >= 4) return token("colors.yellow.400")
+    return token("colors.red.400")
+  }
+
+  return (
+    <div className={flex({ p: 2, direction: "column", gap: 1 })}>
+      <p>{roll.label}</p>
+      <ul className={flex({ rowGap: 1, columnGap: 0.5, flexWrap: "wrap" })}>
+        {roll.dice
+          .toSorted((a, b) => b.result - a.result)
+          .map((die, index) => (
+            <li
+              key={index}
+              style={
+                { "--color": getDieColor(index, die.result) } as CSSProperties
+              }
+              className={center({ pos: "relative", color: "var(--color)" })}
+            >
+              <LucideHexagon size={40} strokeWidth={1} />
+              <p
+                className={css({
+                  pos: "absolute",
+                  transform: `translateY(1px)`,
+                })}
+              >
+                {die.result}
+              </p>
+            </li>
+          ))}
+      </ul>
+      <p className={css({ fontSize: "sm" })}>
+        <span className={css({ color: "base.400" })}>Rolled by</span>{" "}
+        {roll.rolledBy}{" "}
+        {roll.displayType === "lowest" && (
+          <span className={css({ color: "base.400" })}>(disadvantage)</span>
+        )}
+      </p>
+    </div>
   )
 }
 
