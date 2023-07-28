@@ -1,5 +1,5 @@
 import type { V2_MetaDescriptor } from "@remix-run/node"
-import { truthyJoin } from "../helpers/truthy-join"
+import { truthyJoin } from "./helpers/truthy-join"
 
 const siteUrl = "https://charge-worlds.mapleleaf.dev"
 

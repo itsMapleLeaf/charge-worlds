@@ -4,9 +4,9 @@
 ARG NODE_VERSION=18.16.0
 FROM node:${NODE_VERSION}-slim as base
 
-LABEL fly_launch_runtime="Remix/Prisma"
+LABEL fly_launch_runtime="Remix"
 
-# Remix/Prisma app lives here
+# Remix app lives here
 WORKDIR /app
 
 # Set production environment
@@ -26,10 +26,6 @@ RUN apt-get update -qq && \
 # Install node modules
 COPY --link package.json pnpm-lock.yaml panda.config.ts ./
 RUN pnpm install --frozen-lockfile --prod=false
-
-# Generate Prisma Client
-COPY --link prisma .
-RUN npx prisma generate
 
 # Copy application code
 COPY --link . .
