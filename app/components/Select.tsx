@@ -1,7 +1,7 @@
 import { LucideChevronDown } from "lucide-react"
 import { css } from "styled-system/css"
 import { button } from "~/components/button"
-import { Menu, MenuButton, MenuPanel } from "~/components/menu"
+import { Menu, MenuButton, MenuPanel } from "~/components/Menu"
 
 export function Select({
   children,

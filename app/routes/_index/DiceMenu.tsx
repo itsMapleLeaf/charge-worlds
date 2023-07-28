@@ -7,10 +7,10 @@ import { center, flex, grid } from "styled-system/patterns"
 import { token } from "styled-system/tokens"
 import { Counter } from "~/components/Counter"
 import { Field } from "~/components/Field"
+import { MenuItem } from "~/components/Menu"
+import { Popover, PopoverButton, PopoverPanel } from "~/components/Popover"
+import { Select } from "~/components/Select"
 import { button } from "~/components/button"
-import { MenuItem } from "~/components/menu"
-import { Popover, PopoverButton, PopoverPanel } from "~/components/popover"
-import { Select } from "~/components/select"
 
 const views = [
   { id: "action", name: "Action", component: ActionDiceForm },
