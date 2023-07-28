@@ -1,7 +1,7 @@
-import { css } from "styled-system/css"
+import { cva } from "styled-system/css"
 
-export function input() {
-  return css({
+export const input = cva({
+  base: {
     minW: 0,
     w: "full",
     bg: "base.700",
@@ -10,5 +10,5 @@ export function input() {
     rounded: "md",
     px: 3,
     h: 10,
-  })
-}
+  },
+})
