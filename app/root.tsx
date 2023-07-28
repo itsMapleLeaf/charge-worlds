@@ -57,6 +57,9 @@ export default function Root() {
   return (
     <ConvexProvider client={client}>
       <Document>
+        <Header>
+          <UserMenu />
+        </Header>
         <Outlet />
       </Document>
     </ConvexProvider>
@@ -106,9 +109,6 @@ function Document({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className={flex({ direction: "column", h: "screen" })}>
-          <Header>
-            <UserMenu />
-          </Header>
           {children}
         </div>
         <Scripts />
