@@ -25,6 +25,7 @@ export function PopoverPanel({
           borderWidth: "1px",
           borderColor: "base.700",
           rounded: "md",
+          overflow: "clip",
           "&[data-state=open]": {
             animation: "100ms fadeRiseIn",
             animationTimingFunction: "ease-out",
