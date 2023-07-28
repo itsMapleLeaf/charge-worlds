@@ -4,4 +4,5 @@
 /styled-system
 .cache
 .env
+.env.*
 /convex/_generated
