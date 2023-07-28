@@ -1,18 +1,11 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "noUncheckedIndexedAccess": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"]
     }
   },
-  "exclude": ["node_modules", "build", "public/build"]
+  "exclude": ["node_modules", "build", "public/build", "convex"]
 }
