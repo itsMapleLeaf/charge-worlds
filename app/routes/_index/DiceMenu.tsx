@@ -3,22 +3,20 @@ import {
   LucideChevronRight,
   LucideDices,
 } from "lucide-react"
+import type { ReactElement } from "react"
 import { useState } from "react"
 import { css, cx } from "styled-system/css"
 import { grid, gridItem, hstack } from "styled-system/patterns"
-import { button, circleButton } from "~/components/button"
+import { button } from "~/components/button"
 import { input } from "~/components/input"
 import { MenuItem } from "~/components/menu"
 import { Popover, PopoverButton, PopoverPanel } from "~/components/popover"
 import { Select } from "~/components/select"
 
-export function DiceMenuButton() {
+export function DiceMenu({ children }: { children: ReactElement }) {
   return (
     <Popover>
-      <PopoverButton className={circleButton()}>
-        <LucideDices />
-        <span className={css({ srOnly: true })}>Dice Rolls</span>
-      </PopoverButton>
+      <PopoverButton asChild>{children}</PopoverButton>
       <PopoverPanel side="top" align="center">
         <div
           className={css({

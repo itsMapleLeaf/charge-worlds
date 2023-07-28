@@ -1,4 +1,5 @@
 import splineSans from "@fontsource-variable/spline-sans/index.css"
+import { TooltipProvider } from "@radix-ui/react-tooltip"
 import { cssBundleHref } from "@remix-run/css-bundle"
 import type {
   LinksFunction,
@@ -109,7 +110,7 @@ function Document({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className={flex({ direction: "column", h: "screen" })}>
-          {children}
+          <TooltipProvider>{children}</TooltipProvider>
         </div>
         <Scripts />
         <LiveReload />
