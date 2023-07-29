@@ -52,7 +52,7 @@ export async function loader({ request }: LoaderArgs) {
 
   return defer({
     user: Promise.resolve(
-      sessionId && (await convexClient.action(api.auth.getUser, { sessionId })),
+      sessionId && convexClient.action(api.auth.getUser, { sessionId }),
     ),
     sessionId,
     convexUrl: env.CONVEX_URL,
