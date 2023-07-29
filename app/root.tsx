@@ -1,19 +1,21 @@
 import splineSans from "@fontsource-variable/spline-sans/index.css"
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import { cssBundleHref } from "@remix-run/css-bundle"
-import type {
-  LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+import {
+  defer,
+  type LinksFunction,
+  type LoaderArgs,
+  type V2_MetaFunction,
 } from "@remix-run/node"
 import {
+  Await,
+  isRouteErrorResponse,
   Link,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
-  isRouteErrorResponse,
   useLoaderData,
   useRouteError,
 } from "@remix-run/react"
@@ -21,15 +23,15 @@ import { api } from "convex/_generated/api"
 import { ConvexHttpClient } from "convex/browser"
 import { ConvexProvider, ConvexReactClient } from "convex/react"
 import { LucideLogIn, LucideLogOut } from "lucide-react"
-import { useState, type ReactNode } from "react"
+import { Suspense, useState, type ReactNode } from "react"
 import { $path } from "remix-routes"
 import { css, cx } from "styled-system/css"
 import { flex, hstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
 import { Avatar } from "./components/Avatar"
-import { Menu, MenuButton, MenuItem, MenuPanel } from "./components/Menu"
 import { button } from "./components/button"
 import { container } from "./components/container"
+import { Menu, MenuButton, MenuItem, MenuPanel } from "./components/Menu"
 import { env } from "./env.server"
 import { getAppMeta } from "./meta"
 import styles from "./root.css"
@@ -47,9 +49,14 @@ export const links: LinksFunction = () => [
 export async function loader({ request }: LoaderArgs) {
   const sessionId = await getSession(request.headers.get("Cookie"))
   const convexClient = new ConvexHttpClient(env.CONVEX_URL)
-  const user =
-    sessionId && (await convexClient.action(api.auth.getUser, { sessionId }))
-  return { sessionId, user, convexUrl: env.CONVEX_URL }
+
+  return defer({
+    user: Promise.resolve(
+      sessionId && (await convexClient.action(api.auth.getUser, { sessionId })),
+    ),
+    sessionId,
+    convexUrl: env.CONVEX_URL,
+  })
 }
 
 export default function Root() {
@@ -59,7 +66,9 @@ export default function Root() {
     <ConvexProvider client={client}>
       <Document>
         <Header>
-          <UserMenu />
+          <Suspense>
+            <UserMenu />
+          </Suspense>
         </Header>
         <Outlet />
       </Document>
@@ -143,26 +152,52 @@ function Header({ children }: { children: ReactNode }) {
 function UserMenu() {
   const { user } = useLoaderData<typeof loader>()
 
-  if (!user) {
-    return (
-      <Link to={$path("/auth/discord")} draggable={false} className={button()}>
-        <LucideLogIn /> Sign in with Discord
-      </Link>
-    )
-  }
-
   return (
-    <Menu>
-      <MenuButton>
-        <Avatar src={user.avatarUrl} />
-      </MenuButton>
-      <MenuPanel side="bottom" align="end">
-        <MenuItem asChild>
-          <Link to={$path("/auth/logout")}>
-            <LucideLogOut size={20} /> Sign out
-          </Link>
-        </MenuItem>
-      </MenuPanel>
-    </Menu>
+    <Await resolve={user}>
+      {(user) => {
+        if (!user) {
+          return (
+            <Link
+              to={$path("/auth/discord")}
+              draggable={false}
+              className={button()}
+            >
+              <LucideLogIn /> Sign in with Discord
+            </Link>
+          )
+        }
+
+        return (
+          <Menu>
+            <MenuButton>
+              <Avatar src={user.avatarUrl} />
+            </MenuButton>
+            <MenuPanel side="bottom" align="end">
+              <p
+                className={flex({
+                  direction: "column",
+                  gap: 1.5,
+                  borderBottomWidth: 1,
+                  borderColor: "base.600",
+                  py: 2,
+                  px: 3,
+                  lineHeight: 1,
+                })}
+              >
+                <span className={css({ fontSize: "sm", color: "base.400" })}>
+                  logged in as
+                </span>
+                <span>{user.displayName}</span>
+              </p>
+              <MenuItem asChild>
+                <Link to={$path("/auth/logout")}>
+                  <LucideLogOut size={20} /> Sign out
+                </Link>
+              </MenuItem>
+            </MenuPanel>
+          </Menu>
+        )
+      }}
+    </Await>
   )
 }
