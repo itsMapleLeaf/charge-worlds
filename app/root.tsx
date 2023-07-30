@@ -29,13 +29,13 @@ import { css, cx } from "styled-system/css"
 import { flex, hstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
 import { Avatar } from "./components/Avatar"
-import { button } from "./components/button"
-import { container } from "./components/container"
 import { Menu, MenuButton, MenuItem, MenuPanel } from "./components/Menu"
 import { env } from "./env.server"
 import { getAppMeta } from "./meta"
-import styles from "./root.css"
 import { getSession } from "./session.server"
+import { button } from "./styles/button"
+import { container } from "./styles/container"
+import styles from "./styles/root.css"
 
 export const meta: V2_MetaFunction = () => getAppMeta()
 

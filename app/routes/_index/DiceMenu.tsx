@@ -10,7 +10,7 @@ import { Field } from "~/components/Field"
 import { MenuItem } from "~/components/Menu"
 import { Popover, PopoverButton, PopoverPanel } from "~/components/Popover"
 import { Select } from "~/components/Select"
-import { button } from "~/components/button"
+import { button } from "~/styles/button"
 
 const views = [
   { id: "action", name: "Action", component: ActionDiceForm },

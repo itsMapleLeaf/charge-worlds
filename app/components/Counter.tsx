@@ -2,7 +2,7 @@ import { LucideChevronLeft, LucideChevronRight } from "lucide-react"
 import { useState } from "react"
 import { css, cx } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
-import { input } from "./input"
+import { input } from "~/styles/input"
 
 export function Counter() {
   const [value, setValue] = useState(0)

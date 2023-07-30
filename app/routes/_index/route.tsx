@@ -4,7 +4,7 @@ import { forwardRef } from "react"
 import { css, cx } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
 import { Tooltip } from "~/components/Tooltip"
-import { circleButton } from "~/components/button"
+import { circleButton } from "~/styles/button"
 import { DiceMenu } from "./DiceMenu"
 
 export default function Home() {
