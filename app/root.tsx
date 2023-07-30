@@ -22,7 +22,7 @@ import {
 import { api } from "convex/_generated/api"
 import { ConvexHttpClient } from "convex/browser"
 import { ConvexProvider, ConvexReactClient } from "convex/react"
-import { LucideLogIn, LucideLogOut } from "lucide-react"
+import { LucideLogIn, LucideLogOut, LucideWrench } from "lucide-react"
 import { Suspense, useState, type ReactNode } from "react"
 import { $path } from "remix-routes"
 import { css, cx } from "styled-system/css"
@@ -141,10 +141,22 @@ function Header({ children }: { children?: ReactNode }) {
         borderColor: "base.700",
       })}
     >
-      <div className={cx(container(), hstack({ justify: "space-between" }))}>
-        <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
-          World of Arte
-        </h1>
+      <div className={cx(container(), hstack({ gap: 4 }))}>
+        <Link to={$path("/")}>
+          <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
+            World of Arte
+          </h1>
+        </Link>
+
+        <nav className={hstack({ gap: 2, mr: "auto" })}>
+          <Link
+            to={$path("/settings")}
+            className={button({ appearance: "ghost" })}
+          >
+            <LucideWrench /> Settings
+          </Link>
+        </nav>
+
         {children}
       </div>
     </header>
