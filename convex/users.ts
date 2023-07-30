@@ -1,9 +1,17 @@
 import { v } from "convex/values"
 import { internalMutation, query } from "./_generated/server"
+import { env } from "./env"
 
 export const get = query({
   args: { id: v.id("users") },
-  handler: async (ctx, args) => ctx.db.get(args.id),
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.id)
+    if (!user) return null
+    return {
+      ...user,
+      isAdmin: user.discordId === env.ADMIN_DISCORD_USER_ID,
+    }
+  },
 })
 
 export const getByDiscordId = query({

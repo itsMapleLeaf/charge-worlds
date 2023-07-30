@@ -131,6 +131,7 @@ function Document({ children }: { children: ReactNode }) {
 }
 
 function Header() {
+  const { user } = useLoaderData<typeof loader>()
   const world = useQuery(api.worlds.get)
   return (
     <header
@@ -155,73 +156,74 @@ function Header() {
               {world?.name ?? "Loading..."}
             </h1>
           </Link>
-          <nav className={hstack({ gap: 2, mr: "auto", flexWrap: "wrap" })}>
-            <Link
-              to={$path("/settings")}
-              className={cx(button({ variant: "ghost" }), css({ mx: -3 }))}
-            >
-              <LucideWrench /> Settings
-            </Link>
-          </nav>
+
+          <Suspense>
+            <Await resolve={user}>
+              {(user) => user?.isAdmin && <HeaderNav />}
+            </Await>
+          </Suspense>
         </div>
 
         <Suspense>
-          <UserMenu />
+          <Await resolve={user}>
+            {(user) => (user ? <UserMenu user={user} /> : <SignInButton />)}
+          </Await>
         </Suspense>
       </div>
     </header>
   )
 }
 
-function UserMenu() {
-  const { user } = useLoaderData<typeof loader>()
-
+function HeaderNav() {
   return (
-    <Await resolve={user}>
-      {(user) => {
-        if (!user) {
-          return (
-            <Link
-              to={$path("/auth/discord")}
-              draggable={false}
-              className={button()}
-            >
-              <LucideLogIn /> Sign in with Discord
-            </Link>
-          )
-        }
+    <nav className={hstack({ gap: 2, mr: "auto", flexWrap: "wrap" })}>
+      <Link
+        to={$path("/settings")}
+        className={cx(button({ variant: "ghost" }), css({ mx: -3 }))}
+      >
+        <LucideWrench /> Settings
+      </Link>
+    </nav>
+  )
+}
 
-        return (
-          <Menu>
-            <MenuButton>
-              <Avatar src={user.avatar} />
-            </MenuButton>
-            <MenuPanel side="bottom" align="end">
-              <p
-                className={flex({
-                  direction: "column",
-                  gap: 1.5,
-                  borderBottomWidth: 1,
-                  borderColor: "base.600",
-                  py: 2,
-                  px: 3,
-                  lineHeight: 1,
-                })}
-              >
-                <span className={css({ fontSize: "sm", color: "base.400" })}>
-                  logged in as
-                </span>
-                <span>{user.name}</span>
-              </p>
-              <MenuItem asChild>
-                <Link to={$path("/auth/logout")}>
-                  <LucideLogOut size={20} /> Sign out
-                </Link>
-              </MenuItem>
-            </MenuPanel>
-          </Menu>
-        )
-      }}
-    </Await>
+function UserMenu({ user }: { user: { name: string; avatar: string | null } }) {
+  return (
+    <Menu>
+      <MenuButton>
+        <Avatar src={user.avatar} />
+      </MenuButton>
+      <MenuPanel side="bottom" align="end">
+        <p
+          className={flex({
+            direction: "column",
+            gap: 1.5,
+            borderBottomWidth: 1,
+            borderColor: "base.600",
+            py: 2,
+            px: 3,
+            lineHeight: 1,
+          })}
+        >
+          <span className={css({ fontSize: "sm", color: "base.400" })}>
+            logged in as
+          </span>
+          <span>{user.name}</span>
+        </p>
+        <MenuItem asChild>
+          <Link to={$path("/auth/logout")}>
+            <LucideLogOut size={20} /> Sign out
+          </Link>
+        </MenuItem>
+      </MenuPanel>
+    </Menu>
+  )
+}
+
+function SignInButton() {
+  return (
+    <Link to={$path("/auth/discord")} className={button()}>
+      <LucideLogIn /> Sign in with Discord
+    </Link>
   )
 }
