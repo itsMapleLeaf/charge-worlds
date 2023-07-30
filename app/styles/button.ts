@@ -5,14 +5,9 @@ export const button = cva({
   base: {
     display: "inline-flex",
     alignItems: "center",
-    justifyContent: "center",
     gap: 2.5,
 
-    bg: "base.700",
     color: "white",
-
-    borderWidth: "1px",
-    borderColor: "base.600",
 
     transition: "common",
 
@@ -31,6 +26,16 @@ export const button = cva({
     },
   },
   variants: {
+    appearance: {
+      solid: {
+        bg: { base: "base.700", _hover: "base.600" },
+        borderWidth: "1px",
+        borderColor: "base.600",
+      },
+      ghost: {
+        bg: { _hover: "base.600" },
+      },
+    },
     shape: {
       default: {
         px: 3,
@@ -52,6 +57,7 @@ export const button = cva({
     },
   },
   defaultVariants: {
+    appearance: "solid",
     shape: "default",
     align: "center",
   },
