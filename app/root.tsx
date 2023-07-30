@@ -82,6 +82,7 @@ export function ErrorBoundary() {
   if (isRouteErrorResponse(error)) {
     return (
       <Document>
+        <Header />
         <h1>Oops! Something went wrong.</h1>
         <p>{error.statusText}</p>
         <a href="/">Return to safety</a>
@@ -94,6 +95,7 @@ export function ErrorBoundary() {
 
   return (
     <Document>
+      <Header />
       <h1>Oops! Something went wrong.</h1>
       <pre>{message}</pre>
       <a href="/">Return to safety</a>
@@ -128,7 +130,7 @@ function Document({ children }: { children: ReactNode }) {
   )
 }
 
-function Header({ children }: { children: ReactNode }) {
+function Header({ children }: { children?: ReactNode }) {
   return (
     <header
       className={hstack({
