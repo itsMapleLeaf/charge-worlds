@@ -20,6 +20,7 @@ import {
   useRouteError,
 } from "@remix-run/react"
 import { api } from "convex/_generated/api"
+import type { Id } from "convex/_generated/dataModel"
 import { ConvexHttpClient } from "convex/browser"
 import { ConvexProvider, ConvexReactClient, useQuery } from "convex/react"
 import { LucideLogIn, LucideLogOut, LucideWrench } from "lucide-react"
@@ -30,6 +31,7 @@ import { flex, hstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
 import { Avatar } from "./components/Avatar"
 import { Menu, MenuButton, MenuItem, MenuPanel } from "./components/Menu"
+import { getDiscordUser } from "./discord"
 import { env } from "./env.server"
 import { getAppMeta } from "./meta"
 import { getSession } from "./session.server"
@@ -48,15 +50,32 @@ export const links: LinksFunction = () => [
 
 export async function loader({ request }: LoaderArgs) {
   const sessionId = await getSession(request.headers.get("Cookie"))
-  const convexClient = new ConvexHttpClient(env.CONVEX_URL)
-
+  const user = Promise.resolve(sessionId && getAuthUser(sessionId))
   return defer({
-    user: Promise.resolve(
-      sessionId && convexClient.action(api.auth.getUser, { sessionId }),
-    ),
-    sessionId,
+    user,
     convexUrl: env.CONVEX_URL,
   })
+}
+
+async function getAuthUser(sessionId: Id<"sessions">) {
+  const convexClient = new ConvexHttpClient(env.CONVEX_URL)
+
+  const session = await convexClient.query(api.sessions.get, { id: sessionId })
+  if (!session) return null
+
+  const { user, response } = await getDiscordUser(session.discordAccessToken)
+
+  if (response.status === 401) {
+    return null
+  }
+
+  if (!response.ok) {
+    const data = await response.text().catch(() => "Unknown error")
+    console.error("Failed to get Discord user", data)
+    return null
+  }
+
+  return user
 }
 
 export default function Root() {

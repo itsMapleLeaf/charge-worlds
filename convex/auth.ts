@@ -1,12 +1,8 @@
 import { v } from "convex/values"
-import { internal } from "./_generated/api"
+import { getDiscordUser } from "../app/discord"
+import { api, internal } from "./_generated/api"
 import type { Id } from "./_generated/dataModel"
-import {
-  action,
-  httpAction,
-  internalMutation,
-  internalQuery,
-} from "./_generated/server"
+import { action, httpAction } from "./_generated/server"
 import { env } from "./env"
 
 export const discordLogin = httpAction(async (ctx, request) => {
@@ -54,7 +50,7 @@ export const discordAuthCallback = httpAction(async (ctx, request) => {
 
   const data = (await response.json()) as { access_token: string }
 
-  const { sessionId } = await ctx.runMutation(internal.auth.createSession, {
+  const { sessionId } = await ctx.runMutation(internal.sessions.create, {
     discordAccessToken: data.access_token,
   })
 
@@ -71,7 +67,7 @@ export const logout = httpAction(async (ctx, request) => {
     return new Response("No session id provided", { status: 400 })
   }
 
-  const session = await ctx.runQuery(internal.auth.getSession, { sessionId })
+  const session = await ctx.runQuery(api.sessions.get, { id: sessionId })
   if (!session) {
     return new Response("Invalid session id", { status: 400 })
   }
@@ -91,7 +87,7 @@ export const logout = httpAction(async (ctx, request) => {
   })
 
   await ctx
-    .runMutation(internal.auth.destroySession, { sessionId })
+    .runMutation(internal.sessions.remove, { sessionId })
     .catch((error) => {
       console.warn("Failed to delete session:", error)
     })
@@ -99,56 +95,16 @@ export const logout = httpAction(async (ctx, request) => {
   return new Response("Logged out", { status: 200 })
 })
 
-export const getUser = action({
-  args: { sessionId: v.id("sessions") },
-  async handler(ctx, args) {
-    const session = await ctx.runQuery(internal.auth.getSession, args)
-    if (!session) return null
-
-    const response = await fetch("https://discord.com/api/users/@me", {
-      headers: {
-        Authorization: `Bearer ${session.discordAccessToken}`,
-      },
-    })
-
-    if (!response.ok) {
-      return null
-    }
-
-    const data = (await response.json()) as {
-      id: string
-      global_name: string
-      avatar: string | null
-    }
-
-    return {
-      id: data.id,
-      displayName: data.global_name,
-      avatarUrl: data.avatar
-        ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`
-        : null,
-    }
+export const requireAdmin = action({
+  args: {
+    sessionId: v.id("sessions"),
   },
-})
+  handler: async (ctx, args) => {
+    const session = await ctx.runQuery(api.sessions.get, { id: args.sessionId })
+    if (!session) throw new Error("Not logged in")
 
-export const getSession = internalQuery({
-  args: { sessionId: v.id("sessions") },
-  async handler(ctx, args) {
-    return await ctx.db.get(args.sessionId)
-  },
-})
-
-export const createSession = internalMutation({
-  args: { discordAccessToken: v.string() },
-  async handler(ctx, args) {
-    const sessionId = await ctx.db.insert("sessions", args)
-    return { sessionId }
-  },
-})
-
-export const destroySession = internalMutation({
-  args: { sessionId: v.id("sessions") },
-  async handler(ctx, args) {
-    await ctx.db.delete(args.sessionId)
+    const { user } = await getDiscordUser(session.discordAccessToken)
+    if (!user) throw new Error("Not logged in")
+    if (user.id !== env.ADMIN_DISCORD_USER_ID) throw new Error("Unauthorized")
   },
 })
