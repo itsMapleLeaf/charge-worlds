@@ -1,9 +1,4 @@
-import {
-  LucideDices,
-  LucideUser,
-  LucideUsers,
-  LucideWrench,
-} from "lucide-react"
+import { LucideDices, LucideUser } from "lucide-react"
 import type { ReactNode } from "react"
 import { forwardRef } from "react"
 import { css, cx } from "styled-system/css"
@@ -28,14 +23,6 @@ export default function Home() {
             <LucideDices />
           </PrimaryActionButton>
         </DiceMenu>
-
-        <PrimaryActionButton name="Players">
-          <LucideUsers />
-        </PrimaryActionButton>
-
-        <PrimaryActionButton name="Settings">
-          <LucideWrench />
-        </PrimaryActionButton>
       </footer>
     </>
   )
