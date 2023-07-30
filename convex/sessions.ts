@@ -3,22 +3,17 @@ import { internalMutation, query } from "./_generated/server"
 
 export const get = query({
   args: { id: v.id("sessions") },
-  async handler(ctx, args) {
-    return await ctx.db.get(args.id)
-  },
+  handler: async (ctx, args) => ctx.db.get(args.id),
 })
 
 export const create = internalMutation({
-  args: { discordAccessToken: v.string() },
-  async handler(ctx, args) {
-    const sessionId = await ctx.db.insert("sessions", args)
-    return { sessionId }
-  },
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => ctx.db.insert("sessions", args),
 })
 
 export const remove = internalMutation({
-  args: { sessionId: v.id("sessions") },
+  args: { id: v.id("sessions") },
   async handler(ctx, args) {
-    await ctx.db.delete(args.sessionId)
+    await ctx.db.delete(args.id)
   },
 })

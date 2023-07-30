@@ -30,7 +30,7 @@ export const discordAuthCallback = httpAction(async (ctx, request) => {
 
   const state = new URLSearchParams(url.searchParams.get("state") ?? "")
 
-  const response = await fetch("https://discord.com/api/oauth2/token", {
+  const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -44,14 +44,44 @@ export const discordAuthCallback = httpAction(async (ctx, request) => {
       scope: "identify",
     }),
   })
-  if (!response.ok) {
-    return response
+  if (!tokenResponse.ok) {
+    return tokenResponse
   }
 
-  const data = (await response.json()) as { access_token: string }
+  const tokenData = (await tokenResponse.json()) as {
+    access_token: string
+  }
 
-  const { sessionId } = await ctx.runMutation(internal.sessions.create, {
-    discordAccessToken: data.access_token,
+  const { user: discordUser, response: userResponse } = await getDiscordUser(
+    tokenData.access_token,
+  )
+  if (!discordUser) {
+    return userResponse
+  }
+
+  const existingUser = await ctx.runQuery(api.users.getByDiscordId, {
+    discordId: discordUser.id,
+  })
+  let userId
+
+  if (existingUser) {
+    await ctx.runMutation(internal.users.update, {
+      id: existingUser._id,
+      name: discordUser.displayName,
+      avatar: discordUser.avatarUrl,
+    })
+    userId = existingUser._id
+  } else {
+    userId = await ctx.runMutation(internal.users.create, {
+      name: discordUser.displayName,
+      avatar: discordUser.avatarUrl,
+      discordId: discordUser.id,
+      discordAccessToken: tokenData.access_token,
+    })
+  }
+
+  const sessionId = await ctx.runMutation(internal.sessions.create, {
+    userId,
   })
 
   return Response.redirect(
@@ -69,7 +99,12 @@ export const logout = httpAction(async (ctx, request) => {
 
   const session = await ctx.runQuery(api.sessions.get, { id: sessionId })
   if (!session) {
-    return new Response("Invalid session id", { status: 400 })
+    return new Response("Session not found", { status: 404 })
+  }
+
+  const user = await ctx.runQuery(api.users.get, { id: session.userId })
+  if (!user) {
+    return new Response("User not found", { status: 404 })
   }
 
   await fetch("https://discord.com/api/oauth2/token/revoke", {
@@ -80,14 +115,14 @@ export const logout = httpAction(async (ctx, request) => {
     body: new URLSearchParams({
       client_id: env.DISCORD_CLIENT_ID,
       client_secret: env.DISCORD_CLIENT_SECRET,
-      token: session.discordAccessToken,
+      token: user.discordAccessToken,
     }),
   }).catch((error) => {
     console.warn("Failed to revoke discord token:", error)
   })
 
   await ctx
-    .runMutation(internal.sessions.remove, { sessionId })
+    .runMutation(internal.sessions.remove, { id: sessionId })
     .catch((error) => {
       console.warn("Failed to delete session:", error)
     })
@@ -103,8 +138,12 @@ export const requireAdmin = action({
     const session = await ctx.runQuery(api.sessions.get, { id: args.sessionId })
     if (!session) throw new Error("Not logged in")
 
-    const { user } = await getDiscordUser(session.discordAccessToken)
-    if (!user) throw new Error("Not logged in")
-    if (user.id !== env.ADMIN_DISCORD_USER_ID) throw new Error("Unauthorized")
+    const user = await ctx.runQuery(api.users.get, { id: session.userId })
+    if (!user) {
+      throw new Error("Could not find session user")
+    }
+    if (user.discordId !== env.ADMIN_DISCORD_USER_ID) {
+      throw new Error("Unauthorized")
+    }
   },
 })

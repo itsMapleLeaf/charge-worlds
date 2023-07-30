@@ -31,7 +31,6 @@ import { flex, hstack } from "styled-system/patterns"
 import favicon from "./assets/favicon.svg"
 import { Avatar } from "./components/Avatar"
 import { Menu, MenuButton, MenuItem, MenuPanel } from "./components/Menu"
-import { getDiscordUser } from "./discord"
 import { env } from "./env.server"
 import { getAppMeta } from "./meta"
 import { getSession } from "./session.server"
@@ -63,19 +62,7 @@ async function getAuthUser(sessionId: Id<"sessions">) {
   const session = await convexClient.query(api.sessions.get, { id: sessionId })
   if (!session) return null
 
-  const { user, response } = await getDiscordUser(session.discordAccessToken)
-
-  if (response.status === 401) {
-    return null
-  }
-
-  if (!response.ok) {
-    const data = await response.text().catch(() => "Unknown error")
-    console.error("Failed to get Discord user", data)
-    return null
-  }
-
-  return user
+  return convexClient.query(api.users.get, { id: session.userId })
 }
 
 export default function Root() {
@@ -207,7 +194,7 @@ function UserMenu() {
         return (
           <Menu>
             <MenuButton>
-              <Avatar src={user.avatarUrl} />
+              <Avatar src={user.avatar} />
             </MenuButton>
             <MenuPanel side="bottom" align="end">
               <p
@@ -224,7 +211,7 @@ function UserMenu() {
                 <span className={css({ fontSize: "sm", color: "base.400" })}>
                   logged in as
                 </span>
-                <span>{user.displayName}</span>
+                <span>{user.name}</span>
               </p>
               <MenuItem asChild>
                 <Link to={$path("/auth/logout")}>
