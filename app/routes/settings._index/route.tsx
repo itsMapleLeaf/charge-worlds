@@ -7,15 +7,14 @@ import { Field } from "~/components/Field"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback"
 import { button } from "~/styles/button"
 import { input } from "~/styles/input"
+import { settingsPageHeading } from "../settings/styles"
 
 export default function GeneralSettingsPage() {
   const world = useQuery(api.worlds.get)
   const update = useAsyncCallback(useMutation(api.worlds.update))
   return (
     <main className={css({ flex: 1 })}>
-      <h2 className={css({ fontSize: "3xl", fontWeight: "light", mb: 2 })}>
-        General Settings
-      </h2>
+      <h2 className={settingsPageHeading}>General Settings</h2>
       {world ? (
         <form
           className={flex({ direction: "column", gap: 3 })}
