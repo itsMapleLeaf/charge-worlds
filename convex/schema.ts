@@ -5,4 +5,7 @@ export default defineSchema({
   sessions: defineTable({
     discordAccessToken: v.string(),
   }),
+  worlds: defineTable({
+    name: v.string(),
+  }),
 })

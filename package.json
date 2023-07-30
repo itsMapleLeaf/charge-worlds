@@ -36,6 +36,7 @@
     "react-dom": "^18.2.0",
     "react-virtuoso": "^4.4.2",
     "remix-routes": "^1.4.4",
+    "spin-delay": "^1.2.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

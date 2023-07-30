@@ -50,6 +50,9 @@ dependencies:
   remix-routes:
     specifier: ^1.4.4
     version: 1.4.4
+  spin-delay:
+    specifier: ^1.2.0
+    version: 1.2.0(react@18.2.0)
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -11001,6 +11004,14 @@ packages:
 
   /spdx-license-ids@3.0.13:
     resolution: {integrity: sha512-XkD+zwiqXHikFZm4AX/7JSCXA98U5Db4AFd5XUg/+9UNtnH75+Z9KxtpYiJZx36mUDVOwH83pl7yvCer6ewM3w==}
+    dev: false
+
+  /spin-delay@1.2.0(react@18.2.0):
+    resolution: {integrity: sha512-PkZl5FHWOMrwQgoWejG1hBkIlVx4KbdL/37RPr5/pGq5+NWcGx7NNDukFct2yr8yRZuvwEompNR/in9nWj4sTw==}
+    peerDependencies:
+      react: '>=17.0.1'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /sprintf-js@1.0.3:
