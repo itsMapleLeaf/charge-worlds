@@ -10,23 +10,26 @@ export default function SettingsPage() {
   return (
     <div className={cx(container(), flex({ py: 4 }))}>
       <nav
-        className={flex({ direction: "column", alignItems: "start", w: 48 })}
+        className={flex({
+          direction: "column",
+          alignItems: "start",
+          w: 48,
+          gap: 3,
+          py: 2,
+        })}
       >
-        <Link
-          to={$path("/settings")}
-          className={button({ appearance: "ghost" })}
-        >
+        <Link to={$path("/settings")} className={button({ variant: "ghost" })}>
           <LucideGlobe /> General
         </Link>
         <Link
           to={$path("/settings/players")}
-          className={button({ appearance: "ghost" })}
+          className={button({ variant: "ghost" })}
         >
           <LucideUsers /> Players
         </Link>
         <Link
           to={$path("/settings/character-fields")}
-          className={button({ appearance: "ghost" })}
+          className={button({ variant: "ghost" })}
         >
           <LucideList /> Character Fields
         </Link>

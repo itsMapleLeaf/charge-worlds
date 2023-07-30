@@ -21,7 +21,7 @@ import {
 } from "@remix-run/react"
 import { api } from "convex/_generated/api"
 import { ConvexHttpClient } from "convex/browser"
-import { ConvexProvider, ConvexReactClient } from "convex/react"
+import { ConvexProvider, ConvexReactClient, useQuery } from "convex/react"
 import { LucideLogIn, LucideLogOut, LucideWrench } from "lucide-react"
 import { Suspense, useState, type ReactNode } from "react"
 import { $path } from "remix-routes"
@@ -65,11 +65,7 @@ export default function Root() {
   return (
     <ConvexProvider client={client}>
       <Document>
-        <Header>
-          <Suspense>
-            <UserMenu />
-          </Suspense>
-        </Header>
+        <Header />
         <Outlet />
       </Document>
     </ConvexProvider>
@@ -82,7 +78,6 @@ export function ErrorBoundary() {
   if (isRouteErrorResponse(error)) {
     return (
       <Document>
-        <Header />
         <h1>Oops! Something went wrong.</h1>
         <p>{error.statusText}</p>
         <a href="/">Return to safety</a>
@@ -95,7 +90,6 @@ export function ErrorBoundary() {
 
   return (
     <Document>
-      <Header />
       <h1>Oops! Something went wrong.</h1>
       <pre>{message}</pre>
       <a href="/">Return to safety</a>
@@ -130,34 +124,44 @@ function Document({ children }: { children: ReactNode }) {
   )
 }
 
-function Header({ children }: { children?: ReactNode }) {
+function Header() {
+  const world = useQuery(api.worlds.get)
   return (
     <header
       className={hstack({
         bg: "base.800",
-        h: "16",
+        py: 3,
         shadow: "lg",
         borderBottomWidth: 1,
         borderColor: "base.700",
       })}
     >
-      <div className={cx(container(), hstack({ gap: 4 }))}>
-        <Link to={$path("/")}>
-          <h1 className={css({ fontSize: "2xl", fontWeight: "light" })}>
-            World of Arte
-          </h1>
-        </Link>
-
-        <nav className={hstack({ gap: 2, mr: "auto" })}>
-          <Link
-            to={$path("/settings")}
-            className={button({ appearance: "ghost" })}
-          >
-            <LucideWrench /> Settings
+      <div className={cx(container(), hstack())}>
+        <div className={flex({ flex: 1, direction: "column", gap: 2 })}>
+          <Link to={$path("/")}>
+            <h1
+              className={css({
+                fontSize: "2xl",
+                fontWeight: "light",
+                lineHeight: 1,
+              })}
+            >
+              {world?.name ?? "Loading..."}
+            </h1>
           </Link>
-        </nav>
+          <nav className={hstack({ gap: 2, mr: "auto", flexWrap: "wrap" })}>
+            <Link
+              to={$path("/settings")}
+              className={cx(button({ variant: "ghost" }), css({ mx: -3 }))}
+            >
+              <LucideWrench /> Settings
+            </Link>
+          </nav>
+        </div>
 
-        {children}
+        <Suspense>
+          <UserMenu />
+        </Suspense>
       </div>
     </header>
   )
