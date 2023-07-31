@@ -1,5 +1,5 @@
-import { Link, Outlet } from "@remix-run/react"
 import { LucideGlobe, LucideList, LucideUsers } from "lucide-react"
+import { Link, Outlet } from "react-router-dom"
 import { $path } from "remix-routes"
 import { cx } from "styled-system/css"
 import { flex } from "styled-system/patterns"
