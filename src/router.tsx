@@ -8,35 +8,35 @@ import { PlayerSettings } from "./routes/PlayerSettings/route"
 import { SettingsLayout } from "./routes/SettingsLayout/route"
 
 export const router = createBrowserRouter([
-  {
-    element: <AppLayout />,
-    children: [
-      {
-        index: true,
-        element: <Dashboard />,
-      },
-      {
-        path: "settings",
-        element: <SettingsLayout />,
-        children: [
-          {
-            index: true,
-            element: <GeneralSettings />,
-          },
-          {
-            path: "players",
-            element: <PlayerSettings />,
-          },
-          {
-            path: "character-fields",
-            element: <CharacterFieldsSettings />,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    path: "auth/callback",
-    element: <AuthCallback />,
-  },
+	{
+		element: <AppLayout />,
+		children: [
+			{
+				index: true,
+				element: <Dashboard />,
+			},
+			{
+				path: "settings",
+				element: <SettingsLayout />,
+				children: [
+					{
+						index: true,
+						element: <GeneralSettings />,
+					},
+					{
+						path: "players",
+						element: <PlayerSettings />,
+					},
+					{
+						path: "character-fields",
+						element: <CharacterFieldsSettings />,
+					},
+				],
+			},
+		],
+	},
+	{
+		path: "auth/callback",
+		element: <AuthCallback />,
+	},
 ])

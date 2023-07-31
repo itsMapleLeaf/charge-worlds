@@ -1,15 +1,15 @@
 @layer reset, base, tokens, recipes, utilities;
 
 @layer base {
-  * {
-    outline-width: 2px;
-    outline-style: solid;
-    outline-color: transparent;
-  }
-  :focus {
-    outline-color: transparent;
-  }
-  :focus-visible {
-    outline-color: var(--colors-accent-400);
-  }
+	* {
+		outline-width: 2px;
+		outline-style: solid;
+		outline-color: transparent;
+	}
+	:focus {
+		outline-color: transparent;
+	}
+	:focus-visible {
+		outline-color: var(--colors-accent-400);
+	}
 }

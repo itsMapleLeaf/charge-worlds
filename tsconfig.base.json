@@ -1,12 +1,12 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "noUncheckedIndexedAccess": true
-  }
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "node",
+		"strict": true,
+		"skipLibCheck": true,
+		"noEmit": true,
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"noUncheckedIndexedAccess": true
+	}
 }

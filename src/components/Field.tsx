@@ -4,21 +4,21 @@ import { flex } from "styled-system/patterns"
 import { Label } from "./Label"
 
 type FieldProps = ComponentPropsWithoutRef<"div"> & {
-  label?: ReactNode
-  inputId?: string
+	label?: ReactNode
+	inputId?: string
 }
 
 export function Field({
-  children,
-  className,
-  label,
-  inputId,
-  ...props
+	children,
+	className,
+	label,
+	inputId,
+	...props
 }: FieldProps) {
-  return (
-    <div {...props} className={cx(flex({ direction: "column" }), className)}>
-      {label && <Label htmlFor={inputId}>{label}</Label>}
-      {children}
-    </div>
-  )
+	return (
+		<div {...props} className={cx(flex({ direction: "column" }), className)}>
+			{label && <Label htmlFor={inputId}>{label}</Label>}
+			{children}
+		</div>
+	)
 }

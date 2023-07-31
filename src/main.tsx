@@ -9,13 +9,13 @@ import { convexClient } from "./convex"
 import { router } from "./router"
 
 createRoot(document.getElementById("root")!).render(
-  <ErrorBoundary>
-    <ConvexProvider client={convexClient}>
-      <TooltipProvider>
-        <StrictMode>
-          <RouterProvider router={router} />
-        </StrictMode>
-      </TooltipProvider>
-    </ConvexProvider>
-  </ErrorBoundary>,
+	<ErrorBoundary>
+		<ConvexProvider client={convexClient}>
+			<TooltipProvider>
+				<StrictMode>
+					<RouterProvider router={router} />
+				</StrictMode>
+			</TooltipProvider>
+		</ConvexProvider>
+	</ErrorBoundary>,
 )

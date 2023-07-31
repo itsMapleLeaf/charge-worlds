@@ -1,12 +1,12 @@
 {
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "paths": {
-      "~/*": ["./src/*"],
-      "convex/*": ["./convex/*"],
-      "styled-system/*": ["./styled-system/*"]
-    }
-  },
-  "exclude": ["node_modules", "dist", "public/dist"]
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"paths": {
+			"~/*": ["./src/*"],
+			"convex/*": ["./convex/*"],
+			"styled-system/*": ["./styled-system/*"]
+		}
+	},
+	"exclude": ["node_modules", "dist", "public/dist"]
 }

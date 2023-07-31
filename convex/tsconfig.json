@@ -1,4 +1,4 @@
 {
-  "extends": "../tsconfig.base.json",
-  "exclude": ["_generated"]
+	"extends": "../tsconfig.base.json",
+	"exclude": ["_generated"]
 }
