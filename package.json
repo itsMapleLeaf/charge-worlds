@@ -37,7 +37,8 @@
     "react-virtuoso": "^4.4.2",
     "remix-routes": "^1.4.4",
     "spin-delay": "^1.2.0",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "zod-form-data": "^2.0.1"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.3.3",

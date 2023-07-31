@@ -3,26 +3,28 @@ import { useMutation, useQuery } from "convex/react"
 import { LucideCheckCircle } from "lucide-react"
 import { css } from "styled-system/css"
 import { flex, hstack } from "styled-system/patterns"
+import { zfd } from "zod-form-data"
 import { Field } from "~/components/Field"
-import { useAsyncCallback } from "~/helpers/useAsyncCallback"
+import { useFormSubmit } from "~/helpers/useFormSubmit"
 import { button } from "~/styles/button"
 import { input } from "~/styles/input"
 import { settingsPageHeading } from "../settings/styles"
 
 export default function GeneralSettingsPage() {
   const world = useQuery(api.worlds.get)
-  const update = useAsyncCallback(useMutation(api.worlds.update))
+
+  const handleSubmit = useFormSubmit({
+    schema: zfd.formData({ name: zfd.text() }),
+    onSubmit: useMutation(api.worlds.update),
+  })
+
   return (
     <main className={css({ flex: 1 })}>
       <h2 className={settingsPageHeading}>General Settings</h2>
       {world ? (
         <form
           className={flex({ direction: "column", gap: 3 })}
-          onSubmit={(event) => {
-            event.preventDefault()
-            const form = new FormData(event.currentTarget)
-            update({ name: form.get("name") as string })
-          }}
+          onSubmit={handleSubmit}
         >
           <Field label="Name" inputId="name">
             <input
@@ -34,8 +36,9 @@ export default function GeneralSettingsPage() {
             />
           </Field>
           <div className={hstack({ gap: 4 })}>
-            <button className={button()} disabled={update.loading}>
-              <LucideCheckCircle /> {update.loading ? "Saving..." : "Save"}
+            <button className={button()} disabled={handleSubmit.loading}>
+              <LucideCheckCircle />{" "}
+              {handleSubmit.loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>
