@@ -12,11 +12,16 @@ const fadeRiseKeyframes = {
 export default defineConfig({
   preflight: true,
   outExtension: "js",
-  include: ["./app/**/*.{ts,tsx,js,jsx}"],
+  include: ["./src/**/*.{ts,tsx,js,jsx}"],
   exclude: [],
   outdir: "styled-system",
 
   globalCss: defineGlobalStyles({
+    ":root": {
+      bg: "base.900",
+      color: "blue.50",
+      fontFamily: "sans",
+    },
     "*": {
       borderStyle: "solid",
     },

@@ -1,5 +1,5 @@
 import { v } from "convex/values"
-import { getDiscordUser } from "../app/discord"
+import { getDiscordUser } from "../src/discord"
 import { api, internal } from "./_generated/api"
 import type { Id } from "./_generated/dataModel"
 import { action, httpAction } from "./_generated/server"
