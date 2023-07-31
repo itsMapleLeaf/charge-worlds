@@ -21,7 +21,7 @@ export async function createSession(sessionId: string) {
 export async function getSession(
   cookieHeader: string | null,
 ): Promise<Id<"sessions"> | null> {
-  const cookieValue = await sessionCookie.parse(cookieHeader)
+  const cookieValue = (await sessionCookie.parse(cookieHeader)) as unknown
   return typeof cookieValue === "string"
     ? (cookieValue as Id<"sessions">)
     : null

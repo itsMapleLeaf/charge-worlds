@@ -1,23 +1,25 @@
 import { useState } from "react"
 import { useSpinDelay } from "spin-delay"
 
-export function useAsyncCallback<Args extends any[], Return>(
+export function useAsyncCallback<Args extends unknown[], Return>(
   callback: (...args: Args) => Return,
 ) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<unknown>()
   const [result, setResult] = useState<Awaited<Return>>()
 
-  const execute = async (...args: Args) => {
+  const execute = (...args: Args) => {
     setLoading(true)
-    try {
-      const result = await callback(...args)
-      setResult(result)
-    } catch (error) {
-      setError(error)
-    } finally {
-      setLoading(false)
-    }
+    void (async () => {
+      try {
+        const result = await callback(...args)
+        setResult(result)
+      } catch (error) {
+        setError(error)
+      } finally {
+        setLoading(false)
+      }
+    })()
   }
 
   execute.loading = useSpinDelay(loading)

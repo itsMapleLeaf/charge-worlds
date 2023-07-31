@@ -12,6 +12,11 @@ import { Popover, PopoverButton, PopoverPanel } from "~/components/Popover"
 import { Select } from "~/components/Select"
 import { button } from "~/styles/button"
 
+const range = (length: number) => [...Array(length).keys()]
+
+const randomRange = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1)) + min
+
 const views = [
   { id: "action", name: "Action", component: ActionDiceForm },
   { id: "fortune", name: "Fortune", component: () => <></> },
@@ -19,13 +24,13 @@ const views = [
 ] as const
 type View = (typeof views)[number]
 
-const rolls = [...Array(100).keys()].map((key) => ({
+const rolls = range(100).map((key) => ({
   key,
   label: `Roll ${key + 1}`,
   rolledBy: "Player",
-  dice: [...Array(Math.floor(Math.random() * 8) + 1)].map(() => ({
+  dice: range(randomRange(1, 8)).map(() => ({
     sides: 6,
-    result: Math.floor(Math.random() * 6) + 1,
+    result: randomRange(1, 6),
   })),
   displayType: "highestWithCrit" as "highestWithCrit" | "lowest" | "normal",
 }))

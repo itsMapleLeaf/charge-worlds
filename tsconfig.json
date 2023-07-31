@@ -7,5 +7,5 @@
       "~/*": ["./app/*"]
     }
   },
-  "exclude": ["node_modules", "build", "public/build", "convex"]
+  "exclude": ["node_modules", "dist", "public/dist"]
 }
