@@ -5,7 +5,7 @@
     "node": "18"
   },
   "scripts": {
-    "setup": "panda codegen && convex codegen",
+    "prepare": "panda codegen && convex codegen",
     "dev": "pnpm run --parallel /^dev:/",
     "dev:vite": "vite dev",
     "dev:convex": "convex dev",
