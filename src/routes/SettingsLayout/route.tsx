@@ -6,7 +6,7 @@ import { flex } from "styled-system/patterns"
 import { button } from "~/styles/button"
 import { container } from "~/styles/container"
 
-export default function SettingsPage() {
+export function SettingsLayout() {
   return (
     <div className={cx(container(), flex({ py: 4 }))}>
       <nav

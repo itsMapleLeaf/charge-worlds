@@ -1,5 +1,5 @@
 import { css } from "styled-system/css"
 
-export default function PlayerSettingsPage() {
+export function PlayerSettings() {
   return <div className={css({ flex: 1 })}>todo</div>
 }

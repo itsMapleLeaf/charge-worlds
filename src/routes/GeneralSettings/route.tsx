@@ -8,9 +8,9 @@ import { Field } from "~/components/Field"
 import { useFormSubmit } from "~/helpers/useFormSubmit"
 import { button } from "~/styles/button"
 import { input } from "~/styles/input"
-import { settingsPageHeading } from "../settings/styles"
+import { settingsPageHeading } from "~/styles/settings"
 
-export default function GeneralSettingsPage() {
+export function GeneralSettings() {
   const world = useQuery(api.worlds.get)
 
   const handleSubmit = useFormSubmit({

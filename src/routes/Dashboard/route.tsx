@@ -7,7 +7,7 @@ import { Tooltip } from "~/components/Tooltip"
 import { circleButton } from "~/styles/button"
 import { DiceMenu } from "./DiceMenu"
 
-export default function Home() {
+export function Dashboard() {
   return (
     <>
       <main className={css({ flex: 1 })}>the</main>
