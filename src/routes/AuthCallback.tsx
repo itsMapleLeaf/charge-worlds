@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useEffectEvent } from "~/helpers/useEffectEvent"
+import { setSessionId } from "~/session"
 
 export function AuthCallback() {
   const navigate = useNavigate()
@@ -9,7 +10,7 @@ export function AuthCallback() {
     const url = new URL(window.location.href)
     const sessionId = url.searchParams.get("sessionId")
     if (sessionId) {
-      localStorage.setItem("sessionId", sessionId)
+      setSessionId(sessionId)
     } else {
       console.error("No sessionId found in callback URL")
     }

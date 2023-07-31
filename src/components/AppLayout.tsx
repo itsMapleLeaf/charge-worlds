@@ -5,6 +5,7 @@ import { Link, Outlet } from "react-router-dom"
 import { $path } from "remix-routes"
 import { css, cx } from "styled-system/css"
 import { flex, hstack } from "styled-system/patterns"
+import { clearSessionId, getSessionId } from "~/session"
 import { button } from "../styles/button"
 import { container } from "../styles/container"
 import { Avatar } from "./Avatar"
@@ -20,9 +21,7 @@ export function AppLayout() {
 }
 
 function Header() {
-  const me = useQuery(api.auth.me, {
-    sessionId: localStorage.getItem("sessionId"),
-  })
+  const me = useQuery(api.auth.me, { sessionId: getSessionId() })
   const world = useQuery(api.worlds.get)
   return (
     <header
@@ -93,7 +92,7 @@ function UserMenu({ user }: { user: { name: string; avatar: string | null } }) {
         </p>
         <MenuItem
           onClick={() => {
-            const sessionId = localStorage.getItem("sessionId")
+            const sessionId = getSessionId()
             if (!sessionId) return
 
             fetch(
@@ -102,7 +101,7 @@ function UserMenu({ user }: { user: { name: string; avatar: string | null } }) {
               }/auth/logout?sessionId=${sessionId}`,
             ).catch(console.error)
 
-            localStorage.removeItem("sessionId")
+            clearSessionId()
             window.location.reload()
           }}
         >

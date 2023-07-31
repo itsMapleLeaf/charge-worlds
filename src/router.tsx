@@ -16,10 +16,6 @@ export const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "auth/callback",
-        element: <AuthCallback />,
-      },
-      {
         path: "settings",
         element: <SettingsLayout />,
         children: [
@@ -38,5 +34,9 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "auth/callback",
+    element: <AuthCallback />,
   },
 ])
