@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom"
 import { AppLayout } from "./components/AppLayout"
+import { AuthCallback } from "./routes/AuthCallback"
 import { CharacterFieldsSettings } from "./routes/CharacterFieldSettings/route"
 import { Dashboard } from "./routes/Dashboard/route"
 import { GeneralSettings } from "./routes/GeneralSettings/route"
@@ -13,6 +14,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />,
+      },
+      {
+        path: "auth/callback",
+        element: <AuthCallback />,
       },
       {
         path: "settings",

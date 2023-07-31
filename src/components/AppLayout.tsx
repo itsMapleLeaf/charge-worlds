@@ -20,11 +20,9 @@ export function AppLayout() {
 }
 
 function Header() {
-  const user = null as {
-    name: string
-    avatar: string | null
-    isAdmin: boolean
-  } | null
+  const me = useQuery(api.auth.me, {
+    sessionId: localStorage.getItem("sessionId"),
+  })
   const world = useQuery(api.worlds.get)
   return (
     <header
@@ -49,9 +47,9 @@ function Header() {
               {world?.name ?? "Loading..."}
             </h1>
           </Link>
-          {user?.isAdmin && <HeaderNav />}
+          {me?.isAdmin && <HeaderNav />}
         </div>
-        {user ? <UserMenu user={user} /> : <SignInButton />}
+        {me ? <UserMenu user={me} /> : <SignInButton />}
       </div>
     </header>
   )
@@ -93,10 +91,22 @@ function UserMenu({ user }: { user: { name: string; avatar: string | null } }) {
           </span>
           <span>{user.name}</span>
         </p>
-        <MenuItem asChild>
-          <Link to={$path("/auth/logout")}>
-            <LucideLogOut size={20} /> Sign out
-          </Link>
+        <MenuItem
+          onClick={() => {
+            const sessionId = localStorage.getItem("sessionId")
+            if (!sessionId) return
+
+            fetch(
+              `${
+                import.meta.env.VITE_CONVEX_HTTP_URL
+              }/auth/logout?sessionId=${sessionId}`,
+            ).catch(console.error)
+
+            localStorage.removeItem("sessionId")
+            window.location.reload()
+          }}
+        >
+          <LucideLogOut size={20} /> Sign out
         </MenuItem>
       </MenuPanel>
     </Menu>
@@ -105,8 +115,13 @@ function UserMenu({ user }: { user: { name: string; avatar: string | null } }) {
 
 function SignInButton() {
   return (
-    <Link to={$path("/auth/discord")} className={button()}>
+    <a
+      href={`${import.meta.env.VITE_CONVEX_HTTP_URL}/auth/discord?callbackUrl=${
+        import.meta.env.VITE_AUTH_CALLBACK_URL
+      }`}
+      className={button()}
+    >
       <LucideLogIn /> Sign in with Discord
-    </Link>
+    </a>
   )
 }

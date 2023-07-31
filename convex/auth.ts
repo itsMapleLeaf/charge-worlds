@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 import { api, internal } from "./_generated/api"
 import type { Id } from "./_generated/dataModel"
-import { action, httpAction } from "./_generated/server"
+import { action, httpAction, query } from "./_generated/server"
 import { getDiscordUser } from "./discord"
 import { env } from "./env"
 
@@ -144,6 +144,29 @@ export const requireAdmin = action({
     }
     if (user.discordId !== env.ADMIN_DISCORD_USER_ID) {
       throw new Error("Unauthorized")
+    }
+  },
+})
+
+export const me = query({
+  args: {
+    sessionId: v.union(v.string(), v.null()),
+  },
+  handler: async (ctx, args) => {
+    if (!args.sessionId) return null
+
+    const sessionId = ctx.db.normalizeId("sessions", args.sessionId)
+    if (!sessionId) return null
+
+    const session = await ctx.db.get(sessionId)
+    if (!session) return null
+
+    const user = await ctx.db.get(session.userId)
+    if (!user) return null
+
+    return {
+      ...user,
+      isAdmin: user.discordId === env.ADMIN_DISCORD_USER_ID,
     }
   },
 })
