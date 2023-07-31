@@ -1,8 +1,8 @@
 import { v } from "convex/values"
-import { getDiscordUser } from "../src/discord"
 import { api, internal } from "./_generated/api"
 import type { Id } from "./_generated/dataModel"
 import { action, httpAction } from "./_generated/server"
+import { getDiscordUser } from "./discord"
 import { env } from "./env"
 
 export const discordLogin = httpAction(async (ctx, request) => {
