@@ -9,16 +9,17 @@ export function useAsyncCallback<Args extends unknown[], Return>(
   const [result, setResult] = useState<Awaited<Return>>()
 
   const execute = (...args: Args) => {
+    if (loading) return
     setLoading(true)
+    setError(undefined)
     void (async () => {
       try {
         const result = await callback(...args)
         setResult(result)
       } catch (error) {
         setError(error)
-      } finally {
-        setLoading(false)
       }
+      setLoading(false)
     })()
   }
 
