@@ -41,7 +41,6 @@
     "zod-form-data": "^2.0.1"
   },
   "devDependencies": {
-    "@flydotio/dockerfile": "^0.3.3",
     "@pandacss/dev": "^0.7.0",
     "@pandacss/preset-panda": "^0.7.0",
     "@remix-run/dev": "^1.19.1",
