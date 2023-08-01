@@ -37,6 +37,8 @@ export default defineConfig({
 			bg: "base.900",
 			color: "blue.50",
 			fontFamily: "sans",
+			wordWrap: "break-word",
+			overflowWrap: "break-word",
 		},
 		"*": {
 			borderStyle: "solid",
