@@ -31,6 +31,10 @@
 			"warn",
 			{ "argsIgnorePattern": "^_" }
 		],
+		"@typescript-eslint/consistent-type-imports": [
+			"warn",
+			{ "fixStyle": "inline-type-imports", "disallowTypeAnnotations": false }
+		],
 		"no-useless-rename": "warn",
 		"object-shorthand": "warn"
 	},

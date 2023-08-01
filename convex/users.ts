@@ -1,6 +1,6 @@
 import { v } from "convex/values"
-import { Doc, Id } from "./_generated/dataModel"
-import { QueryCtx, internalMutation, query } from "./_generated/server"
+import { type Doc, type Id } from "./_generated/dataModel"
+import { internalMutation, query, type QueryCtx } from "./_generated/server"
 import { env } from "./env"
 import { raise } from "./helpers"
 

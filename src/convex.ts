@@ -1,6 +1,6 @@
 import { raise } from "convex/helpers"
-import { ConvexReactClient, Watch } from "convex/react"
-import { FunctionReference, OptionalRestArgs } from "convex/server"
+import { ConvexReactClient, type Watch } from "convex/react"
+import { type FunctionReference, type OptionalRestArgs } from "convex/server"
 import { useEffect, useState } from "react"
 
 export const convexClient = new ConvexReactClient(

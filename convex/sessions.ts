@@ -1,6 +1,6 @@
 import { v } from "convex/values"
-import { Id } from "./_generated/dataModel"
-import { QueryCtx, internalMutation, query } from "./_generated/server"
+import { type Id } from "./_generated/dataModel"
+import { internalMutation, query, type QueryCtx } from "./_generated/server"
 import { raise } from "./helpers"
 
 export const get = query({

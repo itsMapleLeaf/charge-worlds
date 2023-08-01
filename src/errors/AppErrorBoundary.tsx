@@ -1,7 +1,7 @@
-import { ErrorBoundary, FallbackProps } from "react-error-boundary"
+import { ErrorBoundary, type FallbackProps } from "react-error-boundary"
 import { css, cx } from "styled-system/css"
 import { toError } from "~/errors/helpers"
-import { Merge } from "~/helpers/types"
+import { type Merge } from "~/helpers/types"
 import { button } from "~/styles/button"
 import { AppError } from "./AppError"
 

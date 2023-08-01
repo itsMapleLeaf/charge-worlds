@@ -1,6 +1,6 @@
-import { api } from "convex/_generated/api"
-import { Id } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
+import { api } from "convex/_generated/api"
+import { type Id } from "convex/_generated/dataModel"
 import { LucidePlus, LucideX } from "lucide-react"
 import { Suspense } from "react"
 import { css, cx } from "styled-system/css"
@@ -17,8 +17,8 @@ import { useFormSubmit } from "~/helpers/useFormSubmit"
 import { button } from "~/styles/button"
 import { input } from "~/styles/input"
 import {
-	settingsPageMainHeading,
-	settingsPageSecondaryHeading,
+    settingsPageMainHeading,
+    settingsPageSecondaryHeading
 } from "~/styles/settings"
 import { useRequiredAdminUser } from "~/user/useRequiredAdminUser"
 
