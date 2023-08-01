@@ -28,6 +28,8 @@ export function useQuerySuspense<FuncRef extends FunctionReference<"query">>(
 		})
 	}, [watch])
 
+	// why is eslint confused by this
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return value
 }
 
