@@ -1,14 +1,15 @@
 import { v } from "convex/values"
-import { mutation, query } from "./_generated/server"
-import { requireAdminUser } from "./auth"
+import { type Id } from "./_generated/dataModel"
+import { mutation, query, type QueryCtx } from "./_generated/server"
+import { raise } from "./helpers"
+import { getSessionUser, requireAdminUser } from "./users"
 
 export const list = query({
 	args: {
-		sessionId: v.id("sessions"),
+		sessionId: v.union(v.id("sessions"), v.null()),
 	},
 	handler: async (ctx, args) => {
-		const session = await ctx.db.get(args.sessionId)
-		await requireAdminUser(ctx, session?.userId)
+		await requireAdminUser(ctx, args.sessionId)
 
 		const players = await ctx.db.query("players").collect()
 
@@ -29,12 +30,11 @@ export const list = query({
 
 export const add = mutation({
 	args: {
-		sessionId: v.id("sessions"),
+		sessionId: v.union(v.id("sessions"), v.null()),
 		discordUserId: v.string(),
 	},
 	handler: async (ctx, { sessionId, ...args }) => {
-		const session = await ctx.db.get(sessionId)
-		await requireAdminUser(ctx, session?.userId)
+		await requireAdminUser(ctx, sessionId)
 
 		const existing = await ctx.db
 			.query("players")
@@ -52,12 +52,32 @@ export const add = mutation({
 
 export const remove = mutation({
 	args: {
-		sessionId: v.id("sessions"),
+		sessionId: v.union(v.id("sessions"), v.null()),
 		id: v.id("players"),
 	},
 	handler: async (ctx, args) => {
-		const session = await ctx.db.get(args.sessionId)
-		await requireAdminUser(ctx, session?.userId)
+		await requireAdminUser(ctx, args.sessionId)
 		await ctx.db.delete(args.id)
 	},
 })
+
+export async function getSessionPlayer(
+	ctx: QueryCtx,
+	sessionId: Id<"sessions"> | null | undefined,
+) {
+	const user = await getSessionUser(ctx, sessionId)
+	if (!user) return null
+
+	return await ctx.db
+		.query("players")
+		.withIndex("by_discord_id", (q) => q.eq("discordUserId", user.discordId))
+		.unique()
+}
+
+export async function requireSessionPlayer(
+	ctx: QueryCtx,
+	sessionId: Id<"sessions"> | null | undefined,
+) {
+	const player = await getSessionPlayer(ctx, sessionId)
+	return player ?? raise("Unauthorized")
+}

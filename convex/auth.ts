@@ -1,10 +1,10 @@
 import { v } from "convex/values"
 import { api, internal } from "./_generated/api"
 import { type Id } from "./_generated/dataModel"
-import { httpAction, query, type QueryCtx } from "./_generated/server"
+import { httpAction, query } from "./_generated/server"
 import { getDiscordUser } from "./discord"
 import { env } from "./env"
-import { getUser, requireUser } from "./users"
+import { getSessionUser, isAdminUser } from "./users"
 
 export const discordLogin = httpAction(async (ctx, request) => {
 	const requestParams = new URL(request.url).searchParams
@@ -60,7 +60,7 @@ export const discordAuthCallback = httpAction(async (ctx, request) => {
 		return userResponse
 	}
 
-	const existingUser = await ctx.runQuery(api.users.getByDiscordId, {
+	const existingUser = await ctx.runQuery(internal.users.getByDiscordId, {
 		discordId: discordUser.id,
 	})
 	let userId
@@ -103,7 +103,7 @@ export const logout = httpAction(async (ctx, request) => {
 		return new Response("Session not found", { status: 404 })
 	}
 
-	const user = await ctx.runQuery(api.users.get, { id: session.userId })
+	const user = await ctx.runQuery(internal.users.get, { id: session.userId })
 	if (!user) {
 		return new Response("User not found", { status: 404 })
 	}
@@ -136,27 +136,7 @@ export const me = query({
 		sessionId: v.union(v.id("sessions"), v.null()),
 	},
 	handler: async (ctx, args) => {
-		if (!args.sessionId) return { user: null }
-
-		const session = await ctx.db.get(args.sessionId)
-		if (!session) return { user: null }
-
-		return { user: await getUser(ctx, session.userId) }
+		const user = await getSessionUser(ctx, args.sessionId)
+		return { user, isAdmin: isAdminUser(user) }
 	},
 })
-
-export async function requireAdminUser(
-	ctx: QueryCtx,
-	userId: Id<"users"> | undefined | null,
-) {
-	if (!userId) {
-		throw new Error("Unauthorized")
-	}
-
-	const user = await requireUser(ctx, userId)
-	if (user.discordId !== env.ADMIN_DISCORD_USER_ID) {
-		throw new Error("Unauthorized")
-	}
-
-	return user
-}

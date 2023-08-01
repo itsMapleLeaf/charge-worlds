@@ -48,7 +48,7 @@ function Header() {
 							{world?.name ?? "Loading..."}
 						</h1>
 					</Link>
-					{me.user?.isAdmin && <HeaderNav />}
+					{me.isAdmin && <HeaderNav />}
 				</div>
 				{me.user ? <UserMenu user={me.user} /> : <SignInButton />}
 			</div>
