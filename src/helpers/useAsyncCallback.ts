@@ -1,15 +1,17 @@
 import { useState } from "react"
 import { useSpinDelay } from "spin-delay"
+import { useEffectEvent } from "./useEffectEvent"
 
 type AsyncState<T> =
 	| { status: "idle" }
-	| { status: "loading" }
+	| { status: "loading"; token: symbol }
 	| { status: "error"; error: unknown }
 	| { status: "success"; result: T }
 
 type UseAsyncCallbackOptions<T> = {
 	onSuccess?: (result: T) => void
 	onError?: (error: unknown) => void
+	spinDelayOptions?: Parameters<typeof useSpinDelay>[1]
 }
 
 export function useAsyncCallback<Args extends unknown[], Return>(
@@ -20,23 +22,34 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 		status: "idle",
 	})
 
+	const handleSuccess = useEffectEvent(
+		(result: Awaited<Return>, token: symbol) => {
+			if (state.status !== "loading" || state.token !== token) return
+			setState({ status: "success", result })
+			options?.onSuccess?.(result)
+		},
+	)
+
+	const handleError = useEffectEvent((error: unknown, token: symbol) => {
+		if (state.status !== "loading" || state.token !== token) return
+		setState({ status: "error", error })
+		options?.onError?.(error)
+	})
+
 	const run = (...args: Args) => {
-		if (state.status === "loading") return
-		setState({ status: "loading" })
+		const token = Symbol()
+		setState({ status: "loading", token })
 		Promise.resolve(callback(...args)).then(
-			(result) => {
-				setState({ status: "success", result })
-				options?.onSuccess?.(result)
-			},
-			(error: unknown) => {
-				setState({ status: "error", error })
-				options?.onError?.(error)
-			},
+			(result) => handleSuccess(result, token),
+			(error) => handleError(error, token),
 		)
 	}
 
 	run.state = state
-	run.loading = useSpinDelay(state.status === "loading")
+	run.loading = useSpinDelay(
+		state.status === "loading",
+		options?.spinDelayOptions,
+	)
 	run.error = state.status === "error" ? state.error : undefined
 	run.result = state.status === "success" ? state.result : undefined
 
