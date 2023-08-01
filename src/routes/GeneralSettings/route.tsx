@@ -11,13 +11,13 @@ import { useQuerySuspense } from "~/convex"
 import { useFormSubmit } from "~/helpers/useFormSubmit"
 import { button } from "~/styles/button"
 import { input } from "~/styles/input"
-import { settingsPageHeading } from "~/styles/settings"
+import { settingsPageMainHeading } from "~/styles/settings"
 import { useRequiredAdminUser } from "~/user/useRequiredAdminUser"
 
 export function GeneralSettings() {
 	return (
 		<main className={css({ flex: 1 })}>
-			<h2 className={settingsPageHeading}>General Settings</h2>
+			<h2 className={settingsPageMainHeading}>General Settings</h2>
 			<Suspense fallback={<Spinner size={8} />}>
 				<GeneralSettingsForm />
 			</Suspense>

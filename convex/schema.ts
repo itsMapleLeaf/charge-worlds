@@ -14,4 +14,7 @@ export default defineSchema({
 	worlds: defineTable({
 		name: v.string(),
 	}),
+	players: defineTable({
+		discordUserId: v.string(),
+	}).index("by_discord_id", ["discordUserId"]),
 })
