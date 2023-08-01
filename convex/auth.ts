@@ -134,6 +134,7 @@ export const logout = httpAction(async (ctx, request) => {
 	return new Response("Logged out", { status: 200 })
 })
 
+// TODO: separate this into a query in users and a query here for roles
 export const me = query({
 	args: {
 		sessionId: v.union(v.id("sessions"), v.null()),
