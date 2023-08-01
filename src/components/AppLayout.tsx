@@ -107,7 +107,7 @@ function UserMenu({ user }: { user: { name: string; avatar: string | null } }) {
 						window.location.reload()
 					}}
 				>
-					<LucideLogOut size={20} /> Sign out
+					<LucideLogOut /> Sign out
 				</MenuItem>
 			</MenuPanel>
 		</Menu>

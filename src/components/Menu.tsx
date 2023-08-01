@@ -62,6 +62,7 @@ export function MenuItem(props: Dropdown.DropdownMenuItemProps) {
 					_focusVisible: { outline: "none", borderColor: "accent.400" },
 					_first: { roundedTop: "sm" },
 					_last: { roundedBottom: "sm" },
+					"& > svg": { w: 5, h: 5 },
 				}),
 				props.className,
 			)}
