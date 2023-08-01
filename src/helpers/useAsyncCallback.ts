@@ -11,6 +11,7 @@ type AsyncState<T> =
 type UseAsyncCallbackOptions<T> = {
 	onSuccess?: (result: T) => void
 	onError?: (error: unknown) => void
+	onSettled?: () => void
 	spinDelayOptions?: Parameters<typeof useSpinDelay>[1]
 }
 
@@ -27,6 +28,7 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 			if (state.status !== "loading" || state.token !== token) return
 			setState({ status: "success", result })
 			options?.onSuccess?.(result)
+			options?.onSettled?.()
 		},
 	)
 
@@ -34,6 +36,7 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 		if (state.status !== "loading" || state.token !== token) return
 		setState({ status: "error", error })
 		options?.onError?.(error)
+		options?.onSettled?.()
 	})
 
 	const run = (...args: Args) => {
