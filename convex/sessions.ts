@@ -1,5 +1,7 @@
 import { v } from "convex/values"
-import { internalMutation, query } from "./_generated/server"
+import { Id } from "./_generated/dataModel"
+import { QueryCtx, internalMutation, query } from "./_generated/server"
+import { raise } from "./helpers"
 
 export const get = query({
 	args: { id: v.id("sessions") },
@@ -17,3 +19,8 @@ export const remove = internalMutation({
 		await ctx.db.delete(args.id)
 	},
 })
+
+export async function requireSession(ctx: QueryCtx, sessionId: Id<"sessions">) {
+	const session = await ctx.db.get(sessionId)
+	return session ?? raise("Not logged in")
+}

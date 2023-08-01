@@ -1,9 +1,10 @@
 import { v } from "convex/values"
 import { api, internal } from "./_generated/api"
 import type { Id } from "./_generated/dataModel"
-import { action, httpAction, query } from "./_generated/server"
+import { QueryCtx, httpAction, query } from "./_generated/server"
 import { getDiscordUser } from "./discord"
 import { env } from "./env"
+import { getUser, requireUser } from "./users"
 
 export const discordLogin = httpAction(async (ctx, request) => {
 	const requestParams = new URL(request.url).searchParams
@@ -130,43 +131,24 @@ export const logout = httpAction(async (ctx, request) => {
 	return new Response("Logged out", { status: 200 })
 })
 
-export const requireAdmin = action({
-	args: {
-		sessionId: v.id("sessions"),
-	},
-	handler: async (ctx, args) => {
-		const session = await ctx.runQuery(api.sessions.get, { id: args.sessionId })
-		if (!session) throw new Error("Not logged in")
-
-		const user = await ctx.runQuery(api.users.get, { id: session.userId })
-		if (!user) {
-			throw new Error("Could not find session user")
-		}
-		if (user.discordId !== env.ADMIN_DISCORD_USER_ID) {
-			throw new Error("Unauthorized")
-		}
-	},
-})
-
 export const me = query({
 	args: {
-		sessionId: v.union(v.string(), v.null()),
+		sessionId: v.union(v.id("sessions"), v.null()),
 	},
 	handler: async (ctx, args) => {
-		if (!args.sessionId) return null
+		if (!args.sessionId) return { user: null }
 
-		const sessionId = ctx.db.normalizeId("sessions", args.sessionId)
-		if (!sessionId) return null
+		const session = await ctx.db.get(args.sessionId)
+		if (!session) return { user: null }
 
-		const session = await ctx.db.get(sessionId)
-		if (!session) return null
-
-		const user = await ctx.db.get(session.userId)
-		if (!user) return null
-
-		return {
-			...user,
-			isAdmin: user.discordId === env.ADMIN_DISCORD_USER_ID,
-		}
+		return { user: await getUser(ctx, session.userId) }
 	},
 })
+
+export async function requireAdminUser(ctx: QueryCtx, userId: Id<"users">) {
+	const user = await requireUser(ctx, userId)
+	if (user.discordId !== env.ADMIN_DISCORD_USER_ID) {
+		throw new Error("Unauthorized")
+	}
+	return user
+}

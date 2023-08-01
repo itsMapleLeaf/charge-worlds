@@ -1,3 +1,4 @@
+import { Id } from "convex/_generated/dataModel"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useEffectEvent } from "~/helpers/useEffectEvent"
@@ -10,7 +11,7 @@ export function AuthCallback() {
 		const url = new URL(window.location.href)
 		const sessionId = url.searchParams.get("sessionId")
 		if (sessionId) {
-			setSessionId(sessionId)
+			setSessionId(sessionId as Id<"sessions">)
 		} else {
 			console.error("No sessionId found in callback URL")
 		}

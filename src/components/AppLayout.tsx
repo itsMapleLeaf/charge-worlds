@@ -1,10 +1,10 @@
 import { api } from "convex/_generated/api"
-import { useQuery } from "convex/react"
 import { LucideLogIn, LucideLogOut, LucideWrench } from "lucide-react"
 import { Link, Outlet } from "react-router-dom"
 import { $path } from "remix-routes"
 import { css, cx } from "styled-system/css"
 import { flex, hstack } from "styled-system/patterns"
+import { useQuerySuspense } from "~/convex"
 import { clearSessionId, getSessionId } from "~/session"
 import { button } from "../styles/button"
 import { container } from "../styles/container"
@@ -21,16 +21,18 @@ export function AppLayout() {
 }
 
 function Header() {
-	const me = useQuery(api.auth.me, { sessionId: getSessionId() })
-	const world = useQuery(api.worlds.get)
+	const me = useQuerySuspense(api.auth.me, { sessionId: getSessionId() })
+	const world = useQuerySuspense(api.worlds.get)
 	return (
 		<header
 			className={hstack({
 				bg: "base.800",
-				py: 3,
+				p: 3,
+				minH: 16,
 				shadow: "lg",
 				borderBottomWidth: 1,
 				borderColor: "base.700",
+				justifyContent: "center",
 			})}
 		>
 			<div className={cx(container(), hstack())}>
@@ -46,9 +48,9 @@ function Header() {
 							{world?.name ?? "Loading..."}
 						</h1>
 					</Link>
-					{me?.isAdmin && <HeaderNav />}
+					{me.user?.isAdmin && <HeaderNav />}
 				</div>
-				{me ? <UserMenu user={me} /> : <SignInButton />}
+				{me.user ? <UserMenu user={me.user} /> : <SignInButton />}
 			</div>
 		</header>
 	)

@@ -4,12 +4,12 @@ import { ConvexProvider } from "convex/react"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { RouterProvider } from "react-router-dom"
-import { ErrorBoundary } from "./components/ErrorBoundary"
 import { convexClient } from "./convex"
+import { AppErrorBoundary } from "./errors/AppErrorBoundary"
 import { router } from "./router"
 
 createRoot(document.getElementById("root")!).render(
-	<ErrorBoundary>
+	<AppErrorBoundary>
 		<ConvexProvider client={convexClient}>
 			<TooltipProvider>
 				<StrictMode>
@@ -17,5 +17,5 @@ createRoot(document.getElementById("root")!).render(
 				</StrictMode>
 			</TooltipProvider>
 		</ConvexProvider>
-	</ErrorBoundary>,
+	</AppErrorBoundary>,
 )
