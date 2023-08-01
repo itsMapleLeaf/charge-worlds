@@ -5,6 +5,7 @@ import { css, cx } from "styled-system/css"
 import { hstack } from "styled-system/patterns"
 import { Tooltip } from "~/components/Tooltip"
 import { circleButton } from "~/styles/button"
+import { CharacterMenu } from "./CharacterMenu"
 import { DiceMenu } from "./DiceMenu"
 
 export function Dashboard() {
@@ -14,9 +15,11 @@ export function Dashboard() {
 			<footer
 				className={hstack({ mx: "auto", pos: "sticky", pb: "max(1rem, 4vh)" })}
 			>
-				<PrimaryActionButton name="Your Characters">
-					<LucideUser />
-				</PrimaryActionButton>
+				<CharacterMenu>
+					<PrimaryActionButton name="Your Characters">
+						<LucideUser />
+					</PrimaryActionButton>
+				</CharacterMenu>
 
 				<DiceMenu>
 					<PrimaryActionButton name="Dice">

@@ -17,4 +17,8 @@ export default defineSchema({
 	players: defineTable({
 		discordUserId: v.string(),
 	}).index("by_discord_id", ["discordUserId"]),
+	characters: defineTable({
+		name: v.string(),
+		condition: v.string(),
+	}),
 })
