@@ -8,5 +8,5 @@
 			"styled-system/*": ["./styled-system/*"]
 		}
 	},
-	"exclude": ["node_modules", "dist", "public/dist"]
+	"exclude": ["node_modules", "dist", "public/dist", "styled-system"]
 }
