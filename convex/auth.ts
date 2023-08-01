@@ -4,6 +4,7 @@ import { type Id } from "./_generated/dataModel"
 import { httpAction, query } from "./_generated/server"
 import { getDiscordUser } from "./discord"
 import { env } from "./env"
+import { getPlayerFromDiscordUserId } from "./players"
 import { getSessionUser, isAdminUser } from "./users"
 
 export const discordLogin = httpAction(async (ctx, request) => {
@@ -137,6 +138,12 @@ export const me = query({
 	},
 	handler: async (ctx, args) => {
 		const user = await getSessionUser(ctx, args.sessionId)
-		return { user, isAdmin: isAdminUser(user) }
+		const player = await getPlayerFromDiscordUserId(ctx, user?.discordId)
+		const isAdmin = isAdminUser(user)
+		return {
+			user,
+			isAdmin,
+			isPlayer: isAdmin || !!player,
+		}
 	},
 })

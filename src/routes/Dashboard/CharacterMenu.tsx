@@ -2,8 +2,13 @@ import { api } from "convex/_generated/api"
 import { type Id } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
 import { LucideUserPlus } from "lucide-react"
-import { Suspense, useState, type ReactElement } from "react"
-import { css } from "styled-system/css"
+import {
+	Suspense,
+	useState,
+	type ComponentPropsWithoutRef,
+	type ReactElement,
+} from "react"
+import { css, cx } from "styled-system/css"
 import { flex } from "styled-system/patterns"
 import { Field } from "~/components/Field"
 import { Menu, MenuButton, MenuItem, MenuPanel } from "~/components/Menu"
@@ -80,6 +85,7 @@ export function CharacterMenu({ children }: { children: ReactElement }) {
 function CharacterEditor({ characterId }: { characterId: Id<"characters"> }) {
 	const character = useQuerySuspense(api.characters.get, { id: characterId })
 	const sessionId = getSessionId()
+	const me = useQuerySuspense(api.auth.me, { sessionId })
 
 	const update = useMutation(api.characters.update).withOptimisticUpdate(
 		(store, args) => {
@@ -120,11 +126,11 @@ function CharacterEditor({ characterId }: { characterId: Id<"characters"> }) {
 			</ModalHeader>
 			<div className={flex({ p: 4, flexDir: "column", gap: 3 })}>
 				<Field label="Name" inputId="name">
-					<input
+					<CharacterEditorInput
 						id="name"
 						type="text"
 						placeholder="What should we call you?"
-						autoComplete="off"
+						readOnly={!me.isPlayer}
 						className={input()}
 						value={character.name}
 						onChange={(event) => {
@@ -133,11 +139,11 @@ function CharacterEditor({ characterId }: { characterId: Id<"characters"> }) {
 					/>
 				</Field>
 				<Field label="Condition" inputId="condition">
-					<input
+					<CharacterEditorInput
 						id="condition"
 						type="text"
 						placeholder="How are you doing?"
-						autoComplete="off"
+						readOnly={!me.isPlayer}
 						className={input()}
 						value={character.condition}
 						onChange={(event) => {
@@ -147,5 +153,27 @@ function CharacterEditor({ characterId }: { characterId: Id<"characters"> }) {
 				</Field>
 			</div>
 		</>
+	)
+}
+
+function CharacterEditorInput({
+	readOnly,
+	value,
+	className,
+	...props
+}: ComponentPropsWithoutRef<"input">) {
+	return readOnly ? (
+		<div {...props} className={cx(input(), className)}>
+			{value || (
+				<span className={css({ opacity: value ? 1 : 0.6 })}>No value</span>
+			)}
+		</div>
+	) : (
+		<input
+			autoComplete="off"
+			value={value}
+			{...props}
+			className={cx(input(), className)}
+		/>
 	)
 }

@@ -68,9 +68,17 @@ export async function getSessionPlayer(
 	const user = await getSessionUser(ctx, sessionId)
 	if (!user) return null
 
+	return await getPlayerFromDiscordUserId(ctx, user.discordId)
+}
+
+export async function getPlayerFromDiscordUserId(
+	ctx: QueryCtx,
+	discordUserId: string | null | undefined,
+) {
+	if (!discordUserId) return null
 	return await ctx.db
 		.query("players")
-		.withIndex("by_discord_id", (q) => q.eq("discordUserId", user.discordId))
+		.withIndex("by_discord_id", (q) => q.eq("discordUserId", discordUserId))
 		.unique()
 }
 
