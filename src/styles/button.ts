@@ -31,7 +31,7 @@ export const button = cva({
 				borderWidth: "1px",
 				borderColor: "base.600",
 				px: 3,
-				h: 10,
+				minH: 10,
 				rounded: "md",
 				gap: 2.5,
 				"& > svg": { w: 5, h: 5, mx: -1 },

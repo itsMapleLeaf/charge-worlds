@@ -9,6 +9,7 @@ export const input = cva({
 		borderColor: "base.600",
 		rounded: "md",
 		px: 3,
-		h: 10,
+		py: 1.5,
+		minH: 10,
 	},
 })
