@@ -16,7 +16,10 @@ export function Field({
 	...props
 }: FieldProps) {
 	return (
-		<div {...props} className={cx(flex({ direction: "column" }), className)}>
+		<div
+			{...props}
+			className={cx(flex({ direction: "column", gap: 1 }), className)}
+		>
 			{label && <Label htmlFor={inputId}>{label}</Label>}
 			{children}
 		</div>
