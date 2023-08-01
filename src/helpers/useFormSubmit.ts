@@ -1,4 +1,4 @@
-import type { ZodType, ZodTypeDef } from "zod"
+import { ZodError, type ZodType, type ZodTypeDef } from "zod"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback"
 
 export function useFormSubmit<SubmitData, SubmitResult>(options: {
@@ -7,11 +7,29 @@ export function useFormSubmit<SubmitData, SubmitResult>(options: {
 		ZodTypeDef,
 		Iterable<[string, FormDataEntryValue]>
 	>
-	onSubmit: (data: SubmitData) => SubmitResult
+	onSubmit: (
+		data: SubmitData,
+		event: React.FormEvent<HTMLFormElement>,
+	) => SubmitResult
 }) {
-	return useAsyncCallback((event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-		const data = options.schema.parse(new FormData(event.currentTarget))
-		return options.onSubmit(data)
+	return useAsyncCallback(async (event: React.FormEvent<HTMLFormElement>) => {
+		try {
+			event.preventDefault()
+			const data = options.schema.parse(new FormData(event.currentTarget))
+			return await options.onSubmit(data, event)
+		} catch (error) {
+			if (error instanceof ZodError) {
+				const flattenedError = error.flatten()
+
+				const fieldErrorList = Object.values(flattenedError.fieldErrors)
+					.filter(Boolean)
+					.flat()
+
+				const errorList = [...flattenedError.formErrors, ...fieldErrorList]
+
+				throw new Error(errorList.join("\n"), { cause: error })
+			}
+			throw error
+		}
 	})
 }
