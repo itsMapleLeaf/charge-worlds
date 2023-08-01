@@ -145,10 +145,18 @@ export const me = query({
 	},
 })
 
-export async function requireAdminUser(ctx: QueryCtx, userId: Id<"users">) {
+export async function requireAdminUser(
+	ctx: QueryCtx,
+	userId: Id<"users"> | undefined | null,
+) {
+	if (!userId) {
+		throw new Error("Unauthorized")
+	}
+
 	const user = await requireUser(ctx, userId)
 	if (user.discordId !== env.ADMIN_DISCORD_USER_ID) {
 		throw new Error("Unauthorized")
 	}
+
 	return user
 }
