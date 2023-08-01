@@ -28,14 +28,8 @@ export function MenuPanel({
 					rounded: "md",
 					minW: 40,
 					overflowX: "clip",
-					"&[data-state=open]": {
-						animation: "100ms fadeRiseIn",
-						animationTimingFunction: "ease-out",
-					},
-					"&[data-state=closed]": {
-						animation: "100ms fadeRiseOut",
-						animationTimingFunction: "ease-in",
-					},
+					"&[data-state=open]": { animation: "fade-rise-in" },
+					"&[data-state=closed]": { animation: "fade-rise-out" },
 				})}
 			>
 				<div className={css({ maxH: 72, overflowY: "auto" })}>{children}</div>

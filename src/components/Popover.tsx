@@ -18,7 +18,7 @@ export function PopoverPanel({
 			<RadixPopover.Content
 				side={side}
 				align={align}
-				sideOffset={8}
+				sideOffset={12}
 				className={css({
 					bg: "base.800",
 					shadow: "lg",
@@ -26,14 +26,8 @@ export function PopoverPanel({
 					borderColor: "base.700",
 					rounded: "md",
 					overflow: "clip",
-					"&[data-state=open]": {
-						animation: "100ms fadeRiseIn",
-						animationTimingFunction: "ease-out",
-					},
-					"&[data-state=closed]": {
-						animation: "100ms fadeRiseOut",
-						animationTimingFunction: "ease-in",
-					},
+					"&[data-state=open]": { animation: "fade-rise-in" },
+					"&[data-state=closed]": { animation: "fade-rise-out" },
 				})}
 			>
 				{children}
