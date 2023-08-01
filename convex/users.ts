@@ -7,7 +7,6 @@ import {
 } from "./_generated/server"
 import { env } from "./env"
 import { raise } from "./helpers"
-import { getSessionUser, isAdminUser } from "./users"
 
 export const get = internalQuery({
 	args: { id: v.id("users") },
