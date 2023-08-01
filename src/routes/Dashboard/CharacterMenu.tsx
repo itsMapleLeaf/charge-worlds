@@ -1,16 +1,9 @@
 import { api } from "convex/_generated/api"
 import { type Id } from "convex/_generated/dataModel"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { LucideUserPlus } from "lucide-react"
-import {
-	Suspense,
-	useState,
-	type ComponentPropsWithoutRef,
-	type ReactElement,
-} from "react"
-import { css, cx } from "styled-system/css"
-import { flex } from "styled-system/patterns"
-import { Field } from "~/components/Field"
+import { Suspense, useState, type ReactElement } from "react"
+import { css } from "styled-system/css"
 import { Menu, MenuButton, MenuItem, MenuPanel } from "~/components/Menu"
 import {
 	Modal,
@@ -22,21 +15,20 @@ import { Spinner } from "~/components/Spinner"
 import { useQuerySuspense } from "~/convex"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback"
 import { getSessionId } from "~/session"
-import { input } from "~/styles/input"
+import { CharacterEditor } from "./CharacterEditor"
 
 export function CharacterMenu({ children }: { children: ReactElement }) {
 	const [open, setOpen] = useState(false)
-
-	const [characterDialogOpen, setCharacterDialogOpen] = useState(false)
-	const [characterDialogId, setCharacterDialogId] = useState<Id<"characters">>()
+	const [characterModalOpen, setCharacterModalOpen] = useState(false)
+	const [characterModalId, setCharacterModalId] = useState<Id<"characters">>()
 	const sessionId = getSessionId()
 	const characters = useQuerySuspense(api.characters.list)
 
 	const create = useAsyncCallback(useMutation(api.characters.create), {
 		onSuccess: (id) => {
 			setOpen(false)
-			setCharacterDialogId(id)
-			setCharacterDialogOpen(true)
+			setCharacterModalId(id)
+			setCharacterModalOpen(true)
 		},
 	})
 
@@ -49,11 +41,13 @@ export function CharacterMenu({ children }: { children: ReactElement }) {
 						<MenuItem
 							key={character._id}
 							onClick={() => {
-								setCharacterDialogId(character._id)
-								setCharacterDialogOpen(true)
+								setCharacterModalId(character._id)
+								setCharacterModalOpen(true)
 							}}
 						>
-							{character.name}
+							<span className={css({ opacity: character.name ? 1 : 0.6 })}>
+								{character.name || "Unnamed"}
+							</span>
 						</MenuItem>
 					))}
 
@@ -69,111 +63,51 @@ export function CharacterMenu({ children }: { children: ReactElement }) {
 				</MenuPanel>
 			</Menu>
 
-			<Modal open={characterDialogOpen} onOpenChange={setCharacterDialogOpen}>
-				<ModalContent>
-					<Suspense fallback={<Spinner size={8} />}>
-						{characterDialogId && (
-							<CharacterEditor characterId={characterDialogId} />
-						)}
-					</Suspense>
-				</ModalContent>
+			<Modal open={characterModalOpen} onOpenChange={setCharacterModalOpen}>
+				{characterModalId && (
+					<CharacterEditorModalContent characterId={characterModalId} />
+				)}
 			</Modal>
 		</>
 	)
 }
 
-function CharacterEditor({ characterId }: { characterId: Id<"characters"> }) {
-	const character = useQuerySuspense(api.characters.get, { id: characterId })
-	const sessionId = getSessionId()
-	const me = useQuerySuspense(api.auth.me, { sessionId })
-
-	const update = useMutation(api.characters.update).withOptimisticUpdate(
-		(store, args) => {
-			store.setQuery(
-				api.characters.get,
-				{ id: args.id },
-				{ ...character, ...args },
-			)
-		},
-	)
-
-	const handleChange = useAsyncCallback(
-		(args: { name?: string; condition?: string }) => {
-			return update({ sessionId, id: characterId, ...args })
-		},
-		{
-			spinDelayOptions: {
-				delay: 0,
-			},
-		},
-	)
+function CharacterEditorModalContent({
+	characterId,
+}: {
+	characterId: Id<"characters">
+}) {
+	const character = useQuery(api.characters.get, { id: characterId })
+	const [loading, setLoading] = useState(false)
 
 	return (
-		<>
+		<ModalContent>
 			<ModalHeader>
 				<ModalTitle>
-					<span
-						className={css({ flex: 1, opacity: character.name ? 1 : 0.75 })}
-					>
-						{character.name || "Unnamed"}
-					</span>
+					{character ? (
+						<span
+							className={css({ flex: 1, opacity: character.name ? 1 : 0.75 })}
+						>
+							{character.name || "Unnamed"}
+						</span>
+					) : (
+						<Spinner size={5} />
+					)}
 				</ModalTitle>
 				<Spinner
 					size={5}
-					style={{ opacity: handleChange.loading ? 1 : 0 }}
+					style={{ opacity: loading ? 1 : 0 }}
 					className={css({ transition: "opacity" })}
 				/>
 			</ModalHeader>
-			<div className={flex({ p: 4, flexDir: "column", gap: 3 })}>
-				<Field label="Name" inputId="name">
-					<CharacterEditorInput
-						id="name"
-						type="text"
-						placeholder="What should we call you?"
-						readOnly={!me.isPlayer}
-						className={input()}
-						value={character.name}
-						onChange={(event) => {
-							handleChange({ name: event.target.value })
-						}}
+			<div className={css({ p: 4 })}>
+				<Suspense fallback={<Spinner size={8} />}>
+					<CharacterEditor
+						characterId={characterId}
+						onLoadingChange={setLoading}
 					/>
-				</Field>
-				<Field label="Condition" inputId="condition">
-					<CharacterEditorInput
-						id="condition"
-						type="text"
-						placeholder="How are you doing?"
-						readOnly={!me.isPlayer}
-						className={input()}
-						value={character.condition}
-						onChange={(event) => {
-							handleChange({ condition: event.target.value })
-						}}
-					/>
-				</Field>
+				</Suspense>
 			</div>
-		</>
-	)
-}
-
-function CharacterEditorInput({
-	readOnly,
-	value,
-	className,
-	...props
-}: ComponentPropsWithoutRef<"input">) {
-	return readOnly ? (
-		<div {...props} className={cx(input(), className)}>
-			{value || (
-				<span className={css({ opacity: value ? 1 : 0.6 })}>No value</span>
-			)}
-		</div>
-	) : (
-		<input
-			autoComplete="off"
-			value={value}
-			{...props}
-			className={cx(input(), className)}
-		/>
+		</ModalContent>
 	)
 }
