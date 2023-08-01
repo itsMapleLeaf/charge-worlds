@@ -13,10 +13,10 @@ import { Menu, MenuButton, MenuItem, MenuPanel } from "./Menu"
 
 export function AppLayout() {
 	return (
-		<>
+		<div className={flex({ direction: "column", minH: "screen" })}>
 			<Header />
 			<Outlet />
-		</>
+		</div>
 	)
 }
 
