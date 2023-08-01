@@ -11,5 +11,7 @@ export const input = cva({
 		px: 3,
 		py: 1.5,
 		minH: 10,
+		display: "flex",
+		alignItems: "center",
 	},
 })
