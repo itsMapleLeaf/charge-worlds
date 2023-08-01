@@ -9,7 +9,10 @@ export function Label({
 	return (
 		<label
 			{...props}
-			className={cx(css({ fontSize: "sm", fontWeight: "medium" }), className)}
+			className={cx(
+				css({ fontSize: "sm", fontWeight: "medium", lineHeight: 1 }),
+				className,
+			)}
 		>
 			{children}
 		</label>
