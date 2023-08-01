@@ -16,6 +16,22 @@ export default defineConfig({
 	exclude: [],
 	outdir: "styled-system",
 
+	theme: {
+		extend: {
+			tokens: {
+				colors: {
+					base: preset.theme.tokens.colors.neutral,
+					accent: preset.theme.tokens.colors.indigo,
+					error: preset.theme.tokens.colors.red,
+				},
+				fonts: {
+					sans: { value: `"Spline Sans Variable", sans-serif` },
+				},
+			},
+			keyframes: fadeRiseKeyframes,
+		},
+	},
+
 	globalCss: defineGlobalStyles({
 		":root": {
 			bg: "base.900",
@@ -34,19 +50,4 @@ export default defineConfig({
 			color: "inherit",
 		},
 	}),
-
-	theme: {
-		extend: {
-			tokens: {
-				colors: {
-					base: preset.theme.tokens.colors.neutral,
-					accent: preset.theme.tokens.colors.indigo,
-				},
-				fonts: {
-					sans: { value: `"Spline Sans Variable", sans-serif` },
-				},
-			},
-			keyframes: fadeRiseKeyframes,
-		},
-	},
 })
