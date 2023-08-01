@@ -1,10 +1,11 @@
 import { v } from "convex/values"
 import { api, internal } from "./_generated/api"
 import { type Id } from "./_generated/dataModel"
-import { httpAction, query } from "./_generated/server"
+import { httpAction, query, type QueryCtx } from "./_generated/server"
 import { getDiscordUser } from "./discord"
 import { env } from "./env"
 import { getPlayerFromDiscordUserId } from "./players"
+import { type Nullish } from "./types"
 import { getSessionUser, isAdminUser } from "./users"
 
 export const discordLogin = httpAction(async (ctx, request) => {
@@ -91,6 +92,7 @@ export const discordAuthCallback = httpAction(async (ctx, request) => {
 	)
 })
 
+// TODO: convert to regular action
 export const logout = httpAction(async (ctx, request) => {
 	const sessionId = new URL(request.url).searchParams.get(
 		"sessionId",
@@ -138,12 +140,44 @@ export const me = query({
 	},
 	handler: async (ctx, args) => {
 		const user = await getSessionUser(ctx, args.sessionId)
-		const player = await getPlayerFromDiscordUserId(ctx, user?.discordId)
-		const isAdmin = isAdminUser(user)
-		return {
-			user,
-			isAdmin,
-			isPlayer: isAdmin || !!player,
-		}
+		const roles = await getUserRoles(ctx, user)
+		return { user, ...roles }
 	},
 })
+
+export async function getSessionRoles(
+	ctx: QueryCtx,
+	sessionId: Nullish<Id<"sessions">>,
+) {
+	const user = await getSessionUser(ctx, sessionId)
+	return await getUserRoles(ctx, user)
+}
+
+async function getUserRoles(
+	ctx: QueryCtx,
+	user: Nullish<{ discordId: string }>,
+) {
+	const player = await getPlayerFromDiscordUserId(ctx, user?.discordId)
+	const isAdmin = isAdminUser(user)
+	return { isPlayer: isAdmin || !!player, isAdmin }
+}
+
+export async function requirePlayerRole(
+	ctx: QueryCtx,
+	sessionId: Nullish<Id<"sessions">>,
+) {
+	const roles = await getSessionRoles(ctx, sessionId)
+	if (!roles.isPlayer) {
+		throw new Error("Unauthorized: user is not a player")
+	}
+}
+
+export async function requireAdminRole(
+	ctx: QueryCtx,
+	sessionId: Nullish<Id<"sessions">>,
+) {
+	const roles = await getSessionRoles(ctx, sessionId)
+	if (!roles.isAdmin) {
+		throw new Error("Unauthorized: user is not an admin")
+	}
+}

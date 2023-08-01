@@ -1,7 +1,6 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
-import { requireSessionPlayer } from "./players"
-import { requireAdminUser } from "./users"
+import { requireAdminRole, requirePlayerRole } from "./auth"
 
 export const get = query({
 	args: {
@@ -22,8 +21,8 @@ export const create = mutation({
 	args: {
 		sessionId: v.union(v.id("sessions"), v.null()),
 	},
-	handler: async (ctx, { sessionId, ...args }) => {
-		await requireAdminUser(ctx, sessionId)
+	handler: async (ctx, { sessionId }) => {
+		await requireAdminRole(ctx, sessionId)
 		return ctx.db.insert("characters", {
 			name: "New Character",
 			condition: "",
@@ -39,7 +38,7 @@ export const update = mutation({
 		condition: v.optional(v.string()),
 	},
 	handler: async (ctx, { sessionId, id, ...args }) => {
-		await requireSessionPlayer(ctx, sessionId)
+		await requirePlayerRole(ctx, sessionId)
 		await ctx.db.patch(id, args)
 	},
 })
@@ -50,7 +49,7 @@ export const remove = mutation({
 		id: v.id("characters"),
 	},
 	handler: async (ctx, { sessionId, id }) => {
-		await requireAdminUser(ctx, sessionId)
+		await requireAdminRole(ctx, sessionId)
 		await ctx.db.delete(id)
 	},
 })

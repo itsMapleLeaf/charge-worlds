@@ -1,15 +1,13 @@
 import { v } from "convex/values"
-import { type Id } from "./_generated/dataModel"
 import { mutation, query, type QueryCtx } from "./_generated/server"
-import { raise } from "./helpers"
-import { getSessionUser, requireAdminUser } from "./users"
+import { requireAdminRole } from "./auth"
 
 export const list = query({
 	args: {
 		sessionId: v.union(v.id("sessions"), v.null()),
 	},
 	handler: async (ctx, args) => {
-		await requireAdminUser(ctx, args.sessionId)
+		await requireAdminRole(ctx, args.sessionId)
 
 		const players = await ctx.db.query("players").collect()
 
@@ -34,7 +32,7 @@ export const add = mutation({
 		discordUserId: v.string(),
 	},
 	handler: async (ctx, { sessionId, ...args }) => {
-		await requireAdminUser(ctx, sessionId)
+		await requireAdminRole(ctx, sessionId)
 
 		const existing = await ctx.db
 			.query("players")
@@ -56,20 +54,10 @@ export const remove = mutation({
 		id: v.id("players"),
 	},
 	handler: async (ctx, args) => {
-		await requireAdminUser(ctx, args.sessionId)
+		await requireAdminRole(ctx, args.sessionId)
 		await ctx.db.delete(args.id)
 	},
 })
-
-export async function getSessionPlayer(
-	ctx: QueryCtx,
-	sessionId: Id<"sessions"> | null | undefined,
-) {
-	const user = await getSessionUser(ctx, sessionId)
-	if (!user) return null
-
-	return await getPlayerFromDiscordUserId(ctx, user.discordId)
-}
 
 export async function getPlayerFromDiscordUserId(
 	ctx: QueryCtx,
@@ -80,12 +68,4 @@ export async function getPlayerFromDiscordUserId(
 		.query("players")
 		.withIndex("by_discord_id", (q) => q.eq("discordUserId", discordUserId))
 		.unique()
-}
-
-export async function requireSessionPlayer(
-	ctx: QueryCtx,
-	sessionId: Id<"sessions"> | null | undefined,
-) {
-	const player = await getSessionPlayer(ctx, sessionId)
-	return player ?? raise("Unauthorized")
 }

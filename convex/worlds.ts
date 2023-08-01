@@ -1,6 +1,6 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server"
-import { requireAdminUser } from "./users"
+import { requireAdminRole } from "./auth"
 
 const defaultWorld = {
 	_id: "default",
@@ -18,7 +18,7 @@ export const update = mutation({
 		name: v.string(),
 	},
 	handler: async (ctx, { sessionId, ...args }) => {
-		await requireAdminUser(ctx, sessionId)
+		await requireAdminRole(ctx, sessionId)
 		const world = await ctx.db.query("worlds").first()
 		if (world) {
 			await ctx.db.patch(world._id, args)
